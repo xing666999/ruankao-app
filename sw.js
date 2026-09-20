@@ -1,5 +1,5 @@
 /* 软考中级学习平台 - Service Worker（离线缓存） */
-var CACHE = 'rkp-cache-v3';
+var CACHE = 'rkp-cache-v4';
 var ASSETS = ['./', './index.html', './manifest.json', './icon.svg', './icon-src.jpg'];
 
 self.addEventListener('install', function (e) {
