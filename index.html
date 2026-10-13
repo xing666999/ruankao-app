@@ -290,6 +290,11 @@ td{padding:9px 10px;border-bottom:1px solid #f0f1f7}
 .flash-card .ipa{font-size:12.5px;color:var(--muted);margin-left:8px;font-weight:400}
 .flash-card .a{margin-top:6px;font-size:13.5px;color:#333a4e}
 .flash-card .ex{margin-top:5px;font-size:12.5px;color:var(--muted);font-style:italic}
+.quiz-opt{border:1px solid #e4e6f0;border-radius:10px;padding:11px 14px;margin:8px 0;font-size:13.5px;cursor:pointer;background:#fff;line-height:1.6}
+.quiz-opt:hover{border-color:#c7d2fe;background:#fafbff}
+.quiz-opt.q-right{border-color:var(--ok);background:var(--skill-soft);color:#065f46;font-weight:600}
+.quiz-opt.q-wrong{border-color:var(--danger);background:#fdecec;color:#b91c1c}
+.quiz-opt.q-dim{opacity:.55}
 .book-item:last-child{border-bottom:none}
 .book-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .book-emoji{width:38px;height:38px;border-radius:10px;background:var(--book-soft);color:var(--book);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex:none}
@@ -896,6 +901,134 @@ function toggleStudyTask(){
 }
 document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeStudy(); });
 
+/* ================= 刷题练习 ================= */
+var QBANK=[
+ {cat:'十大管理',q:'项目整体管理中，负责审批变更申请、决定变更是否执行的机构是（　）。',opts:['项目经理','变更控制委员会（CCB）','项目发起人','质量管理小组'],ans:1,exp:'整体变更控制由 CCB（变更控制委员会）负责审批变更；项目经理负责提出与执行变更，但无权自行批准重大变更。'},
+ {cat:'十大管理',q:'创建 WBS 时，工作包的分解一般遵循“8/80 原则”，其含义是（　）。',opts:['每个工作包成本在 8 万～80 万元之间','每个工作包的工作量不小于 8 小时且不大于 80 小时','每个工作包至少包含 8 项活动','每个工作包持续 8～80 天'],ans:1,exp:'8/80 原则：工作包工作量最小 8 小时、最大 80 小时，粒度适中便于估算和控制。'},
+ {cat:'十大管理',q:'在责任分配矩阵（RAM）中，最能体现“谁负责完成工作”的字母代号是（　）。',opts:['C（Consult）','I（Inform）','R（Responsible）','A（Accountable）'],ans:2,exp:'RACI 中 R=Responsible 负责执行工作；A=Accountable 对结果负最终责任（每项任务只有一个 A）；C=咨询；I=知会。'},
+ {cat:'十大管理',q:'为应对汇率波动带来的损失，项目组决定购买汇率对冲产品，这属于风险应对策略中的（　）。',opts:['风险规避','风险转移','风险减轻','风险接受'],ans:1,exp:'风险转移是把风险后果连同应对责任转移给第三方（如保险、外包、对冲工具）；风险本身概率和影响并未降低。'},
+ {cat:'十大管理',q:'干系人参与评估矩阵中，某干系人“知晓项目并支持项目成果”，其参与程度应标记为（　）。',opts:['不了解（Unaware）','中立（Neutral）','支持（Supportive）','领导（Leading）'],ans:2,exp:'参与程度五级：不了解＜抵制＜中立＜支持＜领导。“知晓并支持”对应支持级，领导级则是主动推动项目成功。'},
+ {cat:'十大管理',q:'质量成本（COQ）中，开展测试评审、检查所花的费用属于（　）。',opts:['预防成本','评价成本','内部失败成本','外部失败成本'],ans:1,exp:'一致性成本=预防成本（培训、流程）+评价成本（测试、检查、评审）；非一致性=内部失败（返工、报废）+外部失败（售后、索赔）。'},
+ {cat:'挣值计算',q:'某项目 PV=100 万元，EV=80 万元，AC=90 万元。关于项目状态，下列说法正确的是（　）。',opts:['进度超前、成本节约','进度落后、成本超支','进度超前、成本超支','进度落后、成本节约'],ans:1,exp:'CV=EV-AC=80-90=-10＜0 成本超支；SV=EV-PV=80-100=-20＜0 进度落后。负值即“落后/超支”。'},
+ {cat:'挣值计算',q:'某项目 SPI=0.8，其含义是（　）。',opts:['每花 1 元只完成 0.8 元的工作','实际进度只完成了计划进度的 80%','成本超支 20%','工作量只完成了 80%'],ans:1,exp:'SPI=EV/PV，衡量进度效率：SPI=0.8 表示实际完成的工作量仅为计划应完成的 80%，进度落后。CPI=0.8 才是“每花 1 元干 0.8 元的活”。'},
+ {cat:'挣值计算',q:'典型偏差情况下，完工尚需估算 ETC 的计算公式是（　）。',opts:['ETC=BAC-EV','ETC=(BAC-EV)/CPI','ETC=BAC/CPI','ETC=BAC-EAC'],ans:1,exp:'典型偏差（当前偏差会持续）时 ETC=(BAC-EV)/CPI；非典型偏差（偏差不再发生）时 ETC=BAC-EV。'},
+ {cat:'网络图/进度',q:'关于关键路径，下列说法正确的是（　）。',opts:['关键路径是网络图中最短的路径','关键路径上活动的总时差为零','关键路径上的活动可以适当延迟而不影响工期','一个项目的关键路径是唯一的且不可改变'],ans:1,exp:'关键路径是历时最长（而非最短）的路径，决定项目最短工期；其上活动总时差为 0，任何延误都会导致总工期延误；关键路径可能多条，也可能随进度变化。'},
+ {cat:'网络图/进度',q:'某活动的总时差为 3 天，自由时差为 1 天。若该活动推迟 2 天开始，则下列说法正确的是（　）。',opts:['总工期将延后 2 天','紧后活动的最早开始时间不受影响','不影响总工期，但会影响紧后活动的最早开始时间','该活动将成为关键活动'],ans:2,exp:'推迟 2 天大于自由时差 1 天，紧后活动的最早开始时间会被推迟；但 2 天仍在总时差 3 天之内，因此总工期不受影响。总时差管“项目”，自由时差管“紧后活动”。'},
+ {cat:'法律法规',q:'《中华人民共和国网络安全法》正式施行的时间是（　）。',opts:['2016 年 11 月 7 日','2017 年 6 月 1 日','2018 年 1 月 1 日','2019 年 12 月 1 日'],ans:1,exp:'《网络安全法》2016 年 11 月 7 日通过，2017 年 6 月 1 日起施行。注意区分“通过日”与“施行日”。'},
+ {cat:'法律法规',q:'关于著作权的保护期限，下列说法正确的是（　）。',opts:['署名权的保护期为作者终生及其死后 50 年','法人作品的财产权保护期为发表后 50 年','财产权利的保护期为作者终生','所有著作权保护期均为 50 年'],ans:1,exp:'署名权、修改权、保护作品完整权不受时间限制；自然人的作品财产权保护期为作者终生加死后 50 年；法人作品、职务作品的财产权保护期为首次发表后 50 年。'},
+ {cat:'法律法规',q:'根据《招标投标法》，自招标文件开始发出之日起至投标人提交投标文件截止之日止，最短不得少于（　）。',opts:['10 日','15 日','20 日','30 日'],ans:2,exp:'依法必须招标的项目，该期限最短不得少于 20 日，保证投标人有合理时间编制投标文件。'},
+ {cat:'信息技术',q:'OSI 参考模型中，路由器工作在（　）。',opts:['物理层','数据链路层','网络层','传输层'],ans:2,exp:'路由器基于 IP 地址做路径选择，工作在网络层；集线器在物理层，交换机在数据链路层，防火墙/网关可到更高层。'},
+ {cat:'信息技术',q:'关于 TCP 与 UDP 的比较，下列说法正确的是（　）。',opts:['UDP 面向连接、可靠传输','TCP 面向连接、提供可靠传输','TCP 传输效率一定高于 UDP','视频直播一般优先采用 TCP'],ans:1,exp:'TCP 面向连接、可靠、有序（三次握手、确认重传）；UDP 无连接、不可靠但开销小、时延低，直播/语音多用 UDP。'},
+ {cat:'信息技术',q:'云服务商提供虚拟机、存储、网络等基础资源，用户在其上自行部署操作系统和应用，这种服务模式属于（　）。',opts:['SaaS','PaaS','IaaS','DaaS'],ans:2,exp:'IaaS 提供基础设施（计算/存储/网络）；PaaS 提供平台和开发环境；SaaS 直接提供应用软件。提供“虚拟机+基础资源”即 IaaS。'},
+ {cat:'信息技术',q:'大数据的典型特征通常概括为“5V”，下列不属于其特征的是（　）。',opts:['Volume（体量大）','Variety（类型多）','Velocity（速度快）','Visibility（可视化）'],ans:3,exp:'5V：Volume 大量、Variety 多样、Velocity 高速、Value 价值（密度低）、Veracity 真实性。“可视化”是数据分析呈现手段，不属于 5V。'},
+ {cat:'选择题·综合',q:'信息系统的生命周期一般可划分为（　）。',opts:['立项、开发、运维、消亡','规划、设计、编码、测试','需求、分析、实施、验收','启动、执行、监控、收尾'],ans:0,exp:'信息系统生命周期：立项（系统规划）→ 开发（分析、设计、实施、验收）→ 运维 → 消亡。启动/执行/监控/收尾是项目管理的五大过程组，注意区分。'},
+ {cat:'选择题·综合',q:'V 模型中，与“需求分析”阶段相对应的测试级别是（　）。',opts:['单元测试','集成测试','系统测试','验收测试'],ans:3,exp:'V 模型左右对应：需求分析↔验收测试，概要设计↔系统测试，详细设计↔集成测试，编码↔单元测试。'},
+ {cat:'选择题·综合',q:'CMMI 五级成熟度中，第三级是（　）。',opts:['已管理级','已定义级','量化管理级','优化级'],ans:1,exp:'CMMI 由低到高：1 初始级 → 2 已管理级 → 3 已定义级 → 4 量化管理级 → 5 优化级。三级特征：过程已标准化、文档化并组织级统一。'},
+ {cat:'选择题·综合',q:'UML 中，类图属于（　）。',opts:['静态图（结构图）','动态图（行为图）','交互图','实现图'],ans:0,exp:'类图、对象图、包图、组件图、部署图属于静态结构图；用例图、活动图、状态图、顺序图（交互图）描述动态行为。'},
+ {cat:'案例简答',q:'某项目进行到第 6 个月：BAC=500 万元，EV=240 万元，AC=280 万元，PV=300 万元。当前项目的成本绩效情况是（　）。',opts:['CPI≈0.86，成本超支，需分析原因并采取纠偏','CPI≈1.17，成本节约','CV=+40，成本节约','CPI≈0.8，进度落后是主因'],ans:0,exp:'CPI=EV/AC=240/280≈0.86＜1，每投 1 元只产出 0.86 元价值，成本超支；CV=EV-AC=-40 万。此时应先分析原因，评估是否需要纠偏措施。'},
+ {cat:'案例简答',q:'项目实施过程中，某干系人正式提出变更申请后，整体变更控制的首要后续步骤是（　）。',opts:['立即实施变更','评估变更对范围、进度、成本、质量等的综合影响','通知所有干系人变更已接受','修改项目基准'],ans:1,exp:'变更流程：提出申请 → 受理登记 → 评估影响（范围/进度/成本/质量/风险）→ 提交 CCB 审批 → 实施 → 验证 → 更新基准与文档。评估影响是审批前的关键步骤。'}
+];
+var quiz={on:false,list:[],answers:[],i:0,correct:0,picked:null};
+function startQuiz(){
+  var pool=QBANK.slice(); var list=[];
+  var n=Math.min(10,pool.length);
+  while(list.length<n){ var idx=Math.floor(Math.random()*pool.length); list.push(pool.splice(idx,1)[0]); }
+  quiz={on:true,list:list,answers:[],i:0,correct:0,picked:null};
+  curStudy=null;
+  var tag=document.getElementById('sm-tag');
+  tag.textContent='刷题'; tag.style.background='var(--primary-soft)'; tag.style.color='var(--primary)';
+  document.getElementById('sm-done-btn').style.display='none';
+  document.getElementById('study-modal').classList.add('show');
+  document.body.style.overflow='hidden';
+  renderQuiz();
+}
+function renderQuiz(){
+  if(!quiz.on) return;
+  var q=quiz.list[quiz.i];
+  document.getElementById('sm-title').textContent='刷题练习 · 第 '+(quiz.i+1)+' / '+quiz.list.length+' 题 · 已对 '+quiz.correct;
+  var h='<div style="font-size:14px;font-weight:600;line-height:1.7;margin-bottom:10px">'+esc(q.q)+'</div>';
+  q.opts.forEach(function(o,i){
+    var cls='quiz-opt', dim='';
+    if(quiz.picked!==null){
+      if(i===q.ans) cls+=' q-right';
+      else if(i===quiz.picked) cls+=' q-wrong';
+      else dim=' q-dim';
+    }
+    h+='<div class="'+cls+dim+'" onclick="pickQuiz('+i+')"><b>'+String.fromCharCode(65+i)+'.</b> '+esc(o)+'</div>';
+  });
+  if(quiz.picked!==null){
+    var right=quiz.picked===q.ans;
+    h+='<div class="'+(right?'tipline':'warnline')+'" style="margin-top:10px">'+(right?'✓ 答对了！':'✗ 答错了，正确答案是 '+String.fromCharCode(65+q.ans))+'</div>';
+    h+='<div class="exbox"><div class="ex-t">解析</div><div style="font-size:13px;line-height:1.8">'+esc(q.exp)+'</div></div>';
+  }
+  document.getElementById('sm-body').innerHTML=h;
+  document.getElementById('sm-foot').innerHTML= quiz.picked===null
+    ?'<button class="btn btn-light btn-sm" onclick="closeStudy()">退出练习</button>'
+    :'<button class="btn btn-sm" onclick="nextQuiz()">'+(quiz.i+1<quiz.list.length?'下一题 →':'查看成绩')+'</button><button class="btn btn-light btn-sm" onclick="closeStudy()">退出</button>';
+}
+function pickQuiz(i){
+  if(quiz.picked!==null) return;
+  quiz.picked=i; quiz.answers[quiz.i]=i;
+  if(i===quiz.list[quiz.i].ans) quiz.correct++;
+  renderQuiz();
+}
+function nextQuiz(){
+  quiz.i++; quiz.picked=null;
+  if(quiz.i>=quiz.list.length){ finishQuiz(); return; }
+  renderQuiz();
+}
+function finishQuiz(){
+  quiz.on=false;
+  var wrongN=quiz.list.length-quiz.correct;
+  var added=0;
+  quiz.list.forEach(function(q,i){
+    if(quiz.answers[i]!==q.ans){
+      var key=q.q.substring(0,40);
+      var exists=state.mistakes.some(function(m){ return m.title.indexOf(key)===0; });
+      if(!exists){
+        state.mistakes.push({id:'q'+Date.now()+Math.floor(Math.random()*1000)+i,date:todayKey(),title:q.q.substring(0,60),cat:q.cat,reason:'刷题答错',status:0});
+        added++;
+      }
+    }
+  });
+  save(LS.mistakes,state.mistakes);
+  var rate=quiz.list.length?Math.round(quiz.correct/quiz.list.length*100):0;
+  document.getElementById('sm-title').textContent='练习成绩';
+  document.getElementById('sm-body').innerHTML=
+    '<div style="text-align:center;padding:16px 0">'
+    +'<div style="font-size:44px;font-weight:800;color:'+(rate>=80?'var(--ok)':(rate>=60?'var(--warn)':'var(--danger)'))+'">'+rate+'%</div>'
+    +'<div style="color:var(--muted);font-size:13px;margin-top:6px">答对 '+quiz.correct+' / '+quiz.list.length+' 题</div></div>'
+    +(wrongN>0
+      ?'<div class="warnline">答错的 '+wrongN+' 题已自动加入错题本，记得去「错题本」复盘（本周建议把错题重做一遍）。</div>'
+      :'<div class="tipline">全对！这轮没有新增错题，继续保持。</div>');
+  document.getElementById('sm-foot').innerHTML='<button class="btn btn-sm" onclick="closeStudy();renderAll()">完成</button>';
+  renderAll();
+}
+
+/* ================= 新手指南 ================= */
+function openGuide(){
+  curStudy=null;
+  var tag=document.getElementById('sm-tag');
+  tag.textContent='新手必看'; tag.style.background='var(--primary-soft)'; tag.style.color='var(--primary)';
+  document.getElementById('sm-title').textContent='软考备考指南 · 新手从这里开始';
+  document.getElementById('sm-done-btn').style.display='none';
+  var h='';
+  h+='<div class="sec">这个考试是什么</div>';
+  h+='<p><b>软考中级 · 系统集成项目管理工程师</b>：计算机技术与软件专业技术资格（水平）考试，机考，<b>两科连考一天考完</b>：</p>';
+  h+='<ul><li><b>基础知识</b>：75 道选择题（150 分钟）</li><li><b>应用技术</b>：4 道案例分析大题（含计算题，210 分钟）</li><li>两科各 <b>45 分</b>（满分 75 分）同时及格才算通过，一科不过则全部重考</li></ul>';
+  h+='<div class="sec">在这个平台上怎么学</div>';
+  h+='<ol><li><b>计划打卡</b>：按月份展开任务，点开带「学习」按钮的任务即可查看当次学习内容，学完勾选打卡</li><li><b>刷题练习</b>：错题本页点「开始刷题」，每轮 10 题、即时判分+解析，<b>答错的题自动进错题本</b></li><li><b>时长统计</b>：每天学完记录时长，对照每周 10-13h 基线</li><li><b>错题本</b>：每周复盘，状态流转「未掌握→复习中→已掌握」</li><li><b>里程碑</b>：关键节点提醒，考试日期可在页面里修改</li></ol>';
+  h+='<div class="sec">新手三轮复习法</div>';
+  h+='<ul><li><b>一轮 · 打框架</b>（第 1-2 月）：通读教程不求记住，建立十大管理知识地图</li><li><b>二轮 · 刷题补漏</b>（第 3-5 月）：高频刷选择题，错题本滚动复盘；挣值计算、网络图必须动手算</li><li><b>三轮 · 真题实战</b>（考前 2 月）：近 5 年真题限时做，案例题背答题模板</li></ul>';
+  h+='<div class="sec">新手最容易踩的坑</div>';
+  h+='<ul><li>只看视频不动笔 —— 挣值、网络图必须手算</li><li>教材逐字死磕 —— 理解概念大于背诵原文</li><li>从不计时 —— 不看时长统计，容易前松后紧</li><li>错题只收藏不复盘 —— 错题本每周至少过一遍</li></ul>';
+  h+='<div class="tipline">建议现在就回到「计划打卡」，展开第 1 月，从第一个任务开始学起。</div>';
+  document.getElementById('sm-body').innerHTML=h;
+  document.getElementById('sm-foot').innerHTML='<button class="btn btn-sm" onclick="closeStudy()">我知道了，开始学习</button>';
+  document.getElementById('study-modal').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+
 var CATS = ['软考','实操技能','作品集'];
 var QCATS = ['选择题·综合','挣值计算','网络图/进度','十大管理','案例简答','法律法规','信息技术','其他'];
 var QSTATUS = ['未掌握','复习中','已掌握'];
@@ -1022,7 +1155,7 @@ function renderDashboard(){
   var projN=state.projects.filter(function(x){ return x.status===1; }).length;
 
   document.getElementById('tab-dashboard').innerHTML =
-    '<div class="page-head"><div><h1>总览</h1><div class="sub">'+n.getFullYear()+'年'+(n.getMonth()+1)+'月'+n.getDate()+'日 星期'+WD[n.getDay()]+' · 备考第 '+studyWeekNum()+' 周 · 连续学习 '+sk+' 天</div></div>'
+    '<div class="page-head"><div><h1>总览</h1><div class="sub">'+n.getFullYear()+'年'+(n.getMonth()+1)+'月'+n.getDate()+'日 星期'+WD[n.getDay()]+' · 备考第 '+studyWeekNum()+' 周 · 连续学习 '+sk+' 天 · <span class="link-btn" style="margin:0" onclick="openGuide()">新手必看 · 备考指南 →</span></div></div>'
     +'<div class="chips"><span class="chip chip-exam">软考备考</span><span class="chip chip-skill">实操技能</span><span class="chip chip-port">作品集</span></div></div>'
     +'<div class="hero-grid">'
     +'<div class="card"><div class="hero-label">距离考试</div>'
@@ -1248,7 +1381,11 @@ function renderMistakes(){
 
   document.getElementById('tab-mistakes').innerHTML =
     '<div class="page-head"><div><h1>错题本</h1><div class="sub">真题驱动复习 · 错题集中复盘 · 状态流转：未掌握 → 复习中 → 已掌握</div></div></div>'
-    +'<div class="card form-grid">'
+    +'<div class="card" style="border-left:3px solid var(--primary)"><h3>刷题练习<span class="r">题库 '+QBANK.length+' 题 · 每轮随机 10 题</span></h3>'
+    +'<div style="font-size:13px;color:#3b3f52;margin-bottom:10px">覆盖十大管理、挣值计算、网络图、法律法规、信息技术、案例分析。即时判分+解析，<b>答错的题自动收进错题本</b>。</div>'
+    +'<div class="form-row"><button class="btn" onclick="startQuiz()">开始刷题（10 题）</button>'
+    +'<span style="font-size:12px;color:var(--muted)">建议每天 1-2 轮，配合计划打卡使用</span></div></div>'
+    +'<div class="card form-grid" style="margin-top:14px">'
     +'<textarea id="q-title" placeholder="题目 / 考点描述（如：挣值计算 —— PV、AC 已知求 CV、SPI）"></textarea>'
     +'<div class="form-row"><select id="q-cat">'+QCATS.map(function(c){ return '<option>'+c+'</option>'; }).join('')+'</select>'
     +'<input id="q-reason" placeholder="错误原因（可选，如公式记混）" style="flex:1;min-width:180px">'
