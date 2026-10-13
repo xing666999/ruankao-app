@@ -1025,7 +1025,8 @@ function finishQuiz(){
       var key=q.q.substring(0,40);
       var exists=state.mistakes.some(function(m){ return m.title.indexOf(key)===0; });
       if(!exists){
-        state.mistakes.push({id:'q'+Date.now()+Math.floor(Math.random()*1000)+i,date:todayKey(),title:q.q.substring(0,60),cat:q.cat,reason:'刷题答错',status:0});
+        state.mistakes.push({id:'q'+Date.now()+Math.floor(Math.random()*1000)+i,date:todayKey(),title:q.q.substring(0,60),cat:q.cat,reason:'刷题答错',status:0,
+          quiz:{q:q.q,opts:q.opts,ans:q.ans,exp:q.exp}});
         added++;
       }
     }
@@ -1375,6 +1376,62 @@ function renderTime(){
 }
 
 /* ================= 错题本 ================= */
+function qDetailHtml(m){
+  var q=m.quiz;
+  var h='<div class="exbox" style="margin-top:10px"><div class="ex-t">完整题目</div><div style="font-size:13px;line-height:1.7;margin-bottom:8px">'+esc(q.q)+'</div>';
+  q.opts.forEach(function(o,i){
+    h+='<div class="quiz-opt'+(i===q.ans?' q-right':'')+'" style="cursor:default">'+String.fromCharCode(65+i)+'. '+esc(o)+(i===q.ans?' ✓ 正确答案':'')+'</div>';
+  });
+  h+='<div class="ex-t" style="margin-top:10px">解析</div><div style="font-size:13px;line-height:1.8">'+esc(q.exp)+'</div></div>';
+  return h;
+}
+function toggleQDetail(id){
+  var el=document.getElementById('qd-'+id);
+  if(!el) return;
+  el.style.display=(el.style.display==='none')?'block':'none';
+}
+var oneQ=null;
+function practiceOne(id){
+  var m=null;
+  state.mistakes.forEach(function(x){ if(x.id===id) m=x; });
+  if(!m||!m.quiz) return;
+  oneQ={m:m,picked:null};
+  curStudy=null;
+  var tag=document.getElementById('sm-tag');
+  tag.textContent='重做错题'; tag.style.background='var(--port-soft)'; tag.style.color='var(--port)';
+  document.getElementById('sm-done-btn').style.display='none';
+  document.getElementById('study-modal').classList.add('show');
+  document.body.style.overflow='hidden';
+  renderOne();
+}
+function renderOne(){
+  if(!oneQ) return;
+  var q=oneQ.m.quiz;
+  document.getElementById('sm-title').textContent='重做 · '+oneQ.m.cat;
+  var h='<div style="font-size:14px;font-weight:600;line-height:1.7;margin-bottom:10px">'+esc(q.q)+'</div>';
+  q.opts.forEach(function(o,i){
+    var cls='quiz-opt',dim='';
+    if(oneQ.picked!==null){
+      if(i===q.ans) cls+=' q-right';
+      else if(i===oneQ.picked) cls+=' q-wrong';
+      else dim=' q-dim';
+    }
+    h+='<div class="'+cls+dim+'" onclick="pickOne('+i+')"><b>'+String.fromCharCode(65+i)+'.</b> '+esc(o)+'</div>';
+  });
+  if(oneQ.picked!==null){
+    var right=oneQ.picked===q.ans;
+    h+='<div class="'+(right?'tipline':'warnline')+'" style="margin-top:10px">'+(right?'✓ 这次答对了！状态已自动推进到「复习中」，继续巩固。':'✗ 又答错了，多看两遍解析，改天再来重做。')+'</div>';
+    h+='<div class="exbox"><div class="ex-t">解析</div><div style="font-size:13px;line-height:1.8">'+esc(q.exp)+'</div></div>';
+  }
+  document.getElementById('sm-body').innerHTML=h;
+  document.getElementById('sm-foot').innerHTML='<button class="btn btn-light btn-sm" onclick="closeStudy()">关闭</button>';
+}
+function pickOne(i){
+  if(!oneQ||oneQ.picked!==null) return;
+  oneQ.picked=i;
+  if(i===oneQ.m.quiz.ans&&oneQ.m.status===0){ oneQ.m.status=1; save(LS.mistakes,state.mistakes); }
+  renderOne();
+}
 function addMistake(){
   var t=document.getElementById('q-title').value.trim();
   var c=document.getElementById('q-cat').value;
@@ -1412,6 +1469,7 @@ function renderMistakes(){
       return '<div class="card q-card"><div class="q-top"><span class="q-cat">'+esc(m.cat)+'</span><span class="q-date">'+m.date+'</span></div>'
         +'<div class="q-title">'+esc(m.title)+'</div>'
         +(m.reason?'<div class="q-reason">原因：'+esc(m.reason)+'</div>':'')
+        +(m.quiz?'<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><button class="mini-btn" onclick="toggleQDetail(\''+m.id+'\')">展开题目与解析</button><button class="mini-btn" onclick="practiceOne(\''+m.id+'\')">重做本题</button></div><div id="qd-'+m.id+'" style="display:none">'+qDetailHtml(m)+'</div>':'')
         +'<div class="q-actions">'+pills+'<button class="btn btn-sm btn-danger" style="margin-left:auto" onclick="delMistake(\''+m.id+'\')">删除</button></div></div>';
     }).join('');
   }else{
