@@ -1821,6 +1821,146 @@ function renderReading(){
 /* ---------- 英语 ---------- */
 var EN_STATUS=['生词','复习中','已掌握'];
 var flashOpen=null;
+var EN_WORD_SEED=[
+ {w:'abandon',ipa:'/əˈbændən/',m:'v. 放弃，抛弃',ex:'They abandoned the plan for lack of money.'},
+ {w:'absorb',ipa:'/əbˈzɔːb/',m:'v. 吸收，理解',ex:'Try to absorb the key ideas first.'},
+ {w:'accurate',ipa:'/ˈækjərət/',m:'adj. 准确的',ex:'The report gives an accurate picture of sales.'},
+ {w:'achieve',ipa:'/əˈtʃiːv/',m:'v. 实现，达到',ex:'She achieved her goal in six months.'},
+ {w:'adapt',ipa:'/əˈdæpt/',m:'v. 适应，改编',ex:'You must adapt to the new environment.'},
+ {w:'adequate',ipa:'/ˈædɪkwət/',m:'adj. 足够的',ex:'Make sure you get adequate sleep.'},
+ {w:'anticipate',ipa:'/ænˈtɪsɪpeɪt/',m:'v. 预期，预料',ex:'We anticipate some delays in the project.'},
+ {w:'appreciate',ipa:'/əˈpriːʃieɪt/',m:'v. 感激；欣赏',ex:'I would appreciate your help.'},
+ {w:'approach',ipa:'/əˈprəʊtʃ/',m:'n./v. 方法；接近',ex:'We need a new approach to this problem.'},
+ {w:'appropriate',ipa:'/əˈprəʊpriət/',m:'adj. 恰当的',ex:'Wear appropriate clothes for the meeting.'},
+ {w:'assess',ipa:'/əˈses/',m:'v. 评估',ex:'Assess your progress every week.'},
+ {w:'assume',ipa:'/əˈsjuːm/',m:'v. 假定，认为',ex:'Do not assume you have more time.'},
+ {w:'available',ipa:'/əˈveɪləbl/',m:'adj. 可获得的',ex:'The meeting room is available now.'},
+ {w:'aware',ipa:'/əˈweə(r)/',m:'adj. 意识到的',ex:'Be aware of the deadline.'},
+ {w:'benefit',ipa:'/ˈbenɪfɪt/',m:'n. 好处，益处',ex:'Exercise has many benefits.'},
+ {w:'calculate',ipa:'/ˈkælkjuleɪt/',m:'v. 计算',ex:'Calculate the total cost first.'},
+ {w:'capable',ipa:'/ˈkeɪpəbl/',m:'adj. 有能力的',ex:'She is capable of much more.'},
+ {w:'challenge',ipa:'/ˈtʃælɪndʒ/',m:'n. 挑战',ex:'Every project has challenges.'},
+ {w:'collaborate',ipa:'/kəˈlæbəreɪt/',m:'v. 合作',ex:'The two teams collaborated well.'},
+ {w:'commit',ipa:'/kəˈmɪt/',m:'v. 承诺；投入',ex:'Commit to 20 minutes a day.'},
+ {w:'compare',ipa:'/kəmˈpeə(r)/',m:'v. 比较',ex:'Compare the two versions carefully.'},
+ {w:'complete',ipa:'/kəmˈpliːt/',m:'v./adj. 完成；完整的',ex:'Complete the form before Friday.'},
+ {w:'consider',ipa:'/kənˈsɪdə(r)/',m:'v. 考虑',ex:'Consider the risks before starting.'},
+ {w:'contribute',ipa:'/kənˈtrɪbjuːt/',m:'v. 贡献，促成',ex:'Everyone can contribute ideas.'},
+ {w:'convince',ipa:'/kənˈvɪns/',m:'v. 说服，使确信',ex:'He convinced me to try again.'},
+ {w:'crucial',ipa:'/ˈkruːʃl/',m:'adj. 关键的',ex:'Practice is crucial to progress.'},
+ {w:'deal',ipa:'/diːl/',m:'v./n. 处理；交易',ex:'How do you deal with stress?'},
+ {w:'decline',ipa:'/dɪˈklaɪn/',m:'v./n. 下降；婉拒',ex:'Sales declined last month.'},
+ {w:'dedicate',ipa:'/ˈdedɪkeɪt/',m:'v. 专用于，献身于',ex:'Dedicate one hour to reading daily.'},
+ {w:'demand',ipa:'/dɪˈmɑːnd/',m:'v./n. 要求；需求',ex:'The job demands patience.'},
+ {w:'demonstrate',ipa:'/ˈdemənstreɪt/',m:'v. 证明；演示',ex:'Let me demonstrate how it works.'},
+ {w:'describe',ipa:'/dɪˈskraɪb/',m:'v. 描述',ex:'Describe the problem in detail.'},
+ {w:'determine',ipa:'/dɪˈtɜːmɪn/',m:'v. 决定；确定',ex:'Determine your priorities first.'},
+ {w:'develop',ipa:'/dɪˈveləp/',m:'v. 发展；养成',ex:'Develop the habit of note-taking.'},
+ {w:'distinguish',ipa:'/dɪˈstɪŋɡwɪʃ/',m:'v. 区分，辨别',ex:'Can you distinguish the two sounds?'},
+ {w:'efficient',ipa:'/ɪˈfɪʃnt/',m:'adj. 高效的',ex:'This method is more efficient.'},
+ {w:'eliminate',ipa:'/ɪˈlɪmɪneɪt/',m:'v. 消除，排除',ex:'Eliminate distractions while studying.'},
+ {w:'encourage',ipa:'/ɪnˈkʌrɪdʒ/',m:'v. 鼓励',ex:'Her teacher encouraged her a lot.'},
+ {w:'enhance',ipa:'/ɪnˈhɑːns/',m:'v. 增强，提高',ex:'Reading enhances your vocabulary.'},
+ {w:'establish',ipa:'/ɪˈstæblɪʃ/',m:'v. 建立，确立',ex:'Establish a daily routine.'},
+ {w:'evaluate',ipa:'/ɪˈvæljueɪt/',m:'v. 评价，估计',ex:'Evaluate the results honestly.'},
+ {w:'evidence',ipa:'/ˈevɪdəns/',m:'n. 证据',ex:'There is evidence that it works.'},
+ {w:'expand',ipa:'/ɪkˈspænd/',m:'v. 扩大，扩展',ex:'Expand your comfort zone slowly.'},
+ {w:'experience',ipa:'/ɪkˈspɪəriəns/',m:'n./v. 经验；经历',ex:'Experience comes from practice.'},
+ {w:'familiar',ipa:'/fəˈmɪliə(r)/',m:'adj. 熟悉的',ex:'Get familiar with the exam format.'},
+ {w:'focus',ipa:'/ˈfəʊkəs/',m:'v./n. 专注，聚焦',ex:'Focus on one task at a time.'},
+ {w:'frequent',ipa:'/ˈfriːkwənt/',m:'adj. 频繁的',ex:'Frequent review beats cramming.'},
+ {w:'gradual',ipa:'/ˈɡrædʒuəl/',m:'adj. 逐渐的',ex:'Progress is gradual, not sudden.'},
+ {w:'identify',ipa:'/aɪˈdentɪfaɪ/',m:'v. 识别，确认',ex:'Identify your weak points.'},
+ {w:'ignore',ipa:'/ɪɡˈnɔː(r)/',m:'v. 忽视',ex:'Do not ignore the basics.'},
+ {w:'improve',ipa:'/ɪmˈpruːv/',m:'v. 改进，提高',ex:'Improve a little every day.'},
+ {w:'indicate',ipa:'/ˈɪndɪkeɪt/',m:'v. 表明，指出',ex:'The data indicates a clear trend.'},
+ {w:'influence',ipa:'/ˈɪnfluəns/',m:'n./v. 影响',ex:'Habits influence results.'},
+ {w:'intend',ipa:'/ɪnˈtend/',m:'v. 打算',ex:'I intend to pass this exam.'},
+ {w:'involve',ipa:'/ɪnˈvɒlv/',m:'v. 涉及，包含',ex:'The plan involves daily practice.'},
+ {w:'maintain',ipa:'/meɪnˈteɪn/',m:'v. 保持，维持',ex:'Maintain your study streak.'},
+ {w:'manage',ipa:'/ˈmænɪdʒ/',m:'v. 管理；设法做到',ex:'Manage your time wisely.'},
+ {w:'necessary',ipa:'/ˈnesəsəri/',m:'adj. 必要的',ex:'Repetition is necessary for memory.'},
+ {w:'obvious',ipa:'/ˈɒbviəs/',m:'adj. 明显的',ex:'The mistake was obvious in hindsight.'},
+ {w:'occur',ipa:'/əˈkɜː(r)/',m:'v. 发生，出现',ex:'Errors occur when we rush.'},
+ {w:'opportunity',ipa:'/ˌɒpəˈtjuːnəti/',m:'n. 机会',ex:'Every error is an opportunity to learn.'},
+ {w:'organize',ipa:'/ˈɔːɡənaɪz/',m:'v. 组织，整理',ex:'Organize your notes weekly.'},
+ {w:'participate',ipa:'/pɑːˈtɪsɪpeɪt/',m:'v. 参与',ex:'Participate actively in class.'},
+ {w:'perform',ipa:'/pəˈfɔːm/',m:'v. 表现；执行',ex:'He performed well under pressure.'},
+ {w:'possible',ipa:'/ˈpɒsəbl/',m:'adj. 可能的',ex:'Finish as much as possible.'},
+ {w:'practice',ipa:'/ˈpræktɪs/',m:'n./v. 练习',ex:'Practice makes progress.'},
+ {w:'prevent',ipa:'/prɪˈvent/',m:'v. 预防，阻止',ex:'Review prevents forgetting.'},
+ {w:'process',ipa:'/ˈprəʊses/',m:'n./v. 过程；处理',ex:'Learning is a process, not an event.'},
+ {w:'progress',ipa:'/ˈprəʊɡres/',m:'n. 进步',ex:'Track your progress weekly.'},
+ {w:'purpose',ipa:'/ˈpɜːpəs/',m:'n. 目的',ex:'Know the purpose of each task.'},
+ {w:'realize',ipa:'/ˈriːəlaɪz/',m:'v. 意识到；实现',ex:'You will realize how far you have come.'},
+ {w:'recommend',ipa:'/ˌrekəˈmend/',m:'v. 推荐',ex:'I recommend daily review.'},
+ {w:'reduce',ipa:'/rɪˈdjuːs/',m:'v. 减少',ex:'Reduce screen time at night.'},
+ {w:'relevant',ipa:'/ˈreləvənt/',m:'adj. 相关的',ex:'Focus on relevant materials.'},
+ {w:'require',ipa:'/rɪˈkwaɪə(r)/',m:'v. 需要，要求',ex:'The exam requires accuracy.'},
+ {w:'respond',ipa:'/rɪˈspɒnd/',m:'v. 回应，反应',ex:'Respond quickly in listening tests.'},
+ {w:'review',ipa:'/rɪˈvjuː/',m:'n./v. 复习',ex:'Review your mistakes weekly.'},
+ {w:'schedule',ipa:'/ˈʃedjuːl/',m:'n./v. 日程；安排',ex:'Keep a simple schedule.'},
+ {w:'significant',ipa:'/sɪɡˈnɪfɪkənt/',m:'adj. 显著的',ex:'Small steps make significant change.'},
+ {w:'strategy',ipa:'/ˈstrætədʒi/',m:'n. 策略',ex:'Review is a strategy, not a chore.'}
+];
+function importSeedWords(){
+  ensureEnglish();
+  var added=0, skipped=0;
+  EN_WORD_SEED.forEach(function(s,i){
+    var dup=state.english.words.some(function(x){ return x.word.toLowerCase()===s.w.toLowerCase(); });
+    if(!dup){
+      state.english.words.push({id:'e'+Date.now()+'s'+i,word:s.w,ipa:s.ipa,mean:s.m,ex:s.ex,status:0,date:todayKey(),lastReview:''});
+      added++;
+    } else skipped++;
+  });
+  state.english.seed=true;
+  save(LS.english,state.english);
+  alert('已导入 '+added+' 个生词'+(skipped?'（跳过词库已有的 '+skipped+' 个）':'')+'，从「今日复习」开始打卡吧！');
+  renderAll();
+}
+var EN_TASKS={
+ listen:[
+  {title:'BBC 6 Minute English · 听 1 集',minutes:6,link:'https://search.bilibili.com/all?keyword=BBC%206%20Minute%20English',note:'听 2 遍：第 1 遍盲听大意，第 2 遍对照文本'},
+  {title:'美剧片段精听 5 分钟',minutes:5,link:'https://search.bilibili.com/all?keyword=%E8%80%81%E5%8F%8B%E8%AE%B0%20%E8%8B%B1%E8%AF%AD%E5%AD%A6%E4%B9%A0%20%E7%B2%BE%E5%90%AC',note:'一句一句听，模仿语音语调'},
+  {title:'英语新闻泛听 10 分钟',minutes:10,link:'https://search.bilibili.com/all?keyword=%E6%AF%8F%E6%97%A5%E8%8B%B1%E8%AF%AD%E5%90%AC%E5%8A%9B',note:'抓关键词即可，不必全懂'},
+  {title:'听英文歌看歌词 1 首',minutes:4,link:'https://search.bilibili.com/all?keyword=english%20songs%20with%20lyrics',note:'注意连读和弱读'}
+ ],
+ speak:[
+  {title:'影子跟读训练 10 分钟',minutes:10,link:'https://search.bilibili.com/all?keyword=%E8%8B%B1%E8%AF%AD%E5%BD%B1%E5%AD%90%E8%B7%9F%E8%AF%BB',note:'落后原声 1 秒同步跟读'},
+  {title:'朗读生词例句 10 句',minutes:5,note:'用生词本里的例句，读出声'},
+  {title:'描述今天做的事（1 分钟）',minutes:5,note:'用过去时，说满 60 秒不打断'},
+  {title:'自我介绍 · 录音 1 次',minutes:5,note:'录音回听，找 1 个改进点'}
+ ],
+ video:[
+  {title:'英语学习方法类视频 1 期',minutes:15,link:'https://search.bilibili.com/all?keyword=%E8%8B%B1%E8%AF%AD%E5%AD%A6%E4%B9%A0%20%E6%96%B9%E6%B3%95',note:'推荐：英语兔、English with Lucy'},
+  {title:'TED 短视频（开英文字幕）',minutes:10,link:'https://www.ted.com/talks',note:'看完摘 1 个有用表达'},
+  {title:'美剧/英剧片段 1 集',minutes:20,link:'https://search.bilibili.com/all?keyword=%E8%80%81%E5%8F%8B%E8%AE%B0%20%E8%8B%B1%E8%AF%AD%E5%AD%97%E5%B9%95',note:'开英文字幕，注意口语表达'},
+  {title:'英文 Vlog 跟看 1 支',minutes:10,link:'https://search.bilibili.com/all?keyword=english%20vlog',note:'适应真实语速和生活词汇'}
+ ],
+ read:[
+  {title:'BBC Learning English 短文 1 篇',minutes:10,link:'https://www.bbc.co.uk/learningenglish',note:'读完用英文写 1 句总结'},
+  {title:'分级读物 1 章（如书虫系列）',minutes:15,link:'https://search.bilibili.com/all?keyword=%E4%B9%A6%E8%99%AB%20%E5%88%86%E7%BA%A7%E9%98%85%E8%AF%BB',note:'生词划出来，加进生词本'},
+  {title:'英文新闻浏览 10 分钟',minutes:10,link:'https://www.bbc.com/news',note:'先读标题猜内容，再读正文'},
+  {title:'生词本例句通读 1 遍',minutes:5,note:'把例句读出声，加深记忆'}
+ ]
+};
+function enTaskCard(type){
+  ensureEnglish();
+  var tasks=EN_TASKS[type]||[];
+  if(!tasks.length) return '';
+  var tk=todayKey();
+  var rows=tasks.map(function(t){
+    var done=state.english.logs.some(function(x){ return x.type===type&&x.title===t.title&&x.date===tk; });
+    return '<div class="rec-item"><span style="flex:1;min-width:0">'
+      +'<b style="font-size:13px">'+esc(t.title)+'</b>'
+      +(t.minutes?' <span style="color:var(--muted);font-size:12px">'+t.minutes+' 分钟</span>':'')
+      +(t.note?'<div style="font-size:12px;color:var(--muted)">'+esc(t.note)+'</div>':'')
+      +'</span>'
+      +(t.link?'<a class="mini-btn" style="text-decoration:none;color:var(--primary)" href="'+t.link+'" target="_blank" rel="noopener">打开材料</a>':'')
+      +'<button class="mini-btn"'+(done?' disabled style="opacity:.55"':'')+' onclick="addEnLog(\''+type+'\',\''+t.title+'\','+(t.minutes||0)+',\''+(t.note||'')+'\',\''+(t.link||'')+'\')">'+(done?'今日已打卡 ✓':'完成打卡')+'</button></div>';
+  }).join('');
+  return '<div class="card" style="border-left:3px solid var(--skill)"><h3>今日任务<span class="r">点「打开材料」去学，回来点「完成打卡」</span></h3>'+rows+'</div>';
+}
 function ensureEnglish(){
   if(!state.english||!state.english.words) state.english={words:[],days:[],logs:[]};
   if(!state.english.days) state.english.days=[];
@@ -1885,13 +2025,14 @@ var enSub='words';
 var EN_TITLES={listen:'听力',speak:'口语',video:'视频',read:'阅读'};
 var EN_SUBS=[['words','🔤 生词'],['listen','🎧 听力'],['speak','🗣 口语'],['video','🎬 视频'],['read','📖 阅读']];
 function setEnSub(s){ enSub=s; flashOpen=null; renderEnglish(); }
-function addEnLog(type){
-  var t=(document.getElementById('el-title').value||'').trim();
+function addEnLog(type,pTitle,pMin,pNote,pLink){
+  var t=(pTitle!=null&&pTitle!=='')?pTitle:(document.getElementById('el-title')?(document.getElementById('el-title').value||'').trim():'');
   if(!t){ alert('请填写名称'); return; }
   ensureEnglish();
-  var m=parseInt(document.getElementById('el-min').value,10)||0;
-  var link=(type==='video'&&document.getElementById('el-link'))?(document.getElementById('el-link').value||'').trim():'';
-  state.english.logs.push({id:'l'+Date.now()+Math.floor(Math.random()*1000),type:type,title:t,minutes:m,date:todayKey(),note:(document.getElementById('el-note').value||'').trim(),link:link});
+  var m=(pMin!=null&&pMin>0)?pMin:(parseInt((document.getElementById('el-min')||{value:0}).value,10)||0);
+  var link=(pLink!=null&&pLink!=='')?pLink:((type==='video'&&document.getElementById('el-link'))?(document.getElementById('el-link').value||'').trim():'');
+  var note=(pNote!=null&&pNote!=='')?pNote:((document.getElementById('el-note')||{value:''}).value||'').trim();
+  state.english.logs.push({id:'l'+Date.now()+Math.floor(Math.random()*1000),type:type,title:t,minutes:m,date:todayKey(),note:note,link:link});
   markEnglishDay();
   save(LS.english,state.english); renderAll();
 }
@@ -1925,6 +2066,9 @@ function renderEnWords(ws){
   var c0=ws.filter(function(x){ return x.status===0; }).length;
   var c1=ws.filter(function(x){ return x.status===1; }).length;
   var c2=ws.filter(function(x){ return x.status===2; }).length;
+  var seedCard=(ws.length===0&&!(state.english&&state.english.seed))
+    ?'<div class="card" style="border-left:3px solid var(--primary)"><h3>开始学单词</h3><div style="font-size:13px;color:#3b3f52;margin-bottom:10px">词库还是空的。我准备了 <b>80 个高频实用词</b>（四级核心 + 职场场景，带音标、释义、例句），一键导入即可开始每天复习打卡。</div><button class="btn" onclick="importSeedWords()">一键导入 80 词</button><span style="font-size:12px;color:var(--muted);margin-left:10px">也可以在下方手动添加生词</span></div>'
+    :'';
 
   var queue=ws.filter(function(x){ return x.status<2; }).sort(function(a,b){
     if(a.status!==b.status) return a.status-b.status;
@@ -1956,7 +2100,7 @@ function renderEnWords(ws){
       +'<button class="del" onclick="delWord(\''+w.id+'\')">✕</button></div>';
   }).join(''):'<div class="empty">'+(ws.length?'该分类下暂无单词':'还没有单词')+'</div>';
 
-  return '<div class="stat-chips"><span>词库 <b>'+ws.length+'</b></span><span>生词 <b style="color:var(--primary)">'+c0+'</b></span><span>复习中 <b style="color:var(--warn)">'+c1+'</b></span><span>已掌握 <b style="color:var(--skill)">'+c2+'</b></span></div>'
+  return seedCard+'<div class="stat-chips"><span>词库 <b>'+ws.length+'</b></span><span>生词 <b style="color:var(--primary)">'+c0+'</b></span><span>复习中 <b style="color:var(--warn)">'+c1+'</b></span><span>已掌握 <b style="color:var(--skill)">'+c2+'</b></span></div>'
     +'<div class="card"><h3>今日复习<span class="r">'+queue.length+' 个待复习</span></h3>'+queueHtml+'</div>'
     +'<div class="card form-grid" style="margin-top:14px">'
     +'<div class="form-row"><input id="en-word" placeholder="单词（如 abandon）" style="flex:1;min-width:120px">'
@@ -1981,7 +2125,7 @@ function renderEnLogPage(type){
       +'<button class="del" onclick="delEnLog(\''+x.id+'\')">✕</button></div>';
   }).join(''):'<div class="empty">还没有记录，练完随手记一笔</div>';
 
-  return '<div class="card form-grid">'
+  return enTaskCard(type)+'<div class="card form-grid" style="margin-top:14px">'
     +'<input id="el-title" placeholder="'+phTitle+'">'
     +linkInput
     +'<div class="form-row"><input id="el-min" type="number" min="0" placeholder="时长（分钟，可选）" style="width:150px">'
