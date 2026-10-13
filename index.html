@@ -926,17 +926,56 @@ var QBANK=[
  {cat:'选择题·综合',q:'CMMI 五级成熟度中，第三级是（　）。',opts:['已管理级','已定义级','量化管理级','优化级'],ans:1,exp:'CMMI 由低到高：1 初始级 → 2 已管理级 → 3 已定义级 → 4 量化管理级 → 5 优化级。三级特征：过程已标准化、文档化并组织级统一。'},
  {cat:'选择题·综合',q:'UML 中，类图属于（　）。',opts:['静态图（结构图）','动态图（行为图）','交互图','实现图'],ans:0,exp:'类图、对象图、包图、组件图、部署图属于静态结构图；用例图、活动图、状态图、顺序图（交互图）描述动态行为。'},
  {cat:'案例简答',q:'某项目进行到第 6 个月：BAC=500 万元，EV=240 万元，AC=280 万元，PV=300 万元。当前项目的成本绩效情况是（　）。',opts:['CPI≈0.86，成本超支，需分析原因并采取纠偏','CPI≈1.17，成本节约','CV=+40，成本节约','CPI≈0.8，进度落后是主因'],ans:0,exp:'CPI=EV/AC=240/280≈0.86＜1，每投 1 元只产出 0.86 元价值，成本超支；CV=EV-AC=-40 万。此时应先分析原因，评估是否需要纠偏措施。'},
- {cat:'案例简答',q:'项目实施过程中，某干系人正式提出变更申请后，整体变更控制的首要后续步骤是（　）。',opts:['立即实施变更','评估变更对范围、进度、成本、质量等的综合影响','通知所有干系人变更已接受','修改项目基准'],ans:1,exp:'变更流程：提出申请 → 受理登记 → 评估影响（范围/进度/成本/质量/风险）→ 提交 CCB 审批 → 实施 → 验证 → 更新基准与文档。评估影响是审批前的关键步骤。'}
+ {cat:'案例简答',q:'项目实施过程中，某干系人正式提出变更申请后，整体变更控制的首要后续步骤是（　）。',opts:['立即实施变更','评估变更对范围、进度、成本、质量等的综合影响','通知所有干系人变更已接受','修改项目基准'],ans:1,exp:'变更流程：提出申请 → 受理登记 → 评估影响（范围/进度/成本/质量/风险）→ 提交 CCB 审批 → 实施 → 验证 → 更新基准与文档。评估影响是审批前的关键步骤。'},
+ {cat:'挣值计算',q:'挣值管理中，PV（计划价值）的含义是（　）。',opts:['到某时点为止计划完成工作的预算价值','实际花费的费用','实际完成工作的预算价值','项目的总预算'],ans:0,exp:'PV：按计划，到检查点应该完成多少工作（用预算衡量）；EV：实际完成了多少（用预算衡量）；AC：实际花了多少钱。'},
+ {cat:'挣值计算',q:'挣值管理中，EV（挣值）的正确理解是（　）。',opts:['实际完成工作的预算价值','实际花费的成本','计划完成工作的预算价值','项目完工总预算'],ans:0,exp:'EV 是"实际完成的工作量 × 预算单价"，是衡量实际产出绩效的核心指标；AC 是实际花费，PV 是计划应完成。'},
+ {cat:'挣值计算',q:'成本偏差 CV 的计算公式是（　）。',opts:['CV=EV-PV','CV=EV-AC','CV=AC-PV','CV=BAC-EV'],ans:1,exp:'CV=EV-AC。EV＞AC 为正 → 成本节约；EV＜AC 为负 → 成本超支。记法：挣的和花的比。'},
+ {cat:'挣值计算',q:'进度偏差 SV 的计算公式是（　）。',opts:['SV=EV-AC','SV=AC-PV','SV=EV-PV','SV=PV-EV'],ans:2,exp:'SV=EV-PV。EV＞PV 为正 → 进度超前；EV＜PV 为负 → 进度落后。记法：干了的和计划干的比。'},
+ {cat:'挣值计算',q:'成本绩效指数 CPI 的计算公式是（　）。',opts:['CPI=EV/AC','CPI=AC/EV','CPI=EV/PV','CPI=PV/EV'],ans:0,exp:'CPI=EV/AC。CPI＞1 成本效率高（节约）；CPI＜1 成本超支。挣值三指数分子都是 EV：CPI=EV/AC，SPI=EV/PV。'},
+ {cat:'挣值计算',q:'进度绩效指数 SPI 的计算公式是（　）。',opts:['SPI=EV/AC','SPI=PV/EV','SPI=AC/EV','SPI=EV/PV'],ans:3,exp:'SPI=EV/PV。SPI＞1 进度超前；SPI＜1 进度落后。与 CPI 的区别只在分母：比的是 PV（计划）而非 AC（实际花费）。'},
+ {cat:'挣值计算',q:'若 CV=-5 万元，表示（　）。',opts:['成本节约 5 万元','成本超支 5 万元','进度落后 5 万元','进度超前 5 万元'],ans:1,exp:'CV=EV-AC＜0，实际花费 AC 超过挣值 EV，即成本超支 5 万元。偏差为负 = 坏消息（超支/落后）。'},
+ {cat:'挣值计算',q:'若 SV=+8 万元，表示（　）。',opts:['进度超前，挣得的工作量比计划多 8 万元','进度落后 8 万元','成本节约 8 万元','成本超支 8 万元'],ans:0,exp:'SV=EV-PV＞0，实际完成的工作（EV）多于计划应完成的（PV），进度超前。SV 与成本无关。'},
+ {cat:'挣值计算',q:'某项目总预算 BAC=100 万元，截至检查点已完成 40% 的工作量，则 EV 为（　）。',opts:['40 万元','60 万元','100 万元','25 万元'],ans:0,exp:'EV=BAC×实际完成百分比=100×40%=40 万元。挣值永远用"预算"衡量完成的工作。'},
+ {cat:'挣值计算',q:'某项目 PV=50 万元，EV=60 万元，则 SV 为（　），项目进度（　）。',opts:['-10 万元，落后','+10 万元，超前','+10 万元，落后','+110 万元，超前'],ans:1,exp:'SV=EV-PV=60-50=+10 万元＞0，进度超前：实际干的价值比计划多 10 万元。'},
+ {cat:'挣值计算',q:'某项目 EV=70 万元，AC=80 万元，则 CV 为（　），项目成本（　）。',opts:['+10 万元，节约','-10 万元，超支','+10 万元，超前','-10 万元，落后'],ans:1,exp:'CV=EV-AC=70-80=-10 万元＜0，花出去的（80）比挣回来的（70）多，成本超支 10 万元。'},
+ {cat:'挣值计算',q:'某项目 EV=90 万元，PV=100 万元，则 SPI 为（　）。',opts:['1.11','0.9','0.1','1.1'],ans:1,exp:'SPI=EV/PV=90/100=0.9＜1，实际进度只达到计划的 90%，进度落后。'},
+ {cat:'挣值计算',q:'某项目 EV=60 万元，AC=75 万元，则 CPI 为（　）。',opts:['1.25','0.15','0.8','1.15'],ans:2,exp:'CPI=EV/AC=60/75=0.8＜1，每投入 1 元只产出 0.8 元价值，成本超支。'},
+ {cat:'挣值计算',q:'CPI=0.5 的直观含义是（　）。',opts:['预算只花了一半','每投入 1 元只完成 0.5 元价值的工作','进度只完成一半','成本效率正常'],ans:1,exp:'CPI=EV/AC=0.5：成本效率只有 50%，每花 2 元才挣出 1 元价值。超支幅度为 1/CPI-1=100%，比"超支 50%"严重得多，注意区分。'},
+ {cat:'挣值计算',q:'SPI=1.2 的直观含义是（　）。',opts:['实际进度速度是计划的 120%，进度超前','成本节约 20%','预算超了 20%','工作量超额完成一倍'],ans:0,exp:'SPI=EV/PV=1.2：实际挣得的价值是计划的 1.2 倍，进度超前 20%。与成本无关。'},
+ {cat:'挣值计算',q:'某项目 CPI=0.9，SPI=1.15。当前项目状态是（　）。',opts:['进度落后且成本超支','进度超前但成本超支','进度落后但成本节约','进度超前且成本节约'],ans:1,exp:'CPI=0.9＜1 → 成本超支；SPI=1.15＞1 → 进度超前。两个指数独立衡量两个维度，必须分开判断。'},
+ {cat:'挣值计算',q:'某项目 CPI=1.1，SPI=0.85。当前项目状态是（　）。',opts:['进度落后且成本超支','进度超前但成本超支','进度落后但成本节约','进度超前且成本节约'],ans:2,exp:'CPI=1.1＞1 → 成本节约；SPI=0.85＜1 → 进度落后。典型情形：花钱效率高但速度慢。'},
+ {cat:'挣值计算',q:'非典型偏差情况下，完工尚需估算 ETC 的公式是（　）。',opts:['ETC=(BAC-EV)/CPI','ETC=BAC-EV','ETC=BAC/CPI','ETC=AC+PV'],ans:1,exp:'非典型偏差=当前偏差是偶发的、不会再发生，剩余工作按原预算完成：ETC=BAC-EV。典型偏差则用 ETC=(BAC-EV)/CPI。'},
+ {cat:'挣值计算',q:'某项目 BAC=200 万元，EV=80 万元，AC=100 万元（CPI=0.8）。若当前偏差为典型偏差，则 ETC 为（　）。',opts:['120 万元','150 万元','200 万元','100 万元'],ans:1,exp:'典型偏差：ETC=(BAC-EV)/CPI=(200-80)/0.8=120/0.8=150 万元。含义：剩余工作按当前成本效率（0.8）继续，还需 150 万元。'},
+ {cat:'挣值计算',q:'接上题（AC=100 万元，ETC=150 万元），完工估算 EAC 为（　）。',opts:['250 万元','220 万元','280 万元','200 万元'],ans:0,exp:'EAC=AC+ETC=100+150=250 万元。也可用典型偏差速算公式 EAC=BAC/CPI=200/0.8=250 万元，结果一致。'},
+ {cat:'挣值计算',q:'典型偏差情况下，完工估算 EAC 的速算公式是（　）。',opts:['EAC=BAC/CPI','EAC=AC+BAC-EV','EAC=BAC×CPI','EAC=BAC-EV'],ans:0,exp:'典型偏差时 EAC=AC+(BAC-EV)/CPI，因 AC=EV/CPI，化简后即 EAC=BAC/CPI——按当前成本效率干完全部工作的预计总成本。'},
+ {cat:'挣值计算',q:'某项目 BAC=200 万元，EAC=250 万元，则完工偏差 VAC 为（　），表示（　）。',opts:['+50 万元，预计节约 50 万元','-50 万元，预计超支 50 万元','+50 万元，进度超前 50 万元','-250 万元，严重超支'],ans:1,exp:'VAC=BAC-EAC=200-250=-50 万元＜0，预计完工时将超支 50 万元。VAC 是完工预警指标，负值越大越要及早纠偏。'},
+ {cat:'挣值计算',q:'完工尚需绩效指数 TCPI 的计算公式是（　）。',opts:['TCPI=(BAC-EV)/(BAC-AC)','TCPI=(BAC-EV)/(EAC-AC)','TCPI=EV/AC','TCPI=(BAC-AC)/(BAC-EV)'],ans:0,exp:'TCPI=(BAC-EV)/(BAC-AC)：分子是剩余工作（按预算），分母是剩余资金。含义：为按原预算 BAC 完成，剩余工作的成本效率必须达到的水平。'},
+ {cat:'挣值计算',q:'某项目 BAC=200 万元，EV=80 万元，AC=110 万元，则 TCPI 约为（　）。',opts:['0.73','1.33','1.1','0.8'],ans:1,exp:'TCPI=(BAC-EV)/(BAC-AC)=(200-80)/(200-110)=120/90≈1.33：剩余工作必须达到 1.33 的成本效率（远高于当前的 80/110≈0.73），按原预算完工希望渺茫。'},
+ {cat:'挣值计算',q:'TCPI=1.33＞1 对项目的含义是（　）。',opts:['项目肯定能按 BAC 完成','剩余工作的成本效率要求远高于目前水平，按原预算完成困难','成本已节约 33%','进度超前 33%'],ans:1,exp:'TCPI＞1：为在 BAC 内干完剩余工作，后续效率必须显著提升。TCPI 越大（尤其＞1.1），按原预算完工越不现实，应考虑改用 EAC 重新计算。'},
+ {cat:'挣值计算',q:'某项目 EV=45 万元，BAC=180 万元，则项目实际完成百分比为（　）。',opts:['45%','25%','40%','75%'],ans:1,exp:'完成率=EV/BAC=45/180=25%。挣值法中"完成百分比"一律用 EV÷BAC，不能用 AC÷BAC（那是花钱百分比）。'},
+ {cat:'挣值计算',q:'某项目 PV=120 万元，EV=100 万元，AC=90 万元。项目当前状态是（　）。',opts:['进度超前、成本超支','进度落后、成本节约','进度超前、成本节约','进度落后、成本超支'],ans:1,exp:'SV=100-120=-20＜0 进度落后；CV=100-90=+10＞0 成本节约。CPI=100/90≈1.11，SPI=100/120≈0.83。'}
 ];
+QBANK.push(
+ {cat:'挣值计算',q:'某项目 PV=200 万元，EV=180 万元，AC=150 万元。关于当前状态，下列说法正确的是（　）。',opts:['CPI≈1.2 成本节约，SPI≈0.9 进度落后','CPI≈0.9 成本超支，SPI≈1.2 进度超前','CPI≈1.2 进度超前，SPI≈0.9 成本超支','CPI≈0.75，进度落后且成本超支'],ans:0,exp:'CPI=EV/AC=180/150=1.2＞1 成本节约；SPI=EV/PV=180/200=0.9＜1 进度落后 10%。'},
+ {cat:'挣值计算',q:'项目完工（全部工作完成）时，EV 的值等于（　）。',opts:['0','AC','BAC','PV'],ans:2,exp:'完工时 100% 工作完成，EV=BAC×100%=BAC。此时若 AC 也等于 BAC 则 CPI=1；AC＞BAC 即超支。'},
+ {cat:'挣值计算',q:'项目执行到中期，SPI 连续三个月小于 0.9 且呈下降趋势。最应优先采取的措施是（　）。',opts:['降低质量标准以加快进度','分析原因，采取赶工或快速跟进等进度压缩措施','等待其自然回升','立即增加预算'],ans:1,exp:'SPI 持续偏低说明落后在扩大。标准应对：先做原因分析（资源不足？估算偏低？范围蔓延？），再选赶工（加资源、增成本）或快速跟进（并行活动、增风险）等纠偏措施。'},
+ {cat:'挣值计算',q:'项目执行中 CPI 持续小于 1 且逐月恶化，作为项目经理首先应该（　）。',opts:['直接砍掉部分工作范围','分析成本超支的根本原因，评估是否纠偏或调整 EAC','宣布项目失败','向管理层隐瞒偏差'],ans:1,exp:'成本绩效恶化的第一步永远是原因分析（估算失误？效率低？范围增加？价格变化？），再决定纠偏措施或更新 EAC/基准。隐瞒和砍范围都不是规范做法。'},
+ {cat:'挣值计算',q:'关于挣值法，下列说法错误的是（　）。',opts:['EV 是用预算衡量实际完成的工作','CPI 与 SPI 的分子都是 EV','AC 越大说明项目绩效越差','VAC=BAC-EAC 反映预计的完工偏差'],ans:2,exp:'AC 只是实际花费，必须与 EV 对比（CPI=EV/AC）才能说明绩效——AC 大但 EV 更大（CPI＞1）反而是好事，单看 AC 无意义，故 C 错误。'}
+);
 var quiz={on:false,list:[],answers:[],i:0,correct:0,picked:null};
-function startQuiz(){
-  var pool=QBANK.slice(); var list=[];
+var quizCat='all';
+function startQuiz(cat){
+  quizCat=cat||'all';
+  var pool=QBANK.filter(function(q){ return quizCat==='all'||q.cat===quizCat; });
+  if(!pool.length) pool=QBANK.slice();
+  var list=[];
   var n=Math.min(10,pool.length);
   while(list.length<n){ var idx=Math.floor(Math.random()*pool.length); list.push(pool.splice(idx,1)[0]); }
   quiz={on:true,list:list,answers:[],i:0,correct:0,picked:null};
   curStudy=null;
   var tag=document.getElementById('sm-tag');
-  tag.textContent='刷题'; tag.style.background='var(--primary-soft)'; tag.style.color='var(--primary)';
+  tag.textContent=quizCat==='all'?'刷题':'专项·'+quizCat;
+  tag.style.background='var(--primary-soft)'; tag.style.color='var(--primary)';
   document.getElementById('sm-done-btn').style.display='none';
   document.getElementById('study-modal').classList.add('show');
   document.body.style.overflow='hidden';
@@ -1383,8 +1422,9 @@ function renderMistakes(){
     '<div class="page-head"><div><h1>错题本</h1><div class="sub">真题驱动复习 · 错题集中复盘 · 状态流转：未掌握 → 复习中 → 已掌握</div></div></div>'
     +'<div class="card" style="border-left:3px solid var(--primary)"><h3>刷题练习<span class="r">题库 '+QBANK.length+' 题 · 每轮随机 10 题</span></h3>'
     +'<div style="font-size:13px;color:#3b3f52;margin-bottom:10px">覆盖十大管理、挣值计算、网络图、法律法规、信息技术、案例分析。即时判分+解析，<b>答错的题自动收进错题本</b>。</div>'
-    +'<div class="form-row"><button class="btn" onclick="startQuiz()">开始刷题（10 题）</button>'
-    +'<span style="font-size:12px;color:var(--muted)">建议每天 1-2 轮，配合计划打卡使用</span></div></div>'
+    +'<div class="form-row"><button class="btn" onclick="startQuiz(\'all\')">综合练习（10 题）</button>'
+    +'<button class="btn btn-light" onclick="startQuiz(\'挣值计算\')">挣值专项（10 题）</button>'
+    +'<span style="font-size:12px;color:var(--muted)">建议每天 1-2 轮，挣值是案例分析必考点</span></div></div>'
     +'<div class="card form-grid" style="margin-top:14px">'
     +'<textarea id="q-title" placeholder="题目 / 考点描述（如：挣值计算 —— PV、AC 已知求 CV、SPI）"></textarea>'
     +'<div class="form-row"><select id="q-cat">'+QCATS.map(function(c){ return '<option>'+c+'</option>'; }).join('')+'</select>'
