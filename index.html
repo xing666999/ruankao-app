@@ -1537,8 +1537,9 @@ function renderReading(){
 var EN_STATUS=['生词','复习中','已掌握'];
 var flashOpen=null;
 function ensureEnglish(){
-  if(!state.english||!state.english.words) state.english={words:[],days:[]};
+  if(!state.english||!state.english.words) state.english={words:[],days:[],logs:[]};
   if(!state.english.days) state.english.days=[];
+  if(!state.english.logs) state.english.logs=[];
 }
 function markEnglishDay(){
   ensureEnglish();
@@ -1593,17 +1594,52 @@ function wordStatusCycle(id){
   w.status=(w.status+1)%3;
   save(LS.english,state.english); renderAll();
 }
+
+/* 英语训练记录：听力/口语/视频/阅读 */
+var enSub='words';
+var EN_TITLES={listen:'听力',speak:'口语',video:'视频',read:'阅读'};
+var EN_SUBS=[['words','🔤 生词'],['listen','🎧 听力'],['speak','🗣 口语'],['video','🎬 视频'],['read','📖 阅读']];
+function setEnSub(s){ enSub=s; flashOpen=null; renderEnglish(); }
+function addEnLog(type){
+  var t=(document.getElementById('el-title').value||'').trim();
+  if(!t){ alert('请填写名称'); return; }
+  ensureEnglish();
+  var m=parseInt(document.getElementById('el-min').value,10)||0;
+  var link=(type==='video'&&document.getElementById('el-link'))?(document.getElementById('el-link').value||'').trim():'';
+  state.english.logs.push({id:'l'+Date.now()+Math.floor(Math.random()*1000),type:type,title:t,minutes:m,date:todayKey(),note:(document.getElementById('el-note').value||'').trim(),link:link});
+  markEnglishDay();
+  save(LS.english,state.english); renderAll();
+}
+function delEnLog(id){
+  if(!confirm('删除这条记录？')) return;
+  state.english.logs=state.english.logs.filter(function(x){ return x.id!==id; });
+  save(LS.english,state.english); renderAll();
+}
 function renderEnglish(){
   ensureEnglish();
   var tk=todayKey();
   var ws=state.english.words;
+  var sk=englishStreak();
+  var todayActive=(state.english.days.indexOf(tk)>=0);
+  var wsKey=weekStartKey();
+  var wkMin={listen:0,speak:0,video:0,read:0};
+  state.english.logs.forEach(function(x){ if(x.date>=wsKey&&wkMin[x.type]!=null) wkMin[x.type]+=(x.minutes||0); });
+
+  var subNav='<div class="life-nav">'+EN_SUBS.map(function(it){
+    return '<button class="pill'+(enSub===it[0]?' pill-on':'')+'" onclick="setEnSub(\''+it[0]+'\')">'+it[1]+'</button>';
+  }).join('')+'</div>';
+
+  var head='<div class="page-head"><div><h1>英语</h1><div class="sub">生词 · 听力 · 口语 · 视频 · 阅读 · 一站练</div></div></div>'
+    +lifeNav('english')
+    +subNav
+    +'<div class="stat-chips"><span>连续学习 <b>'+sk+'</b> 天</span><span>今日 <b style="color:'+(todayActive?'var(--ok)':'var(--muted)')+'">'+(todayActive?'已打卡 ✓':'未打卡')+'</b></span><span>本周：听 '+fmtMin(wkMin.listen)+' · 说 '+fmtMin(wkMin.speak)+' · 视频 '+fmtMin(wkMin.video)+' · 读 '+fmtMin(wkMin.read)+'</span></div>';
+
+  document.getElementById('tab-english').innerHTML=head+(enSub==='words'?renderEnWords(ws):renderEnLogPage(enSub));
+}
+function renderEnWords(ws){
   var c0=ws.filter(function(x){ return x.status===0; }).length;
   var c1=ws.filter(function(x){ return x.status===1; }).length;
   var c2=ws.filter(function(x){ return x.status===2; }).length;
-  var sk=englishStreak();
-
-  var todayAdded=ws.some(function(x){ return x.date===tk; });
-  var todayReviewed=state.english.days.indexOf(tk)>=0;
 
   var queue=ws.filter(function(x){ return x.status<2; }).sort(function(a,b){
     if(a.status!==b.status) return a.status-b.status;
@@ -1635,10 +1671,7 @@ function renderEnglish(){
       +'<button class="del" onclick="delWord(\''+w.id+'\')">✕</button></div>';
   }).join(''):'<div class="empty">'+(ws.length?'该分类下暂无单词':'还没有单词')+'</div>';
 
-  document.getElementById('tab-english').innerHTML =
-    '<div class="page-head"><div><h1>英语</h1><div class="sub">生词本 · 卡片自测 · 今日 '+(todayReviewed?'已打卡 ✓':'尚未打卡')+'</div></div></div>'
-    +lifeNav('english')
-    +'<div class="stat-chips"><span>词库 <b>'+ws.length+'</b></span><span>生词 <b style="color:var(--primary)">'+c0+'</b></span><span>复习中 <b style="color:var(--warn)">'+c1+'</b></span><span>已掌握 <b style="color:var(--skill)">'+c2+'</b></span><span>连续学习 <b>'+sk+'</b> 天</span></div>'
+  return '<div class="stat-chips"><span>词库 <b>'+ws.length+'</b></span><span>生词 <b style="color:var(--primary)">'+c0+'</b></span><span>复习中 <b style="color:var(--warn)">'+c1+'</b></span><span>已掌握 <b style="color:var(--skill)">'+c2+'</b></span></div>'
     +'<div class="card"><h3>今日复习<span class="r">'+queue.length+' 个待复习</span></h3>'+queueHtml+'</div>'
     +'<div class="card form-grid" style="margin-top:14px">'
     +'<div class="form-row"><input id="en-word" placeholder="单词（如 abandon）" style="flex:1;min-width:120px">'
@@ -1648,6 +1681,29 @@ function renderEnglish(){
     +'<input id="en-ex" placeholder="例句（可选）"></div>'
     +'<div class="filter-row"><select id="en-filter" onchange="renderEnglish()"><option value="all">全部单词</option><option value="0"'+(ft==='0'?' selected':'')+'>生词</option><option value="1"'+(ft==='1'?' selected':'')+'>复习中</option><option value="2"'+(ft==='2'?' selected':'')+'>已掌握</option></select></div>'
     +'<div class="card">'+rows+'</div>';
+}
+function renderEnLogPage(type){
+  ensureEnglish();
+  var logs=state.english.logs.filter(function(x){ return x.type===type; }).sort(function(a,b){ return a.id<b.id?1:-1; }).slice(0,50);
+  var totMin=state.english.logs.filter(function(x){ return x.type===type; }).reduce(function(s,x){ return s+(x.minutes||0); },0);
+  var phTitle={listen:'听力材料（如 BBC 6 Minute English）',speak:'口语主题（如 自我介绍 / 跟读材料）',video:'视频标题',read:'文章标题 / 来源'}[type];
+  var linkInput=(type==='video')?'<input id="el-link" placeholder="视频链接（可选，https://…）">':'';
+  var rows=logs.length?logs.map(function(x){
+    var t=x.link?'<a href="'+esc(x.link)+'" target="_blank" rel="noopener" style="color:var(--primary);font-weight:600">'+esc(x.title)+'</a>':'<span style="font-weight:600">'+esc(x.title)+'</span>';
+    return '<div class="rec-item"><span class="d">'+x.date+'</span>'
+      +'<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+t+(x.note?' <span style="color:var(--muted)">· '+esc(x.note)+'</span>':'')+'</span>'
+      +(x.minutes?'<span class="h">'+x.minutes+' 分钟</span>':'')
+      +'<button class="del" onclick="delEnLog(\''+x.id+'\')">✕</button></div>';
+  }).join(''):'<div class="empty">还没有记录，练完随手记一笔</div>';
+
+  return '<div class="card form-grid">'
+    +'<input id="el-title" placeholder="'+phTitle+'">'
+    +linkInput
+    +'<div class="form-row"><input id="el-min" type="number" min="0" placeholder="时长（分钟，可选）" style="width:150px">'
+    +'<button class="btn" onclick="addEnLog(\''+type+'\')">记一笔</button></div>'
+    +'<input id="el-note" placeholder="笔记 / 心得（可选）"></div>'
+    +'<div class="stat-chips"><span>累计 <b>'+(state.english.logs.filter(function(x){ return x.type===type; })).length+'</b> 次 · <b>'+fmtMin(totMin)+'</b></span></div>'
+    +'<div class="card"><h3>'+EN_TITLES[type]+'记录<span class="r">最近 50 条</span></h3>'+rows+'</div>';
 }
 
 /* ---------- 我的项目 ---------- */
