@@ -285,6 +285,11 @@ td{padding:9px 10px;border-bottom:1px solid #f0f1f7}
 .life-card .lc-title{font-size:14.5px;font-weight:700;flex:1}
 .life-card .lc-note{font-size:13px;color:#3b3f52;margin:4px 0 10px;white-space:pre-wrap;word-break:break-word}
 .book-item{display:flex;flex-direction:column;gap:8px;padding:12px 0;border-bottom:1px solid #f0f1f7}
+.flash-card{border:1px solid #dfe3fd;border-radius:12px;padding:13px 16px;background:#fafbff;cursor:pointer;margin-bottom:8px}
+.flash-card .w{font-size:16.5px;font-weight:700;color:var(--primary)}
+.flash-card .ipa{font-size:12.5px;color:var(--muted);margin-left:8px;font-weight:400}
+.flash-card .a{margin-top:6px;font-size:13.5px;color:#333a4e}
+.flash-card .ex{margin-top:5px;font-size:12.5px;color:var(--muted);font-style:italic}
 .book-item:last-child{border-bottom:none}
 .book-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .book-emoji{width:38px;height:38px;border-radius:10px;background:var(--book-soft);color:var(--book);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex:none}
@@ -408,6 +413,10 @@ td{padding:9px 10px;border-bottom:1px solid #f0f1f7}
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
         <span>读书</span>
       </button>
+      <button class="nav-btn" data-tab="english" onclick="switchTab('english')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+        <span>英语</span>
+      </button>
       <div class="nav-group-label">项目</div>
       <button class="nav-btn" data-tab="projects" onclick="switchTab('projects')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/><path d="M9 13l2 2 4-4"/></svg>
@@ -439,6 +448,7 @@ td{padding:9px 10px;border-bottom:1px solid #f0f1f7}
     <section id="tab-notes" class="tab-pane"></section>
     <section id="tab-podcast" class="tab-pane"></section>
     <section id="tab-reading" class="tab-pane"></section>
+    <section id="tab-english" class="tab-pane"></section>
     <section id="tab-projects" class="tab-pane"></section>
   </main>
 </div>
@@ -469,6 +479,10 @@ td{padding:9px 10px;border-bottom:1px solid #f0f1f7}
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
     播客
   </div>
+  <div class="more-item" onclick="toggleMore(false);switchTab('english')">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+    英语
+  </div>
   <div class="more-item" onclick="toggleMore(false);switchTab('notes')">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
     随记
@@ -481,7 +495,7 @@ var LS = {
   tasks:'rkp_tasks_v1', hours:'rkp_hours_v1', mistakes:'rkp_mistakes_v1',
   msdone:'rkp_msdone_v1', settings:'rkp_settings_v1',
   sport:'rkp_sport_v1', notes:'rkp_notes_v1', podcast:'rkp_podcast_v1',
-  reading:'rkp_reading_v1', projects:'rkp_projects_v1'
+  reading:'rkp_reading_v1', projects:'rkp_projects_v1', english:'rkp_english_v1'
 };
 function load(k,def){ try{ var v=localStorage.getItem(k); return v?JSON.parse(v):def; }catch(e){ return def; } }
 function save(k,v){ localStorage.setItem(k,JSON.stringify(v)); }
@@ -504,7 +518,8 @@ var state = {
   notes: load(LS.notes,[]),
   podcast: load(LS.podcast,[]),
   reading: load(LS.reading,[]),
-  projects: load(LS.projects,null)||PROJECT_SEED
+  projects: load(LS.projects,null)||PROJECT_SEED,
+  english: load(LS.english,null)||{words:[],days:[]}
 };
 
 /* ================= 学习计划数据（来源：8 个月备考规划） ================= */
@@ -1283,7 +1298,7 @@ function toggleMore(show){
 
 /* ================= 生活板块 ================= */
 function lifeNav(active){
-  var items=[['sport','🏃 运动'],['notes','✏️ 随记'],['podcast','🎧 播客'],['reading','📚 读书']];
+  var items=[['sport','🏃 运动'],['notes','✏️ 随记'],['podcast','🎧 播客'],['reading','📚 读书'],['english','🔤 英语']];
   return '<div class="life-nav">'+items.map(function(it){
     return '<button class="pill'+(active===it[0]?' pill-on':'')+'" onclick="switchTab(\''+it[0]+'\')">'+it[1]+'</button>';
   }).join('')+'</div>';
@@ -1518,6 +1533,123 @@ function renderReading(){
     +'<div class="card">'+cards+'</div>';
 }
 
+/* ---------- 英语 ---------- */
+var EN_STATUS=['生词','复习中','已掌握'];
+var flashOpen=null;
+function ensureEnglish(){
+  if(!state.english||!state.english.words) state.english={words:[],days:[]};
+  if(!state.english.days) state.english.days=[];
+}
+function markEnglishDay(){
+  ensureEnglish();
+  var tk=todayKey();
+  if(state.english.days.indexOf(tk)<0) state.english.days.push(tk);
+}
+function englishStreak(){
+  ensureEnglish();
+  var set={}; state.english.days.forEach(function(k){ set[k]=1; });
+  var d=new Date(); var n=0;
+  if(!set[fmtKey(d)]) d.setDate(d.getDate()-1);
+  while(set[fmtKey(d)]){ n++; d.setDate(d.getDate()-1); }
+  return n;
+}
+function addWord(){
+  var w=(document.getElementById('en-word').value||'').trim();
+  var m=(document.getElementById('en-mean').value||'').trim();
+  if(!w||!m){ alert('单词和释义都要填'); return; }
+  ensureEnglish();
+  var dup=state.english.words.some(function(x){ return x.word.toLowerCase()===w.toLowerCase()&&x.status!==2; });
+  if(dup && !confirm('这个词已在词库里，仍然添加？')) return;
+  state.english.words.push({id:'e'+Date.now()+Math.floor(Math.random()*1000),word:w,mean:m,
+    ipa:(document.getElementById('en-ipa').value||'').trim(),ex:(document.getElementById('en-ex').value||'').trim(),
+    status:0,date:todayKey(),lastReview:''});
+  markEnglishDay();
+  save(LS.english,state.english); renderAll();
+}
+function delWord(id){
+  if(!confirm('删除这个单词？')) return;
+  state.english.words=state.english.words.filter(function(x){ return x.id!==id; });
+  save(LS.english,state.english); renderAll();
+}
+function flipWord(id){ flashOpen=(flashOpen===id?null:id); renderEnglish(); }
+function wordKnown(id){
+  var w=state.english.words.find(function(x){ return x.id===id; });
+  if(!w) return;
+  w.status=Math.min(2,w.status+1); w.lastReview=todayKey();
+  markEnglishDay();
+  save(LS.english,state.english); renderAll();
+}
+function wordAgain(id){
+  var w=state.english.words.find(function(x){ return x.id===id; });
+  if(!w) return;
+  if(w.status===2) w.status=1;
+  w.lastReview=todayKey();
+  markEnglishDay();
+  save(LS.english,state.english); renderAll();
+}
+function wordStatusCycle(id){
+  var w=state.english.words.find(function(x){ return x.id===id; });
+  if(!w) return;
+  w.status=(w.status+1)%3;
+  save(LS.english,state.english); renderAll();
+}
+function renderEnglish(){
+  ensureEnglish();
+  var tk=todayKey();
+  var ws=state.english.words;
+  var c0=ws.filter(function(x){ return x.status===0; }).length;
+  var c1=ws.filter(function(x){ return x.status===1; }).length;
+  var c2=ws.filter(function(x){ return x.status===2; }).length;
+  var sk=englishStreak();
+
+  var todayAdded=ws.some(function(x){ return x.date===tk; });
+  var todayReviewed=state.english.days.indexOf(tk)>=0;
+
+  var queue=ws.filter(function(x){ return x.status<2; }).sort(function(a,b){
+    if(a.status!==b.status) return a.status-b.status;
+    if((a.lastReview||'')!==(b.lastReview||'')) return (a.lastReview||'')<(b.lastReview||'')?-1:1;
+    return a.id<b.id?-1:1;
+  });
+  var queueHtml=queue.length?queue.map(function(w){
+    var open=(flashOpen===w.id);
+    return '<div class="flash-card" onclick="flipWord(\''+w.id+'\')">'
+      +'<span class="w">'+esc(w.word)+'</span>'+(w.ipa?'<span class="ipa">'+esc(w.ipa)+'</span>':'')
+      +(open
+        ?'<div class="a">'+esc(w.mean)+'</div>'
+          +(w.ex?'<div class="ex">'+esc(w.ex)+'</div>':'')
+          +'<div style="display:flex;gap:8px;margin-top:10px" onclick="event.stopPropagation()">'
+          +'<button class="btn btn-sm" onclick="wordKnown(\''+w.id+'\')">认识 ✓</button>'
+          +'<button class="btn btn-light btn-sm" onclick="wordAgain(\''+w.id+'\')">没记住</button></div>'
+        :'<div class="a" style="color:var(--muted);font-size:12.5px">点击卡片查看释义</div>')
+      +'</div>';
+  }).join(''):'<div class="empty">'+(ws.length?'所有单词都已掌握，去添加新词吧':'词库还是空的，先在下面添加生词')+'</div>';
+
+  var ft=document.getElementById('en-filter')?document.getElementById('en-filter').value:'all';
+  var list=ws.filter(function(x){ return ft==='all'||String(x.status)===ft; }).sort(function(a,b){ return a.id<b.id?1:-1; });
+  var rows=list.length?list.map(function(w){
+    var stColor=w.status===2?'var(--skill)':(w.status===1?'var(--warn)':'var(--primary)');
+    var stBg=w.status===2?'var(--skill-soft)':(w.status===1?'var(--port-soft)':'var(--primary-soft)');
+    return '<div class="rec-item"><span style="font-weight:600;min-width:90px">'+esc(w.word)+'</span>'
+      +'<span style="flex:1;color:#3b3f52;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(w.mean)+'</span>'
+      +'<span class="tag-chip" style="background:'+stBg+';color:'+stColor+';cursor:pointer" title="点击切换状态" onclick="wordStatusCycle(\''+w.id+'\')">'+EN_STATUS[w.status]+'</span>'
+      +'<button class="del" onclick="delWord(\''+w.id+'\')">✕</button></div>';
+  }).join(''):'<div class="empty">'+(ws.length?'该分类下暂无单词':'还没有单词')+'</div>';
+
+  document.getElementById('tab-english').innerHTML =
+    '<div class="page-head"><div><h1>英语</h1><div class="sub">生词本 · 卡片自测 · 今日 '+(todayReviewed?'已打卡 ✓':'尚未打卡')+'</div></div></div>'
+    +lifeNav('english')
+    +'<div class="stat-chips"><span>词库 <b>'+ws.length+'</b></span><span>生词 <b style="color:var(--primary)">'+c0+'</b></span><span>复习中 <b style="color:var(--warn)">'+c1+'</b></span><span>已掌握 <b style="color:var(--skill)">'+c2+'</b></span><span>连续学习 <b>'+sk+'</b> 天</span></div>'
+    +'<div class="card"><h3>今日复习<span class="r">'+queue.length+' 个待复习</span></h3>'+queueHtml+'</div>'
+    +'<div class="card form-grid" style="margin-top:14px">'
+    +'<div class="form-row"><input id="en-word" placeholder="单词（如 abandon）" style="flex:1;min-width:120px">'
+    +'<input id="en-ipa" placeholder="音标（可选）" style="width:130px"></div>'
+    +'<div class="form-row"><input id="en-mean" placeholder="释义（如 v. 放弃）" style="flex:1;min-width:120px">'
+    +'<button class="btn" onclick="addWord()">加入生词本</button></div>'
+    +'<input id="en-ex" placeholder="例句（可选）"></div>'
+    +'<div class="filter-row"><select id="en-filter" onchange="renderEnglish()"><option value="all">全部单词</option><option value="0"'+(ft==='0'?' selected':'')+'>生词</option><option value="1"'+(ft==='1'?' selected':'')+'>复习中</option><option value="2"'+(ft==='2'?' selected':'')+'>已掌握</option></select></div>'
+    +'<div class="card">'+rows+'</div>';
+}
+
 /* ---------- 我的项目 ---------- */
 var PROJ_STATUS=['构思中','进行中','已完成'];
 function addProject(){
@@ -1605,6 +1737,7 @@ function importData(input){
       if(d.podcast){ state.podcast=d.podcast; save(LS.podcast,state.podcast); }
       if(d.reading){ state.reading=d.reading; save(LS.reading,state.reading); }
       if(d.projects){ state.projects=d.projects; save(LS.projects,state.projects); }
+      if(d.english){ state.english=d.english; save(LS.english,state.english); }
       renderAll(); alert('导入成功');
     }catch(e){ alert('导入失败：文件格式不正确'); }
     input.value='';
@@ -1665,6 +1798,7 @@ function renderAll(){
   renderNotes();
   renderPodcast();
   renderReading();
+  renderEnglish();
   renderProjects();
   var sc=document.getElementById('side-count-n');
   if(sc){ var d=daysToExam(); sc.textContent=d>0?d:'--'; }
