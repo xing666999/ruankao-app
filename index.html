@@ -379,7 +379,7 @@ td{padding:9px 10px;border-bottom:1px solid #f0f1f7}
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
         <span>总览</span>
       </button>
-      <div class="nav-group-label">备考</div>
+      <div class="nav-group-label">学习</div>
       <button class="nav-btn m-pin" data-tab="plan" onclick="switchTab('plan')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9"/></svg>
         <span>计划打卡</span>
@@ -395,6 +395,10 @@ td{padding:9px 10px;border-bottom:1px solid #f0f1f7}
       <button class="nav-btn" data-tab="milestones" onclick="switchTab('milestones')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4"/><path d="M5 4h13l-3.5 4L18 12H5"/></svg>
         <span>里程碑</span>
+      </button>
+      <button class="nav-btn" data-tab="english" onclick="switchTab('english')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+        <span>英语</span>
       </button>
       <div class="nav-group-label">生活</div>
       <button class="nav-btn m-pin" data-tab="sport" onclick="switchTab('sport')">
@@ -412,10 +416,6 @@ td{padding:9px 10px;border-bottom:1px solid #f0f1f7}
       <button class="nav-btn" data-tab="reading" onclick="switchTab('reading')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
         <span>读书</span>
-      </button>
-      <button class="nav-btn" data-tab="english" onclick="switchTab('english')">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
-        <span>英语</span>
       </button>
       <div class="nav-group-label">项目</div>
       <button class="nav-btn" data-tab="projects" onclick="switchTab('projects')">
@@ -495,7 +495,8 @@ var LS = {
   tasks:'rkp_tasks_v1', hours:'rkp_hours_v1', mistakes:'rkp_mistakes_v1',
   msdone:'rkp_msdone_v1', settings:'rkp_settings_v1',
   sport:'rkp_sport_v1', notes:'rkp_notes_v1', podcast:'rkp_podcast_v1',
-  reading:'rkp_reading_v1', projects:'rkp_projects_v1', english:'rkp_english_v1'
+  reading:'rkp_reading_v1', projects:'rkp_projects_v1', english:'rkp_english_v1',
+  fitplan:'rkp_fitplan_v1'
 };
 function load(k,def){ try{ var v=localStorage.getItem(k); return v?JSON.parse(v):def; }catch(e){ return def; } }
 function save(k,v){ localStorage.setItem(k,JSON.stringify(v)); }
@@ -1305,6 +1306,44 @@ function lifeNav(active){
 }
 function fmtMin(m){ return m>=60 ? (m/60).toFixed(m%60?1:0)+' 小时' : m+' 分钟'; }
 
+/* ---------- 今日跟练 ---------- */
+var FIT_PARTS=[['full','全身'],['cardio','有氧燃脂'],['abs','腹部'],['legship','腿臀'],['arms','手臂肩背'],['stretch','拉伸']];
+var FIT_DURS=[15,20,30,45,60];
+var fitSel=null;
+function fitPlan(){
+  var t=todayKey();
+  if(!fitSel||fitSel.date!==t) fitSel=load(LS.fitplan,null);
+  if(!fitSel||fitSel.date!==t){ fitSel={date:t,parts:[],target:30,done:false}; }
+  return fitSel;
+}
+function fitSave(){ save(LS.fitplan,fitSel); }
+function fitTogglePart(p){
+  var pl=fitPlan(); var i=pl.parts.indexOf(p);
+  if(i>=0) pl.parts.splice(i,1); else pl.parts.push(p);
+  fitSave(); renderSport();
+}
+function fitSetDur(d){ var pl=fitPlan(); pl.target=d; fitSave(); renderSport(); }
+function fitVideoUrl(kw){ return 'https://search.bilibili.com/all?keyword='+encodeURIComponent(kw); }
+function fitPartName(id){ var f=FIT_PARTS.find(function(x){ return x[0]===id; }); return f?f[1]:id; }
+function fitVideos(pl){
+  var out=[];
+  pl.parts.forEach(function(p){
+    var n=fitPartName(p);
+    out.push({name:'帕梅拉 · '+n+' '+pl.target+'分钟',kw:'帕梅拉 '+pl.target+'分钟 '+n});
+    out.push({name:'周六野 · '+n+' '+pl.target+'分钟',kw:'周六野 '+pl.target+'分钟 '+n});
+  });
+  return out;
+}
+function fitDone(){
+  var pl=fitPlan();
+  if(pl.done){ alert('今天已经打卡过啦'); return; }
+  if(!pl.parts.length){ alert('先选择想练的部位'); return; }
+  var names=pl.parts.map(function(p){ return fitPartName(p); });
+  state.sport.push({id:'s'+Date.now()+Math.floor(Math.random()*1000),date:todayKey(),type:'跟练',minutes:pl.target,note:'今日跟练：'+names.join('、')});
+  pl.done=true; fitSave();
+  save(LS.sport,state.sport); renderAll();
+}
+
 /* ---------- 运动 ---------- */
 var SPORT_TYPES=['跑步','力量训练','骑行','游泳','球类','步行','瑜伽','拉伸','其他'];
 function weekStartKey(){
@@ -1346,10 +1385,21 @@ function renderSport(){
   var bars=days7.map(function(o){ var hp=o.m>0?Math.max(o.m/mx*100,10):4; var c=o.m>0?'var(--skill)':'#e8eaf2';
     return '<div style="flex:1;height:52px;display:flex;align-items:flex-end" title="'+o.k+' '+o.m+' 分钟"><i style="display:block;width:100%;height:'+hp+'%;background:'+c+';border-radius:4px"></i></div>'; }).join('');
 
+  var fitHtml=fitPlan();
+  var fitCard='<div class="card"><h3>今日跟练<span class="r">'+(fitHtml.done?'已完成 ✓':'目标 '+fitHtml.target+' 分钟')+'</span></h3>'
+    +'<div style="font-size:12.5px;color:var(--muted);margin-bottom:8px">① 想练哪里（可多选）</div>'
+    +'<div class="life-nav">'+FIT_PARTS.map(function(p){ return '<button class="pill'+(fitHtml.parts.indexOf(p[0])>=0?' pill-on':'')+'" onclick="fitTogglePart(\''+p[0]+'\')">'+p[1]+'</button>'; }).join('')+'</div>'
+    +'<div style="font-size:12.5px;color:var(--muted);margin:10px 0 0">② 今天练多久</div>'
+    +'<div class="life-nav" style="margin-top:6px">'+FIT_DURS.map(function(d){ return '<button class="pill'+(fitHtml.target===d?' pill-on':'')+'" onclick="fitSetDur('+d+')">'+d+' 分钟</button>'; }).join('')+'</div>'
+    +'<div style="font-size:12.5px;color:var(--muted);margin:12px 0 8px">③ 打开跟练视频（B站直达，挑一个跟着练）</div>'
+    +'<div class="life-nav">'+(fitHtml.parts.length?fitVideos(fitHtml).map(function(v){ return '<a class="pill" style="text-decoration:none" href="'+fitVideoUrl(v.kw)+'" target="_blank" rel="noopener">▶ '+esc(v.name)+'</a>'; }).join(''):'<span style="font-size:12.5px;color:var(--muted)">选好部位后，这里出现对应跟练视频</span>')+'</div>'
+    +'<button class="btn" style="margin-top:12px;width:100%" onclick="fitDone()">'+(fitHtml.done?'今日已打卡 ✓':'练完了 · 完成打卡（'+fitHtml.target+' 分钟）')+'</button></div>';
+
   document.getElementById('tab-sport').innerHTML =
     '<div class="page-head"><div><h1>运动</h1><div class="sub">记录每一次锻炼 · 今日 '+(todayDone?'已打卡 ✓':'尚未打卡')+'</div></div></div>'
     +lifeNav('sport')
-    +'<div class="card form-grid">'
+    +fitCard
+    +'<div class="card form-grid" style="margin-top:14px">'
     +'<div class="form-row"><select id="sp-type">'+SPORT_TYPES.map(function(t){ return '<option>'+t+'</option>'; }).join('')+'</select>'
     +'<input id="sp-min" type="number" min="1" placeholder="时长（分钟）" style="width:130px">'
     +'<input id="sp-note" placeholder="备注（可选，如 5 公里 / 胸+三头）" style="flex:1;min-width:180px">'
