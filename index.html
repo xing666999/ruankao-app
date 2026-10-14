@@ -335,6 +335,7 @@ td{padding:9px 10px;border-bottom:1px solid #f0f1f7}
 @media (max-width:760px){
   input,select,textarea{font-size:16px}
   .app{grid-template-columns:1fr}
+  body{overflow-x:hidden}
   .sidebar{position:fixed;bottom:0;left:0;right:0;top:auto;height:auto;flex-direction:row;padding:5px 8px calc(5px + env(safe-area-inset-bottom));background:#1e1b4b;z-index:50;box-shadow:0 -6px 24px rgba(20,20,60,.25)}
   .logo,.side-count,.side-foot{display:none}
   .nav-group-label{display:none}
@@ -342,17 +343,42 @@ td{padding:9px 10px;border-bottom:1px solid #f0f1f7}
   .nav .nav-btn{display:none}
   .nav .nav-btn.m-pin{display:flex;flex:1;flex-direction:column;gap:3px;padding:7px 2px;font-size:11px;border-radius:12px;justify-content:center}
   .nav-btn svg{width:21px;height:21px}
-  main{padding:16px 14px calc(100px + env(safe-area-inset-bottom))}
+  main{padding:14px 12px calc(100px + env(safe-area-inset-bottom))}
+  /* 页头与卡片更紧凑 */
+  .page-head{margin-bottom:14px;gap:8px}
+  .page-head h1{font-size:20px}
+  .page-head .sub{font-size:12px}
+  .card{padding:15px 13px}
   .btn{min-height:44px}
   .pill{padding:7px 14px}
-  .task{padding:11px 10px}
-  .month-head{padding:14px}
-  .month-body{padding:4px 14px 16px}
-  .card{padding:16px 14px}
-  .hero-num{font-size:38px}
+  .task{padding:11px 8px}
+  /* 总览：重点卡片单列铺满，数字卡两列 */
+  .hero-grid{grid-template-columns:1fr}
+  .hero-num{font-size:40px}
+  .stat-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .stat .v{font-size:21px}
   .ring-wrap{gap:12px}
-  .tl-item{grid-template-columns:70px 30px 1fr}
-  .timeline::before{left:84px}
+  /* 计划页：软考/实操并排改上下单列 */
+  .track-grid{grid-template-columns:1fr}
+  .month-head{padding:13px 14px;gap:10px}
+  .month-right{gap:8px}
+  .month-right .mini-progress{width:64px}
+  .month-body{padding:4px 14px 16px}
+  /* 图表矮一点省屏幕 */
+  .bars{height:118px;padding-top:14px}
+  /* 表格（月度汇总/学习内容）横向滑动不破版 */
+  table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  /* 里程碑时间轴收窄 */
+  .tl-item{grid-template-columns:66px 24px 1fr}
+  .timeline::before{left:77px}
+  .tl-date{font-size:11px}
+  /* 刷题选项加大触控 */
+  .quiz-opt{padding:12px 13px}
+  /* 记录列表更紧凑 */
+  .rec-item{gap:8px;font-size:12.5px}
+  .rec-item .d{width:80px}
+  /* 更多面板限高可滚动 */
+  #more-sheet{max-height:74vh;overflow-y:auto}
   #install-bar{left:12px;right:12px;width:auto;bottom:calc(86px + env(safe-area-inset-bottom))}
 }
 </style>
@@ -444,6 +470,7 @@ td{padding:9px 10px;border-bottom:1px solid #f0f1f7}
   </aside>
 
   <main>
+    <div id="data-tip" style="display:none;background:#fdf3e3;border:1px solid #f3ddb3;border-radius:12px;padding:11px 13px;margin-bottom:14px;font-size:12.5px;color:#92400e;line-height:1.8">📌 <b>找不到以前的记录？</b>数据按「设备 + 打开方式」分开保存在浏览器里：换手机/电脑、换浏览器、或「浏览器网址打开」与「主屏幕 App」两种方式打开，看到的都是各自独立的数据。请换回你平时用的打开方式，建议固定从主屏幕图标进入本应用。<button onclick="closeDataTip()" style="float:right;border:none;background:none;color:#92400e;font-size:15px;cursor:pointer;font-family:inherit;padding:0 2px">✕</button></div>
     <section id="tab-dashboard" class="tab-pane active"></section>
     <section id="tab-plan" class="tab-pane"></section>
     <section id="tab-time" class="tab-pane"></section>
@@ -504,7 +531,41 @@ var LS = {
   fitplan:'rkp_fitplan_v1'
 };
 function load(k,def){ try{ var v=localStorage.getItem(k); return v?JSON.parse(v):def; }catch(e){ return def; } }
-function save(k,v){ localStorage.setItem(k,JSON.stringify(v)); }
+function save(k,v){ localStorage.setItem(k,JSON.stringify(v)); if(k!==LS_SNAP) writeSnapshot(); }
+
+/* ================= 数据自动快照与恢复（防清空丢失） ================= */
+var LS_SNAP='rkp_snap_v1';
+var SNAP_KEYS=[LS.tasks,LS.hours,LS.mistakes,LS.msdone,LS.settings,LS.sport,LS.notes,LS.podcast,LS.reading,LS.projects,LS.english,LS.fitplan];
+function snapVal(v){ return v&&v!=='null'&&v!=='[]'&&v!=='{}'&&v!=='{"examDate":"2027-05-22"}'; }
+function writeSnapshot(){
+  try{
+    var has=false,data={};
+    SNAP_KEYS.forEach(function(k){ var v=localStorage.getItem(k); if(snapVal(v)) has=true; data[k]=v; });
+    if(!has) return;
+    var snaps=load(LS_SNAP,[]);
+    var t=todayKey();
+    snaps=snaps.filter(function(x){ return x.date!==t; });
+    snaps.unshift({date:t,data:data});
+    if(snaps.length>3) snaps.length=3;
+    localStorage.setItem(LS_SNAP,JSON.stringify(snaps));
+  }catch(e){}
+}
+function checkRecover(){
+  try{
+    var empty=SNAP_KEYS.every(function(k){ return !snapVal(localStorage.getItem(k)); });
+    if(!empty) return;
+    var snaps=load(LS_SNAP,[]), s=null;
+    for(var i=0;i<snaps.length;i++){
+      if(snaps[i].data&&SNAP_KEYS.some(function(k){ return snapVal(snaps[i].data[k]); })){ s=snaps[i]; break; }
+    }
+    if(!s) return;
+    if(confirm('检测到本机数据被清空了（可能因浏览器清理、换了打开方式或存储异常）。\n\n发现 '+s.date+' 的自动快照备份，是否立即恢复？')){
+      SNAP_KEYS.forEach(function(k){ var v=s.data[k]; if(snapVal(v)) localStorage.setItem(k,v); });
+      location.reload();
+    }
+  }catch(e){}
+}
+checkRecover();
 
 var PROJECT_SEED = [
   {id:'p1', emoji:'📘', name:'软考学习平台 / 我的工作台', status:2, progress:100, note:'已发布上线，日常打卡使用'},
@@ -527,6 +588,7 @@ var state = {
   projects: load(LS.projects,null)||PROJECT_SEED,
   english: load(LS.english,null)||{words:[],days:[]}
 };
+writeSnapshot();
 
 /* ================= 学习计划数据（来源：8 个月备考规划） ================= */
 var PLAN = [
@@ -1226,7 +1288,7 @@ function renderDashboard(){
     +'<div class="card stat click" onclick="switchTab(\'notes\')"><div class="v">'+state.notes.length+'<small>条</small></div><div class="l">随记 · 播客 '+state.podcast.length+' 期</div></div>'
     +'<div class="card stat click" onclick="switchTab(\'projects\')"><div class="v" style="color:var(--proj)">'+projN+'<small>个</small></div><div class="l">进行中项目</div></div>'
     +'</div>'
-    +'<div class="card mt14"><h3>数据备份</h3><div class="form-row"><button class="btn" onclick="exportData()">导出备份</button><button class="btn btn-light" onclick="document.getElementById(\'importFile2\').click()">导入恢复</button><input type="file" id="importFile2" accept=".json" style="display:none" onchange="importData(this)"></div><div style="font-size:12px;color:var(--muted);margin-top:8px">数据保存在本机浏览器；换设备、重装或换浏览器前，先导出 JSON 备份，再在新环境导入即可迁移。</div></div>';
+    +'<div class="card mt14"><h3>数据备份</h3><div class="form-row"><button class="btn" onclick="exportData()">导出备份</button><button class="btn btn-light" onclick="document.getElementById(\'importFile2\').click()">导入恢复</button><input type="file" id="importFile2" accept=".json" style="display:none" onchange="importData(this)"></div><div style="font-size:12px;color:var(--muted);margin-top:8px">数据只保存在本机浏览器（按设备隔离，不同手机/电脑、浏览器与主屏幕 App 各自独立，版本更新不会清空）。应用每天自动保留最近 3 份本机快照，数据被意外清空时会提示恢复。换设备、换浏览器前：先「导出备份」，再在新环境「导入恢复」。</div></div>';
 }
 function taskHtml(id,text){
   var c=state.tasks[id]?' checked':'';
@@ -1701,19 +1763,176 @@ function renderNotes(){
     +'<div class="form-row"><input id="nt-tag" placeholder="标签（可选，如 灵感/复盘）" style="flex:1;min-width:160px">'
     +'<button class="btn" onclick="addNote()">'+(editNoteId?'保存修改':'保存')+'</button>'
     +(editNoteId?'<button class="btn btn-light" onclick="cancelNoteEdit()">取消</button>':'')+'</div></div>'
+    +'<div class="stat-chips"><span>共 <b>'+state.notes.length+'</b> 条随记</span><button class="mini-btn" style="color:var(--book)" onclick="aiSummarizeNotes()">✨ AI 梳理最近随记</button></div>'
     +(tags.length?'<div class="filter-row"><select id="ntf-tag" onchange="renderNotes()"><option value="all">全部标签</option>'+tags.map(function(t){ return '<option'+(ft===t?' selected':'')+'>'+esc(t)+'</option>'; }).join('')+'</select></div>':'')
     +'<div class="stack" style="gap:12px">'+cards+'</div>';
 }
 
-/* ---------- 播客 ---------- */
+/* ---------- 播客（小宇宙分享导入 + AI 总结） ---------- */
+var LS_AI='rkp_ai_v1';
+var aiCfg=load(LS_AI,{provider:'zhipu',base:'https://open.bigmodel.cn/api/paas/v4',model:'glm-4-flash',key:''});
+var AI_PROVIDERS={
+  zhipu:{name:'智谱 GLM（glm-4-flash 免费）',base:'https://open.bigmodel.cn/api/paas/v4',model:'glm-4-flash'},
+  deepseek:{name:'DeepSeek',base:'https://api.deepseek.com',model:'deepseek-chat'},
+  kimi:{name:'Kimi（月之暗面）',base:'https://api.moonshot.cn/v1',model:'moonshot-v1-8k'},
+  qwen:{name:'通义千问',base:'https://dashscope.aliyuncs.com/compatible-mode/v1',model:'qwen-turbo'},
+  custom:{name:'其他 OpenAI 兼容接口',base:'',model:''}
+};
+function saveAiCfg(){ try{ localStorage.setItem(LS_AI,JSON.stringify(aiCfg)); }catch(e){} }
+function pickProvider(v){
+  var p=AI_PROVIDERS[v];
+  aiCfg.provider=v;
+  if(p){ if(p.base) aiCfg.base=p.base; if(p.model) aiCfg.model=p.model; }
+  var b=document.getElementById('ai-base'), m=document.getElementById('ai-model');
+  if(b) b.value=aiCfg.base;
+  if(m) m.value=aiCfg.model;
+  saveAiCfg();
+}
+function saveAiKey(){
+  var k=document.getElementById('ai-key'), b=document.getElementById('ai-base'), m=document.getElementById('ai-model');
+  aiCfg.key=((k&&k.value)||'').trim();
+  if(b) aiCfg.base=(b.value||'').trim();
+  if(m) aiCfg.model=(m.value||'').trim();
+  saveAiCfg();
+  renderPodcast();
+  alert(aiCfg.key?'AI 配置已保存（只存在本机浏览器，不会上传）':'已清空 API Key');
+}
+function aiReady(){ return !!(aiCfg.key&&aiCfg.base&&aiCfg.model); }
+async function aiChat(system,user){
+  var res=await fetch(aiCfg.base.replace(/\/+$/,'')+'/chat/completions',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+aiCfg.key},
+    body:JSON.stringify({model:aiCfg.model,messages:[{role:'system',content:system},{role:'user',content:user}],temperature:0.5,stream:false})
+  });
+  if(!res.ok){ var t=''; try{ t=await res.text(); }catch(e){} throw new Error('接口返回 '+res.status+' '+t.slice(0,180)); }
+  var j=await res.json();
+  var c=j&&j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;
+  if(!c) throw new Error('接口未返回内容');
+  return c.trim();
+}
+function ensurePodcast(){
+  var ch=false;
+  state.podcast.forEach(function(x){
+    if(x.link===undefined){ x.link=''; ch=true; }
+    if(x.desc===undefined){ x.desc=''; ch=true; }
+    if(x.summary===undefined){ x.summary=''; ch=true; }
+  });
+  if(ch) save(LS.podcast,state.podcast);
+}
+function parseXyzShare(){
+  var ta=document.getElementById('pc-share');
+  if(!ta) return;
+  var raw=(ta.value||'').trim();
+  if(!raw){ alert('先把小宇宙的分享文案粘贴进来'); return; }
+  var link='';
+  var m=raw.match(/https?:\/\/[^\s，。,、]+/);
+  if(m) link=m[0];
+  var title=raw.replace(/https?:\/\/[^\s，。,、]+/g,'').replace(/[|｜@→]/g,' ').replace(/小宇宙|收听|链接|节目|播客APP/g,'').replace(/\s+/g,' ').trim();
+  var el=document.getElementById('pc-link'); if(el) el.value=link;
+  var et=document.getElementById('pc-title'); if(et&&title) et.value=title;
+  var tip=document.getElementById('pc-share-tip');
+  if(tip) tip.innerHTML=link?'✓ 已识别'+(link.indexOf('xiaoyuzhoufm')>=0?'小宇宙':'')+'链接，请确认信息后保存':'未识别到链接，请手动补全';
+}
+function podPlatform(x){ return (x.link||'').indexOf('xiaoyuzhoufm')>=0?'小宇宙':((x.link||'')?'网页':''); }
 function addPodcast(){
   var s=(document.getElementById('pc-show').value||'').trim();
   var t=(document.getElementById('pc-title').value||'').trim();
-  if(!s){ alert('请填写节目名称'); return; }
+  if(!s&&!t){ alert('请填写节目名或单集标题'); return; }
   var m=parseInt(document.getElementById('pc-min').value,10)||0;
   var done=document.getElementById('pc-done').checked?1:0;
-  state.podcast.push({id:'c'+Date.now()+Math.floor(Math.random()*1000),date:todayKey(),show:s,title:t,minutes:m,done:done,note:(document.getElementById('pc-note').value||'').trim()});
+  var lk=(document.getElementById('pc-link')||{value:''}).value.trim();
+  var ds=(document.getElementById('pc-desc')||{value:''}).value.trim();
+  state.podcast.push({id:'c'+Date.now()+Math.floor(Math.random()*1000),date:todayKey(),show:s||'未填节目名',title:t,minutes:m,done:done,note:(document.getElementById('pc-note').value||'').trim(),link:lk,desc:ds,summary:''});
   save(LS.podcast,state.podcast); renderAll();
+}
+function podToNote(id){
+  var x=null;
+  state.podcast.forEach(function(p){ if(p.id===id) x=p; });
+  if(!x) return;
+  var body=[];
+  if(x.title) body.push('单集：'+x.title);
+  if(x.note) body.push('听后感：'+x.note);
+  if(x.summary) body.push('AI 总结：'+x.summary);
+  if(x.link) body.push('链接：'+x.link);
+  state.notes.push({id:'n'+Date.now()+Math.floor(Math.random()*1000),date:todayKey(),title:'🎧 '+(x.show||'播客')+(x.title?' · '+x.title:''),body:body.join('\n'),tag:'播客'});
+  save(LS.notes,state.notes); renderAll();
+  alert('已转成随记（标签：播客）');
+}
+function openAiModal(tag,title,html,footHtml){
+  var t=document.getElementById('sm-tag');
+  t.textContent=tag; t.style.background='var(--book-soft)'; t.style.color='var(--book)';
+  document.getElementById('sm-title').textContent=title;
+  document.getElementById('sm-done-btn').style.display='none';
+  document.getElementById('sm-body').innerHTML=html;
+  document.getElementById('sm-foot').innerHTML=footHtml||'<button class="btn btn-light btn-sm" onclick="closeStudy()">关闭</button>';
+  document.getElementById('study-modal').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+async function summarizePodcast(id){
+  if(!aiReady()){ alert('请先在本页上方「AI 总结设置」填好 API Key'); return; }
+  var x=null;
+  state.podcast.forEach(function(p){ if(p.id===id) x=p; });
+  if(!x) return;
+  var box=document.getElementById('ai-'+id);
+  if(box) box.innerHTML='<div style="color:var(--muted);font-size:12.5px;margin-top:6px">⏳ AI 正在总结，请稍候…</div>';
+  var sys='你是播客收听总结助手。用中文输出：先用两三句话概括这期播客讲了什么，再列 3-5 条核心要点（每条一行，简洁），最后给 1 条「给我的启发或行动建议」。依据不足的内容不要编造。';
+  var usr='节目：'+(x.show||'未知')+'\n单集标题：'+(x.title||'无')+'\n单集简介/Shownotes：'+(x.desc||'（无）')+'\n我的听后感笔记：'+(x.note||'（无）');
+  try{
+    var out=await aiChat(sys,usr);
+    x.summary=out; x.summarizedAt=todayKey();
+    save(LS.podcast,state.podcast);
+    renderPodcast();
+  }catch(e){
+    if(box) box.innerHTML='';
+    alert('AI 总结失败：'+(e&&e.message||e)+'\n\n（提示：确认 Key 正确、模型可用；部分网络环境可能拦截接口）');
+  }
+}
+async function analyzeListening(){
+  if(!aiReady()){ alert('请先在「AI 总结设置」里填好 API Key'); return; }
+  var ps=state.podcast.slice().sort(function(a,b){ return a.id<b.id?1:-1; }).slice(0,20);
+  var ns=state.notes.slice().sort(function(a,b){ return a.id<b.id?1:-1; }).slice(0,20);
+  if(!ps.length&&!ns.length){ openAiModal('AI 分析','收听 + 随记 · 主题分析','<p>暂无收听记录和随记，先积累一些内容再来分析吧。</p>',''); return; }
+  openAiModal('AI 分析','收听 + 随记 · 主题分析','<div style="color:var(--muted);font-size:13px">⏳ AI 正在结合你最近的收听和随记做分析，请稍候…</div>','');
+  var pl=ps.map(function(x){ return '- ['+(x.date||'')+'] '+(x.show||'')+'《'+(x.title||'无标题')+'》'+(x.note?'（我的笔记：'+x.note+'）':''); }).join('\n');
+  var nl=ns.map(function(x){ return '- ['+(x.date||'')+'] '+(x.title||'（无标题）')+'：'+(x.body||'').slice(0,120); }).join('\n');
+  var usr='我最近的播客收听记录：\n'+(pl||'（无）')+'\n\n我最近的随记：\n'+(nl||'（无）')+'\n\n请分析：1）我最近在关注什么主题领域；2）收听内容与随记想法之间的关联或反差；3）给我 2-3 条具体的学习或行动建议。用中文分点作答，务实不空话。';
+  try{
+    var out=await aiChat('你是个人知识助手，善于从收听和笔记中发现主题与关联。',usr);
+    window.__aiLast=out;
+    var foot='<button class="btn btn-sm" onclick="aiAnalysisToNote()">存为随记</button><button class="btn btn-light btn-sm" onclick="closeStudy()">关闭</button>';
+    openAiModal('AI 分析','收听 + 随记 · 主题分析','<div style="white-space:pre-wrap;font-size:13.5px;line-height:1.9">'+esc(out)+'</div>',foot);
+  }catch(e){
+    openAiModal('AI 分析','收听 + 随记 · 主题分析','<p style="color:var(--danger)">分析失败：'+esc(e&&e.message||e)+'</p>','');
+  }
+}
+function aiAnalysisToNote(){
+  if(!window.__aiLast) return;
+  state.notes.push({id:'n'+Date.now()+Math.floor(Math.random()*1000),date:todayKey(),title:'🤖 收听与随记 · AI 分析',body:window.__aiLast,tag:'AI 分析'});
+  save(LS.notes,state.notes);
+  closeStudy(); renderAll();
+  alert('已存入随记（标签：AI 分析）');
+}
+async function aiSummarizeNotes(){
+  if(!aiReady()){ alert('请先到「播客」页配置 AI（API Key 只存本机浏览器）'); return; }
+  var ns=state.notes.slice().sort(function(a,b){ return a.id<b.id?1:-1; }).slice(0,30);
+  if(!ns.length){ alert('还没有随记'); return; }
+  openAiModal('AI 总结','最近随记 · 主题梳理','<div style="color:var(--muted);font-size:13px">⏳ AI 正在梳理你的随记，请稍候…</div>','');
+  var nl=ns.map(function(x){ return '- ['+(x.date||'')+'] '+(x.title||'（无标题）')+'：'+(x.body||'').slice(0,150); }).join('\n');
+  try{
+    var out=await aiChat('你是个人思考助手。用中文梳理这些随记：1）提炼 3-5 个我在反复思考的主题；2）指出最值得深挖或落地的一个方向。简洁分点。',nl);
+    window.__aiLastNotes=out;
+    var foot='<button class="btn btn-sm" onclick="aiNotesToNote()">存为随记</button><button class="btn btn-light btn-sm" onclick="closeStudy()">关闭</button>';
+    openAiModal('AI 总结','最近随记 · 主题梳理','<div style="white-space:pre-wrap;font-size:13.5px;line-height:1.9">'+esc(out)+'</div>',foot);
+  }catch(e){
+    openAiModal('AI 总结','最近随记 · 主题梳理','<p style="color:var(--danger)">总结失败：'+esc(e&&e.message||e)+'</p>','');
+  }
+}
+function aiNotesToNote(){
+  if(!window.__aiLastNotes) return;
+  state.notes.push({id:'n'+Date.now()+Math.floor(Math.random()*1000),date:todayKey(),title:'🤖 随记主题 · AI 梳理',body:window.__aiLastNotes,tag:'AI 分析'});
+  save(LS.notes,state.notes);
+  closeStudy(); renderAll();
+  alert('已存入随记（标签：AI 分析）');
 }
 function delPodcast(id){
   if(!confirm('删除这条收听记录？')) return;
@@ -1721,31 +1940,58 @@ function delPodcast(id){
   save(LS.podcast,state.podcast); renderAll();
 }
 function renderPodcast(){
+  ensurePodcast();
   var total=state.podcast.reduce(function(s,x){ return s+(x.minutes||0); },0);
   var doneN=state.podcast.filter(function(x){ return x.done===1; }).length;
   var list=state.podcast.slice().sort(function(a,b){ return a.id<b.id?1:-1; }).slice(0,50);
   var rows=list.length?list.map(function(x){
+    var plat=podPlatform(x);
     return '<div class="card life-card" style="border-left-color:var(--port);margin-bottom:0">'
       +'<div class="lc-top"><span class="tag-chip" style="background:var(--port-soft);color:var(--port)">'+esc(x.show)+'</span>'
+      +(plat?'<span class="tag-chip" style="background:#eef0f6;color:#6b7280">'+plat+'</span>':'')
       +(x.done?'<span class="stat-pill" style="background:var(--skill-soft);color:var(--skill)">已听完</span>':'<span class="stat-pill" style="background:#eef0f6;color:var(--muted)">未听完</span>')
       +'<span style="margin-left:auto;color:var(--muted);font-size:12px">'+x.date+'</span></div>'
       +'<div class="lc-title" style="font-size:13.5px">'+(x.title?esc(x.title):'—')+'</div>'
       +(x.note?'<div class="lc-note">'+esc(x.note)+'</div>':'')
+      +(x.summary?'<div class="tipline" style="margin:8px 0"><b>✨ AI 总结</b><div style="white-space:pre-wrap;margin-top:4px">'+esc(x.summary)+'</div></div>':'')
+      +'<div id="ai-'+x.id+'"></div>'
       +'<div class="n-meta"><span style="color:var(--muted);font-size:12px">'+(x.minutes?fmtMin(x.minutes):'')+'</span>'
+      +(x.link?'<a class="mini-btn" style="text-decoration:none" href="'+esc(x.link)+'" target="_blank" rel="noopener">▶ 打开单集</a>':'')
+      +'<button class="mini-btn" style="color:var(--book)" onclick="summarizePodcast(\''+x.id+'\')">✨ AI 总结</button>'
+      +'<button class="mini-btn" style="color:var(--primary)" onclick="podToNote(\''+x.id+'\')">📝 转随记</button>'
       +'<button class="mini-btn" style="margin-left:auto;color:var(--danger)" onclick="delPodcast(\''+x.id+'\')">删除</button></div></div>';
-  }).join(''):'<div class="card empty">还没有收听记录，听到好节目随手记</div>';
+  }).join(''):'<div class="card empty">还没有收听记录。可以手动记一笔，也可以在小宇宙 App 点「分享」复制后粘贴进来</div>';
+
+  var aiCard='<div class="card" style="border-left:3px solid var(--book)"><h3>✨ AI 总结设置<span class="r">'+(aiReady()?'已配置 ✓':'未配置')+'</span></h3>'
+    +'<details'+(aiReady()?'':' open')+'><summary style="cursor:pointer;font-size:13px;color:var(--primary);font-weight:600">'+(aiReady()?'当前模型：'+esc(aiCfg.model)+'（点开可修改）':'选择 AI 服务并填入 API Key（只存本机浏览器，不上传）')+'</summary>'
+    +'<div class="form-grid" style="margin-top:10px">'
+    +'<select onchange="pickProvider(this.value)">'+Object.keys(AI_PROVIDERS).map(function(k){ return '<option value="'+k+'"'+(aiCfg.provider===k?' selected':'')+'>'+AI_PROVIDERS[k].name+'</option>'; }).join('')+'</select>'
+    +'<div class="form-row"><input id="ai-base" placeholder="接口地址 Base URL" value="'+esc(aiCfg.base)+'" style="flex:1;min-width:200px">'
+    +'<input id="ai-model" placeholder="模型名" value="'+esc(aiCfg.model)+'" style="width:130px"></div>'
+    +'<div class="form-row"><input id="ai-key" type="password" placeholder="API Key" value="'+esc(aiCfg.key||'')+'" style="flex:1;min-width:200px">'
+    +'<button class="btn btn-sm" onclick="saveAiKey()">保存</button></div>'
+    +'<div style="font-size:12px;color:var(--muted)">推荐智谱 glm-4-flash（免费）：bigmodel.cn 注册 → 左侧「API Keys」→ 新建并复制，粘贴到上面保存即可。说明：AI 无法收听音频，总结基于单集简介/Shownotes 和你的听后感，简介贴得越全，总结越准。</div>'
+    +'</div></details></div>';
 
   document.getElementById('tab-podcast').innerHTML =
-    '<div class="page-head"><div><h1>播客</h1><div class="sub">收听记录 · 笔记随行</div></div></div>'
+    '<div class="page-head"><div><h1>播客</h1><div class="sub">收听记录 · 小宇宙分享导入 · AI 总结</div></div></div>'
     +lifeNav('podcast')
-    +'<div class="card form-grid">'
+    +aiCard
+    +'<div class="card" style="margin-top:14px"><h3>记一笔收听</h3>'
+    +'<details><summary style="cursor:pointer;font-size:13px;color:var(--primary);font-weight:600;margin-bottom:6px">🔗 从小宇宙分享导入（点开粘贴）</summary>'
+    +'<textarea id="pc-share" rows="2" placeholder="在小宇宙打开想记的单集 → 点右上「分享」→「复制链接」→ 粘贴到这里"></textarea>'
+    +'<div style="display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap"><button class="btn btn-sm btn-light" onclick="parseXyzShare()">解析填入</button><span id="pc-share-tip" style="font-size:12px;color:var(--muted)">自动识别标题和链接，确认后保存</span></div></details>'
+    +'<div class="form-grid" style="margin-top:10px">'
     +'<div class="form-row"><input id="pc-show" placeholder="节目名（如 疯投圈）" style="flex:1;min-width:140px">'
-    +'<input id="pc-title" placeholder="单集标题（可选）" style="flex:1;min-width:140px"></div>'
+    +'<input id="pc-title" placeholder="单集标题" style="flex:1;min-width:140px"></div>'
+    +'<input id="pc-link" placeholder="单集链接（可选，解析后自动填）">'
+    +'<textarea id="pc-desc" rows="2" placeholder="单集简介 / Shownotes（可选，AI 总结的主要依据，建议从单集页复制粘贴）"></textarea>'
     +'<div class="form-row"><input id="pc-min" type="number" min="0" placeholder="时长（分钟，可选）" style="width:150px">'
     +'<label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)"><input type="checkbox" id="pc-done" style="width:auto">已听完</label>'
     +'<button class="btn" onclick="addPodcast()">记一笔</button></div>'
-    +'<textarea id="pc-note" rows="2" placeholder="笔记 / 金句 / 启发（可选）"></textarea></div>'
-    +'<div class="stat-chips"><span>累计 <b>'+state.podcast.length+'</b> 期</span><span>听完 <b style="color:var(--skill)">'+doneN+'</b> 期</span><span>收听时长 <b>'+fmtMin(total)+'</b></span></div>'
+    +'<textarea id="pc-note" rows="2" placeholder="听后感 / 金句 / 启发（可选）"></textarea></div></div>'
+    +'<div class="stat-chips"><span>累计 <b>'+state.podcast.length+'</b> 期</span><span>听完 <b style="color:var(--skill)">'+doneN+'</b> 期</span><span>收听时长 <b>'+fmtMin(total)+'</b></span>'
+    +'<button class="mini-btn" style="color:var(--book)" onclick="analyzeListening()">✨ AI 总结分析收听</button></div>'
     +'<div class="stack" style="gap:12px">'+rows+'</div>';
 }
 
@@ -2265,6 +2511,18 @@ function dismissInstallBar(){ try{ localStorage.setItem('rkp_hint_closed_v1','1'
 function doInstall(){
   if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt=null; }
 }
+function closeDataTip(){
+  try{ localStorage.setItem('rkp_datatip_v1','1'); }catch(e){}
+  var el=document.getElementById('data-tip');
+  if(el) el.style.display='none';
+}
+try{
+  if(!isStandalone() && !localStorage.getItem('rkp_datatip_v1')){
+    var _tip=document.getElementById('data-tip');
+    if(_tip) _tip.style.display='block';
+  }
+}catch(e){}
+
 if('serviceWorker' in navigator){
   window.addEventListener('load', function(){
     navigator.serviceWorker.register('sw.js').catch(function(){});
