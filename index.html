@@ -1838,7 +1838,7 @@ function renderNotes(){
     +'<div class="form-row"><input id="nt-tag" placeholder="标签（可选，如 灵感/复盘）" style="flex:1;min-width:160px">'
     +'<button class="btn" onclick="addNote()">'+(editNoteId?'保存修改':'保存')+'</button>'
     +(editNoteId?'<button class="btn btn-light" onclick="cancelNoteEdit()">取消</button>':'')+'</div></div>'
-    +'<div class="stat-chips"><span>共 <b>'+state.notes.length+'</b> 条随记</span><button class="mini-btn" style="color:var(--book)" onclick="aiSummarizeNotes()">✨ AI 梳理最近随记</button></div>'
+    +'<div class="stat-chips"><span>共 <b>'+state.notes.length+'</b> 条随记</span><button class="mini-btn" style="color:var(--book)" onclick="aiSummarizeNotes()">✨ AI 梳理最近随记</button><button class="mini-btn" style="color:var(--book)" onclick="analyzeListening()">🎧 播客×随记 联合分析</button></div>'
     +(tags.length?'<div class="filter-row"><select id="ntf-tag" onchange="renderNotes()"><option value="all">全部标签</option>'+tags.map(function(t){ return '<option'+(ft===t?' selected':'')+'>'+esc(t)+'</option>'; }).join('')+'</select></div>':'')
     +'<div class="stack" style="gap:12px">'+cards+'</div>';
 }
