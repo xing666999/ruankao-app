@@ -323,6 +323,21 @@ td{padding:9px 10px;border-bottom:1px solid #f0f1f7}
 .more-item svg{color:#6366f1}
 .more-item:active{background:#f6f7fb}
 
+/* ---------- App 化交互（FAB / 表单抽屉 / Toast） ---------- */
+#fab{position:fixed;right:16px;bottom:calc(80px + env(safe-area-inset-bottom));width:54px;height:54px;border-radius:17px;background:var(--primary);color:#fff;border:none;font-size:28px;line-height:0;display:none;align-items:center;justify-content:center;box-shadow:0 10px 26px rgba(79,70,229,.42);cursor:pointer;z-index:120;font-family:inherit;padding:0 0 4px}
+#fab:active{transform:scale(.94)}
+#form-sheet-mask{position:fixed;inset:0;background:rgba(15,17,45,.45);z-index:160;display:none}
+#form-sheet-mask.show{display:block}
+#form-sheet{position:fixed;left:0;right:0;bottom:0;z-index:161;background:#fff;border-radius:20px 20px 0 0;padding:10px 16px calc(14px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .25s;box-shadow:0 -12px 40px rgba(20,20,60,.25);display:none;max-height:88vh}
+#form-sheet.show{display:flex;flex-direction:column;transform:translateY(0)}
+.fs-head{display:flex;align-items:center;justify-content:space-between;padding:2px 2px 10px;border-bottom:1px solid var(--line);margin-bottom:12px}
+.fs-head b{font-size:15px}
+.fs-body{overflow-y:auto;-webkit-overflow-scrolling:touch}
+.fs-body .card{border:none;box-shadow:none;padding:2px 0}
+#toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(16px);background:#1f2333;color:#fff;padding:10px 18px;border-radius:99px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:300;max-width:82vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media (min-width:761px){#fab{display:none!important}}
+
 /* ---------- 响应式 ---------- */
 .nav-btn.m-only{display:none}
 @media (max-width:1000px){
@@ -380,6 +395,14 @@ td{padding:9px 10px;border-bottom:1px solid #f0f1f7}
   /* 更多面板限高可滚动 */
   #more-sheet{max-height:74vh;overflow-y:auto}
   #install-bar{left:12px;right:12px;width:auto;bottom:calc(86px + env(safe-area-inset-bottom))}
+  /* App 化：表单收进抽屉，FAB 唤起 */
+  #fab.show-fab{display:flex}
+  #tab-notes > .card.form-grid,#tab-reading > .card.form-grid,#tab-sport .card.form-grid,#tab-mistakes .card.form-grid,#tab-english .card.form-grid,#tab-podcast .card[style*="margin-top:14px"]{display:none}
+  .more-item{border-bottom:none;background:#f6f7fb;border-radius:12px;padding:12px;margin:5px 0}
+  .stat-chips{margin:10px 0}
+  .life-nav{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+  .life-nav .pill{flex:none}
+  .card{box-shadow:0 1px 2px rgba(23,25,60,.04)}
 }
 </style>
 </head>
@@ -399,6 +422,15 @@ td{padding:9px 10px;border-bottom:1px solid #f0f1f7}
     <div class="sm-foot"><button class="btn btn-sm" id="sm-done-btn" onclick="toggleStudyTask()"></button><button class="btn btn-light btn-sm" onclick="closeStudy()">收起</button></div>
   </div>
 </div>
+<div id="form-sheet-mask" onclick="closeFormSheet()"></div>
+<div id="form-sheet">
+  <div class="ms-grab"></div>
+  <div class="fs-head"><b id="fs-title">添加</b><button class="sm-close" onclick="closeFormSheet()">✕</button></div>
+  <div class="fs-body" id="fs-body"></div>
+</div>
+<button id="fab" onclick="fabClick()" aria-label="添加">+</button>
+<div id="toast"></div>
+<div id="form-parking" style="display:none"></div>
 <div class="app">
   <aside class="sidebar">
     <div class="logo">
@@ -1190,6 +1222,9 @@ function switchTab(name){
   document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.toggle('active',b.dataset.tab===name); });
   document.querySelectorAll('.tab-pane').forEach(function(p){ p.classList.toggle('active',p.id==='tab-'+name); });
   window.scrollTo(0,0);
+  curTab=name;
+  var f=document.getElementById('fab');
+  if(f){ if(FAB_MAP[name]) f.classList.add('show-fab'); else f.classList.remove('show-fab'); }
 }
 
 /* ================= 总览 ================= */
@@ -1593,6 +1628,46 @@ function toggleMore(show){
   document.getElementById('more-mask').classList.toggle('show',show);
   document.getElementById('more-sheet').classList.toggle('show',show);
 }
+
+/* ---------- App 化：FAB / 表单抽屉 / Toast ---------- */
+var curTab='dashboard';
+var FAB_MAP={
+  notes:['#tab-notes > .card.form-grid','写随记'],
+  reading:['#tab-reading > .card.form-grid','加一本书'],
+  sport:['#tab-sport .card.form-grid','记一笔运动'],
+  mistakes:['#tab-mistakes .card.form-grid','记错题'],
+  english:['#tab-english .card.form-grid','添加内容'],
+  podcast:['#tab-podcast .card[style*="margin-top:14px"]','记一笔收听']
+};
+function toast(m){
+  var t=document.getElementById('toast');
+  if(!t){ alert(m); return; }
+  t.textContent=m;
+  t.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t=setTimeout(function(){ t.classList.remove('show'); },2200);
+}
+function fabClick(){
+  var cfg=FAB_MAP[curTab];
+  if(cfg) openFormSheet(cfg[0],cfg[1]);
+}
+function openFormSheet(sel,title){
+  var el=document.querySelector(sel);
+  if(!el){ toast('内容已刷新，请重试'); return; }
+  var body=document.getElementById('fs-body');
+  body.innerHTML='';
+  body.appendChild(el);
+  document.getElementById('fs-title').textContent=title||'添加';
+  document.getElementById('form-sheet-mask').classList.add('show');
+  document.getElementById('form-sheet').classList.add('show');
+}
+function closeFormSheet(){
+  var m=document.getElementById('form-sheet-mask'); if(m) m.classList.remove('show');
+  var sh=document.getElementById('form-sheet'); if(sh) sh.classList.remove('show');
+  var b=document.getElementById('fs-body');
+  if(b&&b.firstChild){ var pk=document.getElementById('form-parking'); if(pk) pk.appendChild(b.firstChild); }
+}
+
 
 /* ================= 生活板块 ================= */
 function lifeNav(active){
@@ -2532,6 +2607,7 @@ setTimeout(updateInstallBar, 800);
 
 /* ================= 渲染入口 ================= */
 function renderAll(){
+  closeFormSheet();
   renderDashboard();
   renderPlan();
   renderTime();
@@ -2545,6 +2621,8 @@ function renderAll(){
   renderProjects();
   var sc=document.getElementById('side-count-n');
   if(sc){ var d=daysToExam(); sc.textContent=d>0?d:'--'; }
+  var pk=document.getElementById('form-parking');
+  if(pk) pk.innerHTML='';
 }
 renderAll();
 </script>
