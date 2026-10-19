@@ -14,6 +14,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="软考学习">
 <style>
+/* ========================================================
+   MOBILE FIRST —— 基础样式 = 手机（360px 宽）
+   桌面端用 @media (min-width: 761px) 覆盖
+   ======================================================== */
 :root{
   --bg:#f3f4fa; --card:#ffffff; --line:#e6e8f0;
   --text:#1f2333; --muted:#6b7280;
@@ -24,385 +28,403 @@
   --book:#7c3aed; --book-soft:#f3eefe;
   --proj:#0891b2; --proj-soft:#e6f7fb;
   --danger:#dc2626; --warn:#d97706; --ok:#059669;
-  --radius:16px;
-  --shadow:0 1px 2px rgba(23,25,60,.05),0 8px 24px rgba(23,25,60,.06);
+  --radius:14px;
+  --shadow:0 1px 2px rgba(23,25,60,.04);
 }
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:"PingFang SC","Microsoft YaHei","Segoe UI",system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.65;-webkit-tap-highlight-color:transparent}
-.app{display:grid;grid-template-columns:238px 1fr;min-height:100vh}
+html{-webkit-text-size-adjust:100%}
+body{font-family:"PingFang SC","Microsoft YaHei","Segoe UI",system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.65;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased;min-height:100vh}
 
-/* ---------- 侧边栏（桌面） ---------- */
-.sidebar{background:linear-gradient(180deg,#1e1b4b 0%,#312e81 100%);color:#fff;padding:24px 16px 18px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow:auto}
-.logo{padding:0 10px 20px}
-.logo .t1{font-size:16px;font-weight:700;letter-spacing:.5px}
-.logo .t2{font-size:11.5px;color:#a5b4fc;margin-top:2px}
-.nav{display:flex;flex-direction:column;gap:4px}
-.nav-btn{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;color:#c7d2fe;background:none;border:none;font-size:14px;cursor:pointer;width:100%;text-align:left;font-family:inherit}
-.nav-btn svg{flex:none}
-.nav-btn:hover{background:rgba(255,255,255,.09);color:#fff}
-.nav-btn.active{background:#fff;color:#3730a3;font-weight:600}
-.side-count{margin-top:auto;padding:14px 12px;background:rgba(255,255,255,.08);border-radius:12px;text-align:center}
-.side-count .n{font-size:26px;font-weight:700}
-.side-count .l{font-size:11.5px;color:#c7d2fe}
-.side-foot{display:flex;gap:8px;margin-top:12px}
-.ghost{flex:1;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#e0e7ff;border-radius:9px;padding:7px 4px;font-size:12px;cursor:pointer;font-family:inherit}
-.ghost:hover{background:rgba(255,255,255,.2)}
+/* ---------- App 骨架（基础 = 手机） ---------- */
+.app{display:block}
 
-/* ---------- 主区 ---------- */
-main{padding:28px 34px 60px;width:100%;max-width:1120px;margin:0 auto}
-.page-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:20px;flex-wrap:wrap;gap:12px}
-.page-head h1{font-size:22px}
-.page-head .sub{color:var(--muted);font-size:13px;margin-top:3px}
+/* ---------- 手机顶部 Header ---------- */
+#top-header{position:sticky;top:0;z-index:40;background:rgba(243,244,250,.92);backdrop-filter:saturate(180%) blur(10px);padding:calc(10px + env(safe-area-inset-top)) 14px 8px;border-bottom:1px solid var(--line)}
+#top-header .th-row{display:flex;align-items:center;gap:10px}
+#top-header .th-title{font-size:17px;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#top-header .th-sub{font-size:11.5px;color:var(--muted);margin-top:2px}
+#top-header .th-days{flex:none;background:var(--primary);color:#fff;border-radius:10px;padding:4px 10px;font-size:11.5px;font-weight:700;line-height:1.3}
+#top-header .th-days small{font-weight:500;opacity:.85}
+
+/* ---------- Hub 子导航（手机） ---------- */
+#hub-pills{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:2px 14px 10px;background:var(--bg);scrollbar-width:none}
+#hub-pills::-webkit-scrollbar{display:none}
+.hub-pill{flex:none;padding:6px 14px;border-radius:999px;font-size:12.5px;background:#fff;border:1px solid var(--line);color:var(--muted);cursor:pointer;font-family:inherit;white-space:nowrap;transition:.15s}
+.hub-pill.on{background:var(--primary);color:#fff;border-color:var(--primary);font-weight:600}
+
+/* ---------- 主内容区（手机） ---------- */
+main{padding:6px 12px calc(90px + env(safe-area-inset-bottom))}
+
+/* ---------- 手机底部 Tab Bar ---------- */
+#bottom-bar{position:fixed;left:0;right:0;bottom:0;z-index:50;background:linear-gradient(180deg,#1e1b4b,#312e81);display:flex;box-shadow:0 -4px 20px rgba(20,20,60,.2);padding-bottom:env(safe-area-inset-bottom)}
+.bb-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:8px 0;font-size:11px;color:#a5b4fc;background:none;border:none;font-family:inherit;cursor:pointer;position:relative;min-height:56px}
+.bb-item svg{width:22px;height:22px}
+.bb-item.active{color:#fff}
+.bb-item.active::after{content:'';position:absolute;top:5px;width:20px;height:3px;border-radius:2px;background:#fff}
+.bb-item .bb-badge{position:absolute;top:4px;right:calc(50% - 24px);background:var(--danger);color:#fff;border-radius:8px;font-size:9px;padding:1px 5px;font-weight:700;min-width:14px;text-align:center}
+
+/* ---------- 桌面侧边栏（基础隐藏） ---------- */
+.sidebar{display:none}
+
+/* ---------- Tab 切换 ---------- */
 .tab-pane{display:none}
 .tab-pane.active{display:block}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow)}
-.card h3{font-size:14.5px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
-.card h3 .r{font-size:12px;color:var(--muted);font-weight:400}
 
-/* ---------- 总览 ---------- */
-.hero-grid{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:14px;margin-bottom:14px}
-.hero-label{font-size:12px;color:var(--muted);margin-bottom:8px}
-.hero-num{font-size:46px;font-weight:800;color:var(--primary);line-height:1.1}
-.hero-num span{font-size:15px;font-weight:600;color:var(--muted);margin-left:4px}
-.hero-date{font-size:12.5px;color:var(--muted);margin-top:6px}
-.hero-next{font-size:12.5px;margin-top:10px;padding:6px 10px;background:var(--primary-soft);border-radius:8px;color:#4338ca}
-.phase-name{font-size:20px;font-weight:700;margin:2px 0 4px}
-.phase-focus{font-size:13px;color:var(--muted)}
-.phase-month{display:inline-block;margin-top:12px;font-size:12px;background:#eef0f6;color:var(--muted);padding:3px 10px;border-radius:99px}
-.link-btn{display:inline-block;margin-top:12px;font-size:12.5px;color:var(--primary);cursor:pointer;font-weight:600}
-.ring-wrap{display:flex;align-items:center;gap:16px}
-.ring{width:92px;height:92px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none}
-.ring>div{width:68px;height:68px;background:#fff;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.ring .p{font-size:17px;font-weight:700}
-.ring .q{font-size:10.5px;color:var(--muted)}
-.ring-info .big{font-size:19px;font-weight:700}
-.ring-info .sm{font-size:12px;color:var(--muted);margin-top:2px}
-.mini-track{margin-top:8px}
-.mini-track .row{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);margin-bottom:3px}
-.bar-thin{height:6px;background:#eef0f6;border-radius:99px;overflow:hidden}
+/* ---------- 卡片（紧凑版） ---------- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:10px}
+.card h3{font-size:14px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.card h3 .r{font-size:11.5px;color:var(--muted);font-weight:400}
+.stack{display:flex;flex-direction:column;gap:10px}
+
+/* ---------- 页面标题 ---------- */
+.page-head{display:none}
+
+/* ---------- 总览页（手机单列） ---------- */
+.hero-grid{display:flex;flex-direction:column;gap:10px}
+.hero-label{font-size:11.5px;color:var(--muted);margin-bottom:4px}
+.hero-num{font-size:44px;font-weight:800;color:var(--primary);line-height:1.05}
+.hero-num span{font-size:14px;font-weight:600;color:var(--muted);margin-left:4px}
+.hero-date{font-size:12px;color:var(--muted);margin-top:4px}
+.hero-next{font-size:12px;margin-top:8px;padding:5px 10px;background:var(--primary-soft);border-radius:8px;color:#4338ca}
+.phase-name{font-size:17px;font-weight:700;margin:2px 0 2px}
+.phase-focus{font-size:12px;color:var(--muted)}
+.phase-month{display:inline-block;margin-top:8px;font-size:11px;background:#eef0f6;color:var(--muted);padding:2px 8px;border-radius:99px}
+.link-btn{display:inline-block;margin-top:8px;font-size:12px;color:var(--primary);cursor:pointer;font-weight:600}
+.ring-wrap{display:flex;align-items:center;gap:12px}
+.ring{width:78px;height:78px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none}
+.ring>div{width:56px;height:56px;background:#fff;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .p{font-size:15px;font-weight:700}
+.ring .q{font-size:10px;color:var(--muted)}
+.ring-info .big{font-size:17px;font-weight:700}
+.ring-info .sm{font-size:11px;color:var(--muted);margin-top:2px}
+.mini-track{margin-top:6px}
+.mini-track .row{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:2px}
+.bar-thin{height:5px;background:#eef0f6;border-radius:99px;overflow:hidden}
 .bar-thin i{display:block;height:100%;border-radius:99px}
-.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
 .stat{cursor:default}
 .stat.click{cursor:pointer;transition:.15s}
-.stat.click:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(23,25,60,.12)}
-.stat .v{font-size:24px;font-weight:800}
-.stat .v small{font-size:13px;font-weight:600;color:var(--muted)}
-.stat .l{font-size:12.5px;color:var(--muted);margin-top:2px}
-.gauge{position:relative;height:9px;background:#eef0f6;border-radius:99px;margin-top:12px}
-.gauge .zone{position:absolute;top:-3px;bottom:-3px;background:rgba(5,150,105,.16);border-radius:4px}
+.stat.click:active{transform:scale(.97)}
+.stat .v{font-size:20px;font-weight:800}
+.stat .v small{font-size:12px;font-weight:600;color:var(--muted)}
+.stat .l{font-size:11.5px;color:var(--muted);margin-top:2px}
+.gauge{position:relative;height:7px;background:#eef0f6;border-radius:99px;margin-top:8px}
+.gauge .zone{position:absolute;top:-2px;bottom:-2px;background:rgba(5,150,105,.16);border-radius:4px}
 .gauge .fill{position:absolute;left:0;top:0;bottom:0;background:var(--primary);border-radius:99px}
-.dash-grid2{display:grid;grid-template-columns:1.5fr 1fr;gap:14px}
-.stack{display:flex;flex-direction:column;gap:14px}
-.chips{display:flex;gap:8px;flex-wrap:wrap}
-.chip{padding:3px 11px;border-radius:99px;font-size:12px;font-weight:600}
+.dash-grid2{display:flex;flex-direction:column;gap:10px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px}
+.chip{padding:2px 10px;border-radius:99px;font-size:11px;font-weight:600}
 .chip-exam{background:var(--exam-soft);color:var(--exam)}
 .chip-skill{background:var(--skill-soft);color:var(--skill)}
 .chip-port{background:var(--port-soft);color:var(--port)}
-.rhythm{font-size:12.5px;color:var(--muted);background:#f7f8fd;border-radius:10px;padding:9px 12px;margin-top:12px}
+.rhythm{font-size:12px;color:var(--muted);background:#f7f8fd;border-radius:8px;padding:7px 10px;margin-top:8px}
 .rhythm b{color:#4338ca}
 
 /* ---------- 任务 ---------- */
-.task{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:10px;cursor:pointer}
-.task:hover{background:#f7f8fd}
+.task{display:flex;gap:8px;align-items:flex-start;padding:8px 8px;border-radius:8px;cursor:pointer}
+.task:active{background:#f0f1f9}
 .task input{display:none}
-.task .box{width:18px;height:18px;border:1.5px solid #c3c8d8;border-radius:6px;flex:none;margin-top:3px;position:relative;transition:.15s;background:#fff}
+.task .box{width:18px;height:18px;border:1.5px solid #c3c8d8;border-radius:6px;flex:none;margin-top:2px;position:relative;transition:.15s;background:#fff}
 .task input:checked+.box{background:var(--primary);border-color:var(--primary)}
 .task input:checked+.box::after{content:'';position:absolute;left:5px;top:1.5px;width:5px;height:9px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
 .task input:checked~.txt{color:#9ca3af;text-decoration:line-through}
-.txt{font-size:13.5px}
+.txt{font-size:13px}
 
 /* ---------- 计划页 ---------- */
-.plan-list{display:flex;flex-direction:column;gap:12px}
+.plan-list{display:flex;flex-direction:column;gap:8px}
 .month-card{padding:0;overflow:hidden}
-.month-head{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:16px 20px;cursor:pointer}
-.month-head:hover{background:#fafbfe}
-.month-period{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.month-title{font-size:12.5px;color:var(--muted);margin-top:2px}
-.month-right{display:flex;align-items:center;gap:12px;flex:none}
-.mini-progress{width:110px;height:7px;background:#eef0f6;border-radius:99px;overflow:hidden}
+.month-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;cursor:pointer}
+.month-head:active{background:#fafbfe}
+.month-period{font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.month-title{font-size:11.5px;color:var(--muted);margin-top:1px}
+.month-right{display:flex;align-items:center;gap:8px;flex:none}
+.mini-progress{width:56px;height:6px;background:#eef0f6;border-radius:99px;overflow:hidden}
 .mini-progress i{display:block;height:100%;background:var(--primary);border-radius:99px;transition:.3s}
-.mini-count{font-size:12px;color:var(--muted);width:38px;text-align:right}
+.mini-count{font-size:11px;color:var(--muted);width:34px;text-align:right}
 .chev{color:#b6bccf;transition:.2s;flex:none}
 .month-card.open .chev{transform:rotate(90deg)}
-.month-body{display:none;padding:4px 20px 18px;border-top:1px dashed var(--line)}
+.month-body{display:none;padding:4px 14px 14px;border-top:1px dashed var(--line)}
 .month-card.open .month-body{display:block}
-.month-card.current{border-color:#c7d2fe;box-shadow:0 0 0 3px rgba(79,70,229,.09),var(--shadow)}
+.month-card.current{border-color:#c7d2fe;box-shadow:0 0 0 2px rgba(79,70,229,.07)}
 .month-card.past{opacity:.72}
-.track-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 20px;margin-top:10px}
-.track-grid.single{grid-template-columns:1fr}
-.track-title{font-weight:600;font-size:13px;margin:8px 0 4px;display:flex;align-items:center;gap:8px}
-.track-title::before{content:'';width:8px;height:8px;border-radius:50%;flex:none}
+.track-grid{display:flex;flex-direction:column;gap:10px}
+.track-title{font-weight:600;font-size:12.5px;margin:6px 0 2px;display:flex;align-items:center;gap:6px}
+.track-title::before{content:'';width:7px;height:7px;border-radius:50%;flex:none}
 .t-exam::before{background:var(--exam)}
 .t-skill::before{background:var(--skill)}
-.badge{font-size:11px;padding:2px 9px;border-radius:99px;background:#eef0f6;color:var(--muted);font-weight:500}
+.badge{font-size:10.5px;padding:1px 7px;border-radius:99px;background:#eef0f6;color:var(--muted);font-weight:500}
 .badge-now{background:var(--primary);color:#fff}
 .badge-done{background:var(--skill-soft);color:var(--skill)}
-.strategy{margin-top:16px}
-.strategy ol{padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:13.5px;color:#3b3f52}
+.strategy{margin-top:12px}
+.strategy ol{padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:13px;color:#3b3f52}
 .strategy b{color:var(--text)}
 
 /* ---------- 图表 ---------- */
-.bars{display:flex;align-items:flex-end;gap:8px;height:150px;position:relative;padding-top:20px}
-.bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;height:100%;position:relative;z-index:1}
-.bar i{display:block;width:100%;max-width:36px;background:linear-gradient(180deg,#818cf8,#4f46e5);border-radius:6px 6px 2px 2px;min-height:3px;transition:.3s}
+.bars{display:flex;align-items:flex-end;gap:6px;height:100px;position:relative;padding-top:14px}
+.bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;height:100%;position:relative;z-index:1}
+.bar i{display:block;width:100%;max-width:24px;background:linear-gradient(180deg,#818cf8,#4f46e5);border-radius:4px 4px 2px 2px;min-height:3px;transition:.3s}
 .bar.zero i{background:#e8eaf2;min-height:3px}
-.bar .v{font-size:11px;color:var(--muted)}
-.bar .l{font-size:11px;color:var(--muted)}
+.bar .v{font-size:10px;color:var(--muted)}
+.bar .l{font-size:10px;color:var(--muted)}
 .bar.today .l{color:var(--primary);font-weight:700}
 .band{position:absolute;left:0;right:0;background:rgba(79,70,229,.07);border-top:1.5px dashed #b3bbf5;border-bottom:1.5px dashed #b3bbf5;z-index:0}
-.band-tag{position:absolute;right:0;font-size:10.5px;color:#8b93d8;transform:translateY(-16px)}
-.stacked{display:flex;height:16px;border-radius:99px;overflow:hidden;background:#eef0f6}
+.band-tag{position:absolute;right:0;font-size:9.5px;color:#8b93d8;transform:translateY(-14px)}
+.stacked{display:flex;height:14px;border-radius:99px;overflow:hidden;background:#eef0f6}
 .stacked i{height:100%}
-.legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;font-size:12.5px;color:var(--muted)}
-.legend .dot{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:8px;font-size:11.5px;color:var(--muted)}
+.legend .dot{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:4px}
 
-/* ---------- 表单 ---------- */
-input,select,textarea{font:inherit;border:1px solid #d4d8e6;border-radius:10px;padding:9px 12px;background:#fff;color:var(--text);outline:none}
+/* ---------- 表单 & 按钮 ---------- */
+input,select,textarea{font:inherit;border:1px solid #d4d8e6;border-radius:9px;padding:8px 11px;background:#fff;color:var(--text);outline:none;font-size:16px}
 input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(79,70,229,.12)}
-textarea{width:100%;resize:vertical;min-height:64px}
-.btn{background:var(--primary);color:#fff;border:none;border-radius:10px;padding:9px 20px;font:inherit;font-weight:600;cursor:pointer}
-.btn:hover{background:#4338ca}
+textarea{width:100%;resize:vertical;min-height:60px}
+.btn{background:var(--primary);color:#fff;border:none;border-radius:9px;padding:9px 16px;font:inherit;font-weight:600;cursor:pointer;min-height:40px;font-size:14px}
+.btn:active{background:#4338ca;transform:scale(.98)}
 .btn-light{background:var(--primary-soft);color:var(--primary)}
-.btn-light:hover{background:#dfe3fd}
-.btn-sm{padding:6px 14px;font-size:12.5px;border-radius:9px}
+.btn-light:active{background:#dfe3fd}
+.btn-sm{padding:6px 12px;font-size:12.5px;min-height:auto}
 .btn-danger{background:none;border:1px solid #f2c7c7;color:var(--danger)}
-.btn-danger:hover{background:#fdf0f0}
-.form-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.form-grid{display:flex;flex-direction:column;gap:10px}
+.form-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.form-grid{display:flex;flex-direction:column;gap:8px}
 
 /* ---------- 时长页 ---------- */
-.time-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
-.mt14{margin-top:14px}
-table{width:100%;border-collapse:collapse;font-size:13px}
-th{text-align:left;color:var(--muted);font-weight:500;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
-td{padding:9px 10px;border-bottom:1px solid #f0f1f7}
-.rec-item{display:flex;align-items:center;gap:12px;padding:9px 4px;border-bottom:1px solid #f0f1f7;font-size:13px}
+.time-grid{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.mt10{margin-top:10px}
+table{width:100%;border-collapse:collapse;font-size:12.5px;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+th{text-align:left;color:var(--muted);font-weight:500;padding:7px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:8px;border-bottom:1px solid #f0f1f7}
+.rec-item{display:flex;align-items:center;gap:8px;padding:8px 2px;border-bottom:1px solid #f0f1f7;font-size:12.5px}
 .rec-item:last-child{border-bottom:none}
-.rec-item .d{color:var(--muted);width:88px;flex:none}
+.rec-item .d{color:var(--muted);width:72px;flex:none}
 .rec-item .h{font-weight:700;margin-left:auto}
-.rec-item .del{border:none;background:none;color:#c2c7d6;cursor:pointer;font-size:15px;padding:2px 6px;border-radius:6px}
-.rec-item .del:hover{color:var(--danger);background:#fdf0f0}
-.cat-tag{font-size:11.5px;padding:2px 9px;border-radius:99px;font-weight:600}
-.empty{color:var(--muted);text-align:center;padding:28px 0;font-size:13px}
+.rec-item .del{border:none;background:none;color:#c2c7d6;cursor:pointer;font-size:14px;padding:2px 6px;border-radius:6px}
+.rec-item .del:active{color:var(--danger);background:#fdf0f0}
+.cat-tag{font-size:10.5px;padding:1px 8px;border-radius:99px;font-weight:600}
+.empty{color:var(--muted);text-align:center;padding:24px 0;font-size:12.5px}
 
 /* ---------- 错题本 ---------- */
-.stat-chips{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0;font-size:12.5px;color:var(--muted)}
+.stat-chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0;font-size:11.5px;color:var(--muted)}
 .stat-chips b{color:var(--text)}
-.filter-row{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
-.filter-row select{min-width:130px}
-.mistake-list{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.q-card{display:flex;flex-direction:column;gap:8px}
-.q-top{display:flex;align-items:center;gap:8px}
-.q-cat{font-size:11.5px;padding:2px 10px;border-radius:99px;background:var(--primary-soft);color:var(--primary);font-weight:600}
-.q-date{font-size:11.5px;color:var(--muted);margin-left:auto}
-.q-title{font-size:13.5px;white-space:pre-wrap}
-.q-reason{font-size:12px;color:var(--muted)}
-.q-actions{display:flex;align-items:center;gap:7px;margin-top:2px;flex-wrap:wrap}
-.pill{font-size:12px;padding:4px 13px;border-radius:99px;border:1px solid #e4e6f0;cursor:pointer;background:#f6f7fb;color:var(--muted);font-family:inherit}
+.filter-row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.filter-row select{min-width:110px}
+.mistake-list{display:flex;flex-direction:column;gap:8px}
+.q-card{display:flex;flex-direction:column;gap:6px}
+.q-top{display:flex;align-items:center;gap:6px}
+.q-cat{font-size:10.5px;padding:1px 8px;border-radius:99px;background:var(--primary-soft);color:var(--primary);font-weight:600}
+.q-date{font-size:11px;color:var(--muted);margin-left:auto}
+.q-title{font-size:13px;white-space:pre-wrap}
+.q-reason{font-size:11.5px;color:var(--muted)}
+.q-actions{display:flex;align-items:center;gap:6px;margin-top:2px;flex-wrap:wrap}
+.pill{font-size:12px;padding:4px 12px;border-radius:99px;border:1px solid #e4e6f0;cursor:pointer;background:#f6f7fb;color:var(--muted);font-family:inherit}
 .pill.on-0{background:#fdecec;color:#b91c1c;border-color:#f5c6c6;font-weight:600}
 .pill.on-1{background:#fdf3e3;color:#b45309;border-color:#f3ddb3;font-weight:600}
 .pill.on-2{background:#e7f7f1;color:#047857;border-color:#bfe8d9;font-weight:600}
 
-/* ---------- 里程碑 ---------- */
-.exam-edit{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:20px}
-.exam-edit .hint{font-size:12px;color:var(--muted)}
+/* ---------- 里程碑时间轴 ---------- */
+.exam-edit{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.exam-edit .hint{font-size:11.5px;color:var(--muted)}
 .timeline{position:relative}
-.timeline::before{content:'';position:absolute;left:111px;top:8px;bottom:8px;width:2px;background:var(--line)}
-.tl-item{display:grid;grid-template-columns:92px 40px 1fr;margin-bottom:10px}
-.tl-date{font-size:12.5px;font-weight:600;color:var(--text);text-align:right;padding-right:2px}
-.tl-days{font-size:11px;color:var(--muted);font-weight:400}
-.tl-dot{width:14px;height:14px;border-radius:50%;background:#c9cddc;margin-top:5px;justify-self:center;position:relative;z-index:1;border:3px solid #fff;box-shadow:0 0 0 1.5px var(--line)}
+.timeline::before{content:'';position:absolute;left:62px;top:8px;bottom:8px;width:2px;background:var(--line)}
+.tl-item{display:grid;grid-template-columns:52px 22px 1fr;margin-bottom:8px}
+.tl-date{font-size:11px;font-weight:600;color:var(--text);text-align:right;padding-right:2px}
+.tl-days{font-size:10.5px;color:var(--muted);font-weight:400}
+.tl-dot{width:12px;height:12px;border-radius:50%;background:#c9cddc;margin-top:5px;justify-self:center;position:relative;z-index:1;border:2px solid #fff;box-shadow:0 0 0 1.5px var(--line)}
 .tl-dot.future{background:var(--primary)}
 .tl-dot.done{background:var(--ok)}
-.tl-dot.today{background:var(--warn);box-shadow:0 0 0 4px rgba(217,119,6,.2)}
-.tl-card{padding:13px 16px}
+.tl-dot.today{background:var(--warn);box-shadow:0 0 0 3px rgba(217,119,6,.2)}
+.tl-card{padding:10px 12px}
 .tl-card.done{opacity:.72}
-.ms-title{font-weight:600;font-size:13.5px;display:flex;align-items:center;gap:8px;cursor:pointer}
+.ms-title{font-weight:600;font-size:12.5px;display:flex;align-items:center;gap:6px;cursor:pointer}
 .tl-card.done .ms-title span{text-decoration:line-through;color:var(--muted)}
-.ms-desc{font-size:12.5px;color:var(--muted);margin-top:3px}
-.ms-check{accent-color:var(--ok);width:15px;height:15px;cursor:pointer;flex:none}
+.ms-desc{font-size:11.5px;color:var(--muted);margin-top:2px}
+.ms-check{accent-color:var(--ok);width:14px;height:14px;cursor:pointer;flex:none}
 
-/* ---------- 任务学习内容 ---------- */
+/* ---------- 学习内容模态（手机全屏） ---------- */
 .task .txt{flex:1}
-.study-btn{flex:none;margin-left:10px;border:1px solid #dfe3fd;background:var(--primary-soft);color:var(--primary);border-radius:99px;padding:4px 12px;font-size:11.5px;font-weight:600;cursor:pointer;font-family:inherit}
-.study-btn:hover{background:#dfe3fd}
+.study-btn{flex:none;margin-left:8px;border:1px solid #dfe3fd;background:var(--primary-soft);color:var(--primary);border-radius:99px;padding:3px 10px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit}
 #study-modal{position:fixed;inset:0;z-index:200;display:none}
 #study-modal.show{display:block}
 .sm-mask{position:absolute;inset:0;background:rgba(15,17,45,.52)}
-.sm-card{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(720px,92vw);max-height:88vh;background:#fff;border-radius:18px;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(15,17,45,.35);overflow:hidden}
-.sm-head{display:flex;align-items:flex-start;gap:10px;padding:16px 20px 13px;border-bottom:1px solid var(--line)}
-.sm-tag{font-size:11px;padding:3px 10px;border-radius:99px;font-weight:700;flex:none;margin-top:2px;background:var(--primary-soft);color:var(--primary)}
-.sm-title{font-size:15.5px;font-weight:700;line-height:1.5;flex:1}
-.sm-close{border:none;background:#f2f3f9;color:#6b7280;width:32px;height:32px;border-radius:10px;font-size:13px;cursor:pointer;flex:none;font-family:inherit}
-.sm-close:hover{background:#e8eaf3;color:var(--text)}
-.sm-body{padding:16px 20px 20px;overflow-y:auto;-webkit-overflow-scrolling:touch;font-size:13.5px;line-height:1.85}
-.sm-foot{display:flex;gap:10px;padding:12px 20px;border-top:1px solid var(--line)}
-.sm-body .sec{margin:18px 0 8px;font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
-.sm-body .sec:first-child{margin-top:2px}
-.sm-body .sec::before{content:'';width:4px;height:16px;border-radius:2px;background:var(--primary);flex:none}
-.sm-body p{margin:8px 0;color:#333a4e}
-.sm-body ul,.sm-body ol{padding-left:20px;margin:8px 0}
-.sm-body li{margin:5px 0;color:#333a4e}
+.sm-card{position:absolute;left:0;right:0;top:0;bottom:0;background:#fff;display:flex;flex-direction:column;overflow:hidden}
+.sm-head{display:flex;align-items:flex-start;gap:8px;padding:calc(12px + env(safe-area-inset-top)) 14px 11px;border-bottom:1px solid var(--line)}
+.sm-tag{font-size:10px;padding:2px 8px;border-radius:99px;font-weight:700;flex:none;margin-top:2px;background:var(--primary-soft);color:var(--primary)}
+.sm-title{font-size:14.5px;font-weight:700;line-height:1.4;flex:1}
+.sm-close{border:none;background:#f2f3f9;color:#6b7280;width:30px;height:30px;border-radius:9px;font-size:12px;cursor:pointer;flex:none;font-family:inherit}
+.sm-body{padding:12px 14px 16px;overflow-y:auto;-webkit-overflow-scrolling:touch;font-size:14px;line-height:1.85}
+.sm-foot{display:flex;gap:8px;padding:10px 14px calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--line)}
+.sm-body .sec{margin:14px 0 6px;font-size:14.5px;font-weight:700;display:flex;align-items:center;gap:6px}
+.sm-body .sec:first-child{margin-top:0}
+.sm-body .sec::before{content:'';width:3px;height:14px;border-radius:2px;background:var(--primary);flex:none}
+.sm-body p{margin:6px 0;color:#333a4e}
+.sm-body ul,.sm-body ol{padding-left:18px;margin:6px 0}
+.sm-body li{margin:4px 0;color:#333a4e}
 .sm-body b{color:var(--text)}
-.sm-body table{margin:10px 0}
+.sm-body table{margin:8px 0}
 .sm-body td,.sm-body th{font-size:12.5px}
-.formula{background:var(--primary-soft);border:1px solid #dfe3fd;border-radius:10px;padding:10px 14px;margin:10px 0;font-size:13px;color:#3730a3;font-weight:600;line-height:2}
-.tipline{background:var(--skill-soft);border-radius:10px;padding:10px 14px;margin:10px 0;font-size:12.5px;color:#065f46;line-height:1.8}
-.warnline{background:var(--port-soft);border-radius:10px;padding:10px 14px;margin:10px 0;font-size:12.5px;color:#92400e;line-height:1.8}
-.exbox{border:1px solid #dfe3fd;border-radius:12px;padding:12px 14px;margin:12px 0;background:#fafbff}
-.exbox .ex-t{font-size:12px;font-weight:700;color:var(--primary);margin-bottom:6px}
-.sm-body details{border:1px solid #e4e6f0;border-radius:10px;margin:8px 0;background:#f8f9fd;overflow:hidden}
-.sm-body summary{padding:9px 14px;cursor:pointer;font-weight:600;font-size:13px;color:var(--primary)}
-.sm-body details .ans{padding:2px 14px 11px;font-size:13px;color:#333a4e;border-top:1px dashed #e4e6f0}
-.sm-body pre{background:#1e1b4b;color:#e0e7ff;border-radius:10px;padding:12px 14px;margin:10px 0;font-size:12.5px;overflow-x:auto;line-height:1.7}
-@media (max-width:760px){
-  .sm-card{left:0;right:0;top:0;bottom:0;transform:none;width:auto;max-height:none;border-radius:0}
-  .sm-head{padding:calc(12px + env(safe-area-inset-top)) 16px 11px}
-  .sm-body{padding:14px 16px 20px;font-size:14px}
-  .sm-foot{padding:12px 16px calc(12px + env(safe-area-inset-bottom))}
-  .study-btn{padding:5px 12px}
-}
+.formula{background:var(--primary-soft);border:1px solid #dfe3fd;border-radius:8px;padding:8px 12px;margin:8px 0;font-size:13px;color:#3730a3;font-weight:600;line-height:2}
+.tipline{background:var(--skill-soft);border-radius:8px;padding:8px 12px;margin:8px 0;font-size:12.5px;color:#065f46;line-height:1.8}
+.warnline{background:var(--port-soft);border-radius:8px;padding:8px 12px;margin:8px 0;font-size:12.5px;color:#92400e;line-height:1.8}
+.exbox{border:1px solid #dfe3fd;border-radius:10px;padding:10px 12px;margin:10px 0;background:#fafbff}
+.exbox .ex-t{font-size:11px;font-weight:700;color:var(--primary);margin-bottom:4px}
+.sm-body details{border:1px solid #e4e6f0;border-radius:8px;margin:6px 0;background:#f8f9fd;overflow:hidden}
+.sm-body summary{padding:8px 12px;cursor:pointer;font-weight:600;font-size:13px;color:var(--primary)}
+.sm-body details .ans{padding:2px 12px 10px;font-size:13px;color:#333a4e;border-top:1px dashed #e4e6f0}
+.sm-body pre{background:#1e1b4b;color:#e0e7ff;border-radius:8px;padding:10px 12px;margin:8px 0;font-size:12px;overflow-x:auto;line-height:1.7}
 
 /* ---------- 安装引导 ---------- */
-#install-bar{position:fixed;right:16px;bottom:16px;z-index:99;width:300px;background:#1e1b4b;color:#e0e7ff;display:none;border-radius:14px;padding:14px 16px;box-shadow:0 12px 40px rgba(20,20,60,.4);font-size:12.5px;line-height:1.6}
-#install-bar.show{display:block}
-#install-bar .btn{padding:7px 14px;font-size:12.5px;background:#818cf8;color:#1e1b4b}
-#install-bar .btn:hover{background:#a5b4fc}
-.ib-close{border:1px solid rgba(255,255,255,.25);background:none;color:#c7d2fe;border-radius:9px;padding:7px 12px;font-size:12px;cursor:pointer;font-family:inherit}
+#install-bar{position:fixed;left:12px;right:12px;z-index:99;background:#1e1b4b;color:#e0e7ff;display:none;border-radius:12px;padding:12px 14px;box-shadow:0 12px 40px rgba(20,20,60,.4);font-size:12px;line-height:1.6}
+#install-bar.show{display:block;bottom:calc(72px + env(safe-area-inset-bottom))}
+#install-bar .btn{padding:6px 12px;font-size:12px;background:#818cf8;color:#1e1b4b;min-height:auto}
+.ib-close{border:1px solid rgba(255,255,255,.25);background:none;color:#c7d2fe;border-radius:8px;padding:6px 10px;font-size:11.5px;cursor:pointer;font-family:inherit}
 
-/* ---------- 生活板块（运动/随记/播客/读书） ---------- */
-.life-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+/* ---------- 生活板块 ---------- */
+.life-nav{display:none}
 .pill.pill-on{background:var(--primary);color:#fff;border-color:var(--primary);font-weight:600}
 .note-card{border-left:3px solid var(--primary)}
-.note-card .n-title{font-size:14.5px;font-weight:700;margin-bottom:4px}
-.note-card .n-body{font-size:13.5px;color:#3b3f52;white-space:pre-wrap;word-break:break-word;margin:6px 0 10px}
-.note-card .n-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.tag-chip{font-size:11px;padding:2px 10px;border-radius:99px;background:var(--primary-soft);color:var(--primary);font-weight:600}
-.mini-btn{border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:8px;padding:4px 10px;font-size:12px;cursor:pointer;font-family:inherit}
-.mini-btn:hover{color:var(--text);background:#f6f7fb}
+.note-card .n-title{font-size:13.5px;font-weight:700;margin-bottom:3px}
+.note-card .n-body{font-size:12.5px;color:#3b3f52;white-space:pre-wrap;word-break:break-word;margin:4px 0 8px}
+.note-card .n-meta{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:11.5px}
+.tag-chip{font-size:10.5px;padding:1px 8px;border-radius:99px;background:var(--primary-soft);color:var(--primary);font-weight:600}
+.mini-btn{border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:7px;padding:3px 8px;font-size:11.5px;cursor:pointer;font-family:inherit}
+.mini-btn:active{color:var(--text);background:#f6f7fb}
 .life-card{border-left:3px solid var(--skill)}
-.life-card .lc-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
-.life-card .lc-title{font-size:14.5px;font-weight:700;flex:1}
-.life-card .lc-note{font-size:13px;color:#3b3f52;margin:4px 0 10px;white-space:pre-wrap;word-break:break-word}
-.book-item{display:flex;flex-direction:column;gap:8px;padding:12px 0;border-bottom:1px solid #f0f1f7}
-.flash-card{border:1px solid #dfe3fd;border-radius:12px;padding:13px 16px;background:#fafbff;cursor:pointer;margin-bottom:8px}
-.flash-card .w{font-size:16.5px;font-weight:700;color:var(--primary)}
-.flash-card .ipa{font-size:12.5px;color:var(--muted);margin-left:8px;font-weight:400}
-.flash-card .a{margin-top:6px;font-size:13.5px;color:#333a4e}
-.flash-card .ex{margin-top:5px;font-size:12.5px;color:var(--muted);font-style:italic}
-.quiz-opt{border:1px solid #e4e6f0;border-radius:10px;padding:11px 14px;margin:8px 0;font-size:13.5px;cursor:pointer;background:#fff;line-height:1.6}
-.quiz-opt:hover{border-color:#c7d2fe;background:#fafbff}
+.life-card .lc-top{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:4px}
+.life-card .lc-title{font-size:13.5px;font-weight:700;flex:1}
+.life-card .lc-note{font-size:12px;color:#3b3f52;margin:3px 0 8px;white-space:pre-wrap;word-break:break-word}
+.book-item{display:flex;flex-direction:column;gap:6px;padding:10px 0;border-bottom:1px solid #f0f1f7}
+.flash-card{border:1px solid #dfe3fd;border-radius:10px;padding:10px 13px;background:#fafbff;cursor:pointer;margin-bottom:6px}
+.flash-card .w{font-size:15px;font-weight:700;color:var(--primary)}
+.flash-card .ipa{font-size:11.5px;color:var(--muted);margin-left:6px;font-weight:400}
+.flash-card .a{margin-top:5px;font-size:12.5px;color:#333a4e}
+.flash-card .ex{margin-top:4px;font-size:11.5px;color:var(--muted);font-style:italic}
+.quiz-opt{border:1px solid #e4e6f0;border-radius:9px;padding:10px 12px;margin:6px 0;font-size:13px;cursor:pointer;background:#fff;line-height:1.6}
+.quiz-opt:active{border-color:#c7d2fe;background:#fafbff}
 .quiz-opt.q-right{border-color:var(--ok);background:var(--skill-soft);color:#065f46;font-weight:600}
 .quiz-opt.q-wrong{border-color:var(--danger);background:#fdecec;color:#b91c1c}
 .quiz-opt.q-dim{opacity:.55}
 .book-item:last-child{border-bottom:none}
-.book-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.book-emoji{width:38px;height:38px;border-radius:10px;background:var(--book-soft);color:var(--book);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex:none}
-.book-title{font-size:14px;font-weight:700;flex:1;min-width:120px}
-.book-act{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.book-act input{width:64px;padding:5px 8px}
-.stat-pill{font-size:11.5px;padding:3px 10px;border-radius:99px;font-weight:600}
-.proj-card{display:flex;flex-direction:column;gap:10px;padding:14px 0;border-bottom:1px solid #f0f1f7}
+.book-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.book-emoji{width:34px;height:34px;border-radius:9px;background:var(--book-soft);color:var(--book);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex:none}
+.book-title{font-size:13px;font-weight:700;flex:1;min-width:100px}
+.book-act{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.book-act input{width:56px;padding:4px 7px}
+.stat-pill{font-size:10.5px;padding:2px 8px;border-radius:99px;font-weight:600}
+.proj-card{display:flex;flex-direction:column;gap:8px;padding:10px 0;border-bottom:1px solid #f0f1f7}
 .proj-card:last-child{border-bottom:none}
-.proj-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.proj-emoji{font-size:20px}
-.proj-name{font-size:14.5px;font-weight:700;flex:1;min-width:140px}
-.proj-bar{display:flex;align-items:center;gap:10px}
+.proj-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.proj-emoji{font-size:18px}
+.proj-name{font-size:13.5px;font-weight:700;flex:1;min-width:120px}
+.proj-bar{display:flex;align-items:center;gap:8px}
 .proj-bar .bar-thin{flex:1}
-.proj-bar input{width:56px;padding:5px 8px}
+.proj-bar input{width:48px;padding:4px 6px}
 
-/* ---------- 更多面板（手机） ---------- */
-.nav-group-label{font-size:10.5px;color:#8182c8;letter-spacing:2px;padding:10px 12px 4px;font-weight:600}
-#more-mask{position:fixed;inset:0;background:rgba(15,17,45,.45);z-index:150;display:none}
-#more-mask.show{display:block}
-#more-sheet{position:fixed;left:0;right:0;bottom:0;z-index:151;background:#fff;border-radius:20px 20px 0 0;padding:10px 16px calc(16px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .25s;box-shadow:0 -12px 40px rgba(20,20,60,.25);display:none}
-#more-sheet.show{display:block;transform:translateY(0)}
-#more-sheet .ms-grab{width:38px;height:4px;border-radius:99px;background:#e2e4ee;margin:2px auto 12px}
-.more-item{display:flex;align-items:center;gap:12px;padding:14px 6px;border-bottom:1px solid #f0f1f7;cursor:pointer;font-size:14.5px;font-weight:600}
-.more-item:last-child{border-bottom:none}
-.more-item svg{color:#6366f1}
-.more-item:active{background:#f6f7fb}
-
-/* ---------- App 化交互（FAB / 表单抽屉 / Toast） ---------- */
-#fab{position:fixed;right:16px;bottom:calc(80px + env(safe-area-inset-bottom));width:54px;height:54px;border-radius:17px;background:var(--primary);color:#fff;border:none;font-size:28px;line-height:0;display:none;align-items:center;justify-content:center;box-shadow:0 10px 26px rgba(79,70,229,.42);cursor:pointer;z-index:120;font-family:inherit;padding:0 0 4px}
+/* ---------- FAB / 表单抽屉 / Toast ---------- */
+#fab{position:fixed;right:14px;bottom:calc(76px + env(safe-area-inset-bottom));width:52px;height:52px;border-radius:16px;background:var(--primary);color:#fff;border:none;font-size:26px;line-height:0;display:none;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(79,70,229,.4);cursor:pointer;z-index:120;font-family:inherit;padding:0 0 3px}
 #fab:active{transform:scale(.94)}
 #form-sheet-mask{position:fixed;inset:0;background:rgba(15,17,45,.45);z-index:160;display:none}
 #form-sheet-mask.show{display:block}
-#form-sheet{position:fixed;left:0;right:0;bottom:0;z-index:161;background:#fff;border-radius:20px 20px 0 0;padding:10px 16px calc(14px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .25s;box-shadow:0 -12px 40px rgba(20,20,60,.25);display:none;max-height:88vh}
-#form-sheet.show{display:flex;flex-direction:column;transform:translateY(0)}
-.fs-head{display:flex;align-items:center;justify-content:space-between;padding:2px 2px 10px;border-bottom:1px solid var(--line);margin-bottom:12px}
+#form-sheet{position:fixed;left:0;right:0;bottom:0;z-index:161;background:#fff;border-radius:16px 16px 0 0;padding:8px 14px calc(12px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .25s;box-shadow:0 -10px 36px rgba(20,20,60,.25);display:none;max-height:85vh;flex-direction:column}
+#form-sheet.show{display:flex;transform:translateY(0)}
+.ms-grab{width:36px;height:4px;border-radius:99px;background:#e2e4ee;margin:2px auto 10px}
+.fs-head{display:flex;align-items:center;justify-content:space-between;padding:0 2px 8px;border-bottom:1px solid var(--line);margin-bottom:10px}
 .fs-head b{font-size:15px}
 .fs-body{overflow-y:auto;-webkit-overflow-scrolling:touch}
-.fs-body .card{border:none;box-shadow:none;padding:2px 0}
-#toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(16px);background:#1f2333;color:#fff;padding:10px 18px;border-radius:99px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:300;max-width:82vw;text-align:center}
+.fs-body .card{border:none;box-shadow:none;padding:2px 0;margin:0}
+#toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(12px);background:#1f2333;color:#fff;padding:9px 16px;border-radius:99px;font-size:12.5px;opacity:0;pointer-events:none;transition:.25s;z-index:300;max-width:80vw;text-align:center}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-@media (min-width:761px){#fab{display:none!important}}
 
-/* ---------- 响应式 ---------- */
-.nav-btn.m-only{display:none}
-@media (max-width:1000px){
-  .hero-grid{grid-template-columns:1fr 1fr}
-  .stat-grid{grid-template-columns:1fr 1fr}
-  .dash-grid2{grid-template-columns:1fr}
-  .mistake-list{grid-template-columns:1fr}
-  .time-grid{grid-template-columns:1fr}
+/* ---------- 设置面板（手机底部抽屉） ---------- */
+#settings-mask{position:fixed;inset:0;background:rgba(15,17,45,.45);z-index:150;display:none}
+#settings-mask.show{display:block}
+#settings-sheet{position:fixed;left:0;right:0;bottom:0;z-index:151;background:#fff;border-radius:18px 18px 0 0;padding:8px 16px calc(16px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .25s;box-shadow:0 -12px 40px rgba(20,20,60,.25);display:none;max-height:82vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#settings-sheet.show{display:block;transform:translateY(0)}
+.sec-title{font-size:11px;color:var(--muted);letter-spacing:1px;margin:14px 0 6px;font-weight:600}
+.sec-title:first-child{margin-top:4px}
+.setting-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:6px;background:#fafbfe;font-size:13px;cursor:pointer;font-family:inherit;width:100%;text-align:left}
+.setting-row:active{background:#f0f1f9}
+.setting-row .si{font-size:16px}
+.setting-row .st{flex:1;font-weight:500}
+.setting-row .sa{font-size:11px;color:var(--muted)}
+
+/* ---------- FAB 显隐 + 桌面隐藏 ---------- */
+#fab.show-fab{display:flex}
+@media (min-width: 761px){
+  #fab{display:none!important}
+  #top-header{display:none}
+  #hub-pills{display:none}
+  #bottom-bar{display:none}
+  #settings-sheet,#settings-mask{display:none!important}
 }
-@media (max-width:760px){
-  input,select,textarea{font-size:16px}
-  .app{grid-template-columns:1fr}
-  body{overflow-x:hidden}
-  .sidebar{position:fixed;bottom:0;left:0;right:0;top:auto;height:auto;flex-direction:row;padding:5px 8px calc(5px + env(safe-area-inset-bottom));background:#1e1b4b;z-index:50;box-shadow:0 -6px 24px rgba(20,20,60,.25)}
-  .logo,.side-count,.side-foot{display:none}
-  .nav-group-label{display:none}
-  .nav{flex-direction:row;width:100%;gap:2px}
-  .nav .nav-btn{display:none}
-  .nav .nav-btn.m-pin{display:flex;flex:1;flex-direction:column;gap:3px;padding:7px 2px;font-size:11px;border-radius:12px;justify-content:center}
-  .nav-btn svg{width:21px;height:21px}
-  main{padding:14px 12px calc(100px + env(safe-area-inset-bottom))}
-  /* 页头与卡片更紧凑 */
-  .page-head{margin-bottom:14px;gap:8px}
-  .page-head h1{font-size:20px}
-  .page-head .sub{font-size:12px}
-  .card{padding:15px 13px}
-  .btn{min-height:44px}
-  .pill{padding:7px 14px}
-  .task{padding:11px 8px}
-  /* 总览：重点卡片单列铺满，数字卡两列 */
-  .hero-grid{grid-template-columns:1fr}
-  .hero-num{font-size:40px}
-  .stat-grid{grid-template-columns:1fr 1fr;gap:10px}
-  .stat .v{font-size:21px}
-  .ring-wrap{gap:12px}
-  /* 计划页：软考/实操并排改上下单列 */
-  .track-grid{grid-template-columns:1fr}
-  .month-head{padding:13px 14px;gap:10px}
-  .month-right{gap:8px}
-  .month-right .mini-progress{width:64px}
-  .month-body{padding:4px 14px 16px}
-  /* 图表矮一点省屏幕 */
-  .bars{height:118px;padding-top:14px}
-  /* 表格（月度汇总/学习内容）横向滑动不破版 */
-  table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
-  /* 里程碑时间轴收窄 */
-  .tl-item{grid-template-columns:66px 24px 1fr}
-  .timeline::before{left:77px}
-  .tl-date{font-size:11px}
-  /* 刷题选项加大触控 */
-  .quiz-opt{padding:12px 13px}
-  /* 记录列表更紧凑 */
-  .rec-item{gap:8px;font-size:12.5px}
-  .rec-item .d{width:80px}
-  /* 更多面板限高可滚动 */
-  #more-sheet{max-height:74vh;overflow-y:auto}
-  #install-bar{left:12px;right:12px;width:auto;bottom:calc(86px + env(safe-area-inset-bottom))}
-  /* App 化：表单收进抽屉，FAB 唤起 */
-  #fab.show-fab{display:flex}
-  #tab-notes > .card.form-grid,#tab-reading > .card.form-grid,#tab-sport .card.form-grid,#tab-mistakes .card.form-grid,#tab-english .card.form-grid,#tab-podcast .card[style*="margin-top:14px"]{display:none}
-  .more-item{border-bottom:none;background:#f6f7fb;border-radius:12px;padding:12px;margin:5px 0}
-  .stat-chips{margin:10px 0}
-  .life-nav{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
-  .life-nav .pill{flex:none}
-  .card{box-shadow:0 1px 2px rgba(23,25,60,.04)}
+
+/* ---------- 桌面端（min-width: 761px） ---------- */
+@media (min-width: 761px){
+  body{font-size:14px}
+  .app{display:grid;grid-template-columns:232px 1fr;min-height:100vh}
+  main{padding:26px 32px 60px;width:100%;max-width:1120px;margin:0 auto}
+  .page-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+  .page-head h1{font-size:22px}
+  .page-head .sub{color:var(--muted);font-size:13px;margin-top:3px}
+
+  /* 侧边栏 */
+  .sidebar{background:linear-gradient(180deg,#1e1b4b 0%,#312e81 100%);color:#fff;padding:22px 14px 16px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow:auto}
+  .logo{padding:0 8px 16px}
+  .logo .t1{font-size:15px;font-weight:700;letter-spacing:.5px}
+  .logo .t2{font-size:11px;color:#a5b4fc;margin-top:2px}
+  .side-count{margin-top:auto;padding:12px;background:rgba(255,255,255,.08);border-radius:10px;text-align:center}
+  .side-count .n{font-size:24px;font-weight:700}
+  .side-count .l{font-size:11px;color:#c7d2fe}
+  .side-foot{display:flex;gap:6px;margin-top:10px}
+  .ghost{flex:1;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#e0e7ff;border-radius:8px;padding:6px 2px;font-size:11px;cursor:pointer;font-family:inherit}
+  .ghost:hover{background:rgba(255,255,255,.2)}
+
+  /* Hub 分组导航 */
+  .hub-group{margin-bottom:6px}
+  .hub-label{font-size:10px;color:#8182c8;letter-spacing:1.5px;padding:8px 10px 3px;font-weight:600;text-transform:uppercase}
+  .hub-nav{display:flex;flex-direction:column;gap:2px}
+  .hub-btn{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:8px;color:#c7d2fe;background:none;border:none;font-size:13px;cursor:pointer;width:100%;text-align:left;font-family:inherit}
+  .hub-btn:hover{background:rgba(255,255,255,.09);color:#fff}
+  .hub-btn.active{background:#fff;color:#3730a3;font-weight:600}
+  .hub-btn svg{flex:none;width:15px;height:15px}
+
+  /* 卡片和网格恢复桌面版 */
+  .card{padding:18px 20px;margin-bottom:14px;border-radius:16px;box-shadow:0 1px 2px rgba(23,25,60,.05),0 8px 24px rgba(23,25,60,.06)}
+  .card h3{font-size:14.5px;margin-bottom:14px}
+  .page-head{display:flex}
+
+  .hero-grid{flex-direction:grid;display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:14px}
+  .hero-label{font-size:12px}
+  .hero-num{font-size:46px}
+  .ring-wrap{gap:16px}
+  .ring{width:92px;height:92px}
+  .ring>div{width:68px;height:68px}
+  .ring .p{font-size:17px}
+  .ring-info .big{font-size:19px}
+
+  .stat-grid{grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px}
+  .stat .v{font-size:24px}
+
+  .dash-grid2{flex-direction:grid;display:grid;grid-template-columns:1.5fr 1fr;gap:14px}
+  .stack{gap:14px}
+
+  .plan-list{gap:12px}
+  .track-grid{flex-direction:grid;display:grid;grid-template-columns:1fr 1fr;gap:6px 20px}
+  .mini-progress{width:110px;height:7px}
+  .mini-count{width:38px;font-size:12px}
+  .month-head{padding:16px 20px}
+  .month-body{padding:4px 20px 18px}
+  .bars{height:150px;padding-top:20px}
+  .mistake-list{grid-template-columns:1fr 1fr;display:grid}
+  .time-grid{flex-direction:grid;display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+  .timeline::before{left:111px}
+  .tl-item{grid-template-columns:92px 40px 1fr}
+  .tl-date{font-size:12.5px;text-align:right}
+}
+
+/* ---------- 中等屏（601-760）过渡 ---------- */
+@media (min-width: 601px) and (max-width: 760px){
+  .hero-grid{flex-direction:grid;display:grid;grid-template-columns:1fr 1fr}
+  .stat-grid{grid-template-columns:1fr 1fr}
+  .dash-grid2{flex-direction:column}
 }
 </style>
 </head>
@@ -430,79 +452,176 @@ td{padding:9px 10px;border-bottom:1px solid #f0f1f7}
 </div>
 <button id="fab" onclick="fabClick()" aria-label="添加">+</button>
 <div id="toast"></div>
-<div id="form-parking" style="display:none"></div>
+
+<!-- 手机顶部 Header -->
+<header id="top-header">
+  <div class="th-row">
+    <div style="flex:1;min-width:0">
+      <div class="th-title" id="th-title">总览</div>
+      <div class="th-sub" id="th-sub"></div>
+    </div>
+    <div class="th-days" id="th-days">-- <small>天</small></div>
+  </div>
+</header>
+
+<!-- Hub 子导航 pills（手机） -->
+<div id="hub-pills"></div>
+
+<!-- 手机底部 Tab Bar -->
+<nav id="bottom-bar">
+  <button class="bb-item active" data-hub="learn" onclick="switchHub('learn')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    <span>学习</span>
+  </button>
+  <button class="bb-item" data-hub="life" onclick="switchHub('life')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    <span>生活</span>
+  </button>
+  <button class="bb-item" data-hub="project" onclick="switchHub('project')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/><path d="M9 13l2 2 4-4"/></svg>
+    <span>项目</span>
+  </button>
+  <button class="bb-item" data-hub="settings" onclick="switchHub('settings')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    <span>设置</span>
+  </button>
+</nav>
+
+<!-- 设置面板（手机底部抽屉） -->
+<div id="settings-mask" onclick="closeSettings()"></div>
+<div id="settings-sheet">
+  <div class="ms-grab"></div>
+  <div class="sec-title">数据管理</div>
+  <button class="setting-row" onclick="exportData();toast('备份已下载')">
+    <span class="si">📤</span><span class="st">导出数据备份</span>
+  </button>
+  <button class="setting-row" onclick="document.getElementById('importFile').click()">
+    <span class="si">📥</span><span class="st">导入恢复数据</span><input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(this)">
+  </button>
+  <div class="sec-title">考试设置</div>
+  <div class="setting-row" style="flex-wrap:wrap">
+    <span class="si">📅</span>
+    <span class="st">考试日期</span>
+    <input type="date" id="se-date" style="margin-left:auto" onchange="saveSettingsDate()">
+  </div>
+  <div class="sec-title">AI 助手</div>
+  <div class="setting-row" style="flex-direction:column;align-items:stretch;gap:8px">
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <button class="pill" onclick="pickProvider('zhipu');document.getElementById('se-ai-hide').style.display='block'">智谱（免费推荐）</button>
+      <button class="pill" onclick="pickProvider('deepseek');document.getElementById('se-ai-hide').style.display='block'">DeepSeek</button>
+      <button class="pill" onclick="pickProvider('kimi');document.getElementById('se-ai-hide').style.display='block'">Kimi</button>
+      <button class="pill" onclick="pickProvider('qwen');document.getElementById('se-ai-hide').style.display='block'">千问</button>
+      <button class="pill" onclick="pickProvider('custom');document.getElementById('se-ai-hide').style.display='block'">自定义</button>
+    </div>
+    <div id="se-ai-hide" style="display:none;flex-direction:column;gap:6px">
+      <input id="ai-base" placeholder="API Base URL" style="font-size:14px">
+      <input id="ai-model" placeholder="Model" style="font-size:14px">
+      <input id="ai-key" placeholder="API Key（只存本机）" type="password" style="font-size:14px">
+      <button class="btn btn-sm" onclick="saveAiCfg();saveAiKey();toast('AI 配置已保存')">保存</button>
+    </div>
+  </div>
+  <div class="sec-title">关于</div>
+  <div class="setting-row" onclick="closeSettings();switchHub('learn');">
+    <span class="si">📖</span><span class="st">返回学习中心</span><span class="sa">→</span>
+  </div>
+  <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:16px;padding:0 10px">数据只保存在本机浏览器 · 每天自动快照 3 份 · 换设备请先导出备份</div>
+</div>
+
 <div class="app">
   <aside class="sidebar">
     <div class="logo">
       <div class="t1">我的工作台</div>
       <div class="t2">软考备考 · 生活 · 项目 · 2027.05</div>
     </div>
-    <nav class="nav">
-      <button class="nav-btn active m-pin" data-tab="dashboard" onclick="switchTab('dashboard')">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-        <span>总览</span>
-      </button>
-      <div class="nav-group-label">学习</div>
-      <button class="nav-btn m-pin" data-tab="plan" onclick="switchTab('plan')">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9"/></svg>
-        <span>计划打卡</span>
-      </button>
-      <button class="nav-btn" data-tab="time" onclick="switchTab('time')">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
-        <span>时长统计</span>
-      </button>
-      <button class="nav-btn m-pin" data-tab="mistakes" onclick="switchTab('mistakes')">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4z"/><path d="M19 20H8a3 3 0 0 1-3-3v-1h11"/></svg>
-        <span>错题本</span>
-      </button>
-      <button class="nav-btn" data-tab="milestones" onclick="switchTab('milestones')">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4"/><path d="M5 4h13l-3.5 4L18 12H5"/></svg>
-        <span>里程碑</span>
-      </button>
-      <button class="nav-btn" data-tab="english" onclick="switchTab('english')">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
-        <span>英语</span>
-      </button>
-      <div class="nav-group-label">生活</div>
-      <button class="nav-btn m-pin" data-tab="sport" onclick="switchTab('sport')">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="14.5" cy="5.5" r="2"/><path d="M9 20l2-5-3-2 2-5 3 2h3"/><path d="M6.5 15l-2 5"/></svg>
-        <span>运动</span>
-      </button>
-      <button class="nav-btn" data-tab="notes" onclick="switchTab('notes')">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-        <span>随记</span>
-      </button>
-      <button class="nav-btn" data-tab="podcast" onclick="switchTab('podcast')">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
-        <span>播客</span>
-      </button>
-      <button class="nav-btn" data-tab="reading" onclick="switchTab('reading')">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-        <span>读书</span>
-      </button>
-      <div class="nav-group-label">项目</div>
-      <button class="nav-btn" data-tab="projects" onclick="switchTab('projects')">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/><path d="M9 13l2 2 4-4"/></svg>
-        <span>我的项目</span>
-      </button>
-      <button class="nav-btn m-only m-pin" onclick="toggleMore(true)">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
-        <span>更多</span>
-      </button>
-    </nav>
+
+    <!-- Hub 1: 学习中心 -->
+    <div class="hub-group">
+      <div class="hub-label">📚 学习中心</div>
+      <div class="hub-nav" data-hub="learn">
+        <button class="hub-btn" data-tab="dashboard" onclick="switchTab('dashboard')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+          <span>总览</span>
+        </button>
+        <button class="hub-btn" data-tab="plan" onclick="switchTab('plan')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9"/></svg>
+          <span>计划打卡</span>
+        </button>
+        <button class="hub-btn" data-tab="time" onclick="switchTab('time')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+          <span>时长统计</span>
+        </button>
+        <button class="hub-btn" data-tab="mistakes" onclick="switchTab('mistakes')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4z"/><path d="M19 20H8a3 3 0 0 1-3-3v-1h11"/></svg>
+          <span>错题本</span>
+        </button>
+        <button class="hub-btn" data-tab="milestones" onclick="switchTab('milestones')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4"/><path d="M5 4h13l-3.5 4L18 12H5"/></svg>
+          <span>里程碑</span>
+        </button>
+        <button class="hub-btn" data-tab="english" onclick="switchTab('english')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+          <span>英语</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Hub 2: 生活空间 -->
+    <div class="hub-group">
+      <div class="hub-label">🏠 生活空间</div>
+      <div class="hub-nav" data-hub="life">
+        <button class="hub-btn" data-tab="sport" onclick="switchTab('sport')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="14.5" cy="5.5" r="2"/><path d="M9 20l2-5-3-2 2-5 3 2h3"/><path d="M6.5 15l-2 5"/></svg>
+          <span>运动</span>
+        </button>
+        <button class="hub-btn" data-tab="notes" onclick="switchTab('notes')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+          <span>随记</span>
+        </button>
+        <button class="hub-btn" data-tab="podcast" onclick="switchTab('podcast')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+          <span>播客</span>
+        </button>
+        <button class="hub-btn" data-tab="reading" onclick="switchTab('reading')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          <span>读书</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Hub 3: 项目 -->
+    <div class="hub-group">
+      <div class="hub-label">🛠 项目</div>
+      <div class="hub-nav" data-hub="project">
+        <button class="hub-btn" data-tab="projects" onclick="switchTab('projects')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/><path d="M9 13l2 2 4-4"/></svg>
+          <span>我的项目</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Hub 4: 设置（桌面显示为导航项） -->
+    <div class="hub-group">
+      <div class="hub-label">⚙️ 设置</div>
+      <div class="hub-nav" data-hub="settings">
+        <button class="hub-btn" onclick="document.getElementById('se-date').value=state.settings.examDate;document.getElementById('ai-base').value=aiCfg.base;document.getElementById('ai-model').value=aiCfg.model;document.getElementById('ai-key').value=aiCfg.key;openSettings();closeFormSheet()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>数据 / 考试 / AI</span>
+        </button>
+      </div>
+    </div>
+
     <div class="side-count">
       <div class="n" id="side-count-n">--</div>
       <div class="l">距考试（天）</div>
     </div>
     <div class="side-foot">
-      <button class="ghost" onclick="exportData()">导出数据</button>
-      <button class="ghost" onclick="document.getElementById('importFile').click()">导入数据</button>
-      <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(this)">
+      <button class="ghost" onclick="exportData()">导出</button>
+      <button class="ghost" onclick="document.getElementById('importFile').click()">导入</button>
     </div>
   </aside>
 
   <main>
-    <div id="data-tip" style="display:none;background:#fdf3e3;border:1px solid #f3ddb3;border-radius:12px;padding:11px 13px;margin-bottom:14px;font-size:12.5px;color:#92400e;line-height:1.8">📌 <b>找不到以前的记录？</b>数据按「设备 + 打开方式」分开保存在浏览器里：换手机/电脑、换浏览器、或「浏览器网址打开」与「主屏幕 App」两种方式打开，看到的都是各自独立的数据。请换回你平时用的打开方式，建议固定从主屏幕图标进入本应用。<button onclick="closeDataTip()" style="float:right;border:none;background:none;color:#92400e;font-size:15px;cursor:pointer;font-family:inherit;padding:0 2px">✕</button></div>
+    <div id="data-tip" style="display:none;background:#fdf3e3;border:1px solid #f3ddb3;border-radius:12px;padding:10px 12px;margin-bottom:10px;font-size:12px;color:#92400e;line-height:1.7">📌 <b>找不到以前的记录？</b>数据按「设备 + 打开方式」分开保存在浏览器里：换手机/电脑、换浏览器、或「浏览器网址打开」与「主屏幕 App」两种方式打开，看到的都是各自独立的数据。请换回你平时用的打开方式，建议固定从主屏幕图标进入本应用。<button onclick="closeDataTip()" style="float:right;border:none;background:none;color:#92400e;font-size:14px;cursor:pointer;font-family:inherit;padding:0 2px">✕</button></div>
     <section id="tab-dashboard" class="tab-pane active"></section>
     <section id="tab-plan" class="tab-pane"></section>
     <section id="tab-time" class="tab-pane"></section>
@@ -516,44 +635,24 @@ td{padding:9px 10px;border-bottom:1px solid #f0f1f7}
     <section id="tab-projects" class="tab-pane"></section>
   </main>
 </div>
-<div id="more-mask" onclick="toggleMore(false)"></div>
-<div id="more-sheet">
-  <div class="ms-grab"></div>
-  <div class="more-item" onclick="toggleMore(false);switchTab('sport')">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="14.5" cy="5.5" r="2"/><path d="M9 20l2-5-3-2 2-5 3 2h3"/><path d="M6.5 15l-2 5"/></svg>
-    运动
-  </div>
-  <div class="more-item" onclick="toggleMore(false);switchTab('time')">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
-    时长统计
-  </div>
-  <div class="more-item" onclick="toggleMore(false);switchTab('milestones')">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4"/><path d="M5 4h13l-3.5 4L18 12H5"/></svg>
-    里程碑
-  </div>
-  <div class="more-item" onclick="toggleMore(false);switchTab('projects')">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/><path d="M9 13l2 2 4-4"/></svg>
-    我的项目
-  </div>
-  <div class="more-item" onclick="toggleMore(false);switchTab('reading')">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-    读书
-  </div>
-  <div class="more-item" onclick="toggleMore(false);switchTab('podcast')">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
-    播客
-  </div>
-  <div class="more-item" onclick="toggleMore(false);switchTab('english')">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
-    英语
-  </div>
-  <div class="more-item" onclick="toggleMore(false);switchTab('notes')">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-    随记
-  </div>
-</div>
 
 <script>
+/* ================= Hub 导航配置 ================= */
+var HUBS = {
+  learn:   ['dashboard','plan','time','mistakes','milestones','english'],
+  life:    ['sport','notes','podcast','reading'],
+  project: ['projects'],
+  settings:[]
+};
+var HUB_TITLE = {
+  dashboard:'总览', plan:'计划打卡', time:'时长统计', mistakes:'错题本',
+  milestones:'里程碑', sport:'运动', notes:'随记', podcast:'播客',
+  reading:'读书', english:'英语', projects:'我的项目'
+};
+var HUB_LABEL = { learn:'📚 学习', life:'🏠 生活', project:'🛠 项目', settings:'⚙️ 设置' };
+var HUB_DEFAULT = { learn:'dashboard', life:'sport', project:'projects' };
+var curHub='learn', curTab='dashboard';
+
 /* ================= 数据与存储 ================= */
 var LS = {
   tasks:'rkp_tasks_v1', hours:'rkp_hours_v1', mistakes:'rkp_mistakes_v1',
@@ -565,7 +664,7 @@ var LS = {
 function load(k,def){ try{ var v=localStorage.getItem(k); return v?JSON.parse(v):def; }catch(e){ return def; } }
 function save(k,v){ localStorage.setItem(k,JSON.stringify(v)); if(k!==LS_SNAP) writeSnapshot(); }
 
-/* ================= 数据自动快照与恢复（防清空丢失） ================= */
+/* ================= 数据自动快照与恢复 ================= */
 var LS_SNAP='rkp_snap_v1';
 var SNAP_KEYS=[LS.tasks,LS.hours,LS.mistakes,LS.msdone,LS.settings,LS.sport,LS.notes,LS.podcast,LS.reading,LS.projects,LS.english,LS.fitplan];
 function snapVal(v){ return v&&v!=='null'&&v!=='[]'&&v!=='{}'&&v!=='{"examDate":"2027-05-22"}'; }
@@ -622,7 +721,7 @@ var state = {
 };
 writeSnapshot();
 
-/* ================= 学习计划数据（来源：8 个月备考规划） ================= */
+/* ================= 8 个月备考规划 ================= */
 var PLAN = [
   { m:1, period:'2026.09', phase:'打基础', focus:'过一遍教材框架',
     exam:[
@@ -636,84 +735,35 @@ var PLAN = [
     ],
     rhythm:'工作日晚 1.5h 看课/看书；周末 5h 梳理章节思维导图' },
   { m:2, period:'2026.10', phase:'重点突破', focus:'十大管理开始',
-    exam:[
-      '重点学习十大项目管理领域（范围/进度/成本/质量/风险/沟通/干系人等）',
-      '整理十大管理输入输出笔记（电子笔记，不手抄）',
-      '挣值计算公式务必背熟'
-    ],
-    skill:[
-      'PowerBI：练习基础仪表盘，用 GEO 曝光数据做练习看板',
-      'RAG 业务层学习：企业知识库搭建业务逻辑，梳理信源筛选逻辑（复用 GEO 现有经验）'
-    ],
+    exam:['重点学习十大项目管理领域（范围/进度/成本/质量/风险/沟通/干系人等）','整理十大管理输入输出笔记（电子笔记，不手抄）','挣值计算公式务必背熟'],
+    skill:['PowerBI：练习基础仪表盘，用 GEO 曝光数据做练习看板','RAG 业务层学习：企业知识库搭建业务逻辑，梳理信源筛选逻辑（复用 GEO 现有经验）'],
     rhythm:'工作日晚 1.5-2h；周末合计 5-7h；每周总时长控制 10-13h' },
   { m:3, period:'2026.11', phase:'一轮收尾', focus:'教材过完第一遍 + 开始刷题',
-    exam:[
-      '完整过完一遍教材',
-      '开始做章节选择练习题，错题录入错题本',
-      '进度网络图、挣值计算题反复练习'
-    ],
-    skill:[
-      'SQL 基础入门：select / where / group by 基础查询（业务够用即可，不学复杂子查询）',
-      '输出第一篇业务笔记《大模型知识库素材筛选原则》，放入作品集'
-    ],
+    exam:['完整过完一遍教材','开始做章节选择练习题，错题录入错题本','进度网络图、挣值计算题反复练习'],
+    skill:['SQL 基础入门：select / where / group by 基础查询（业务够用即可，不学复杂子查询）','输出第一篇业务笔记《大模型知识库素材筛选原则》，放入作品集'],
     rhythm:'工作日晚 1.5-2h；周末合计 5-7h' },
   { m:4, period:'2026.12', phase:'二轮真题', focus:'真题驱动复习',
-    exam:[
-      '二轮不再通读教材，以真题驱动复习，优先近 8 套上午选择题真题',
-      '接触下午案例分析大题，看懂答题范式（踩点得分、分条作答）'
-    ],
-    skill:[
-      '继续打磨 PowerBI 看板（本月实操减量，每周 2-3 次练习即可）',
-      '基于自己工作输出一份简易 AI 搜索效果复盘报告'
-    ],
+    exam:['二轮不再通读教材，以真题驱动复习，优先近 8 套上午选择题真题','接触下午案例分析大题，看懂答题范式（踩点得分、分条作答）'],
+    skill:['继续打磨 PowerBI 看板（本月实操减量，每周 2-3 次练习即可）','基于自己工作输出一份简易 AI 搜索效果复盘报告'],
     rhythm:'本月软考强度提升，实操保持每周 2-3 次练习' },
   { m:5, period:'2027.01', phase:'主攻案例', focus:'攻克下午案例分析',
-    exam:[
-      '真题整套训练，上午选择计时做题',
-      '重点攻克下午案例：挣值、关键路径计算题必拿分',
-      '背诵十大管理过程简答考点，练习书面答题'
-    ],
-    skill:[
-      '拓展学习传统 SEO 基础概念',
-      '整理 SEO 与 GEO（AI 生成引擎优化）差异笔记，为 AI 可见度咨询储备知识'
-    ],
+    exam:['真题整套训练，上午选择计时做题','重点攻克下午案例：挣值、关键路径计算题必拿分','背诵十大管理过程简答考点，练习书面答题'],
+    skill:['拓展学习传统 SEO 基础概念','整理 SEO 与 GEO（AI 生成引擎优化）差异笔记，为 AI 可见度咨询储备知识'],
     rhythm:'寒假月份时间相对宽裕，主攻下午案例' },
   { m:6, period:'2027.02', phase:'春节维持', focus:'维持节奏不要断',
-    exam:[
-      '过年期间保证最低限度刷题，不完全搁置',
-      '复盘错题本，针对薄弱章节回看书本',
-      '动手写案例简答题，不要只看答案'
-    ],
-    skill:[
-      '完善作品集目录，归档看板与业务笔记',
-      '起草简易版《品牌 AI 可见度审计方案模板》'
-    ],
+    exam:['过年期间保证最低限度刷题，不完全搁置','复盘错题本，针对薄弱章节回看书本','动手写案例简答题，不要只看答案'],
+    skill:['完善作品集目录，归档看板与业务笔记','起草简易版《品牌 AI 可见度审计方案模板》'],
     rhythm:'春节月时间弹性，最低限度保持不断档' },
   { m:7, period:'2027.03', phase:'强化冲刺', focus:'整套真题模拟',
-    exam:[
-      '整套限时模拟（上午 + 下午，尽量模拟考试时间）',
-      '反复复盘错题，高频考点集中背诵',
-      '整理案例答题模板，训练踩点答题习惯'
-    ],
-    skill:[
-      '实操降为最低维持：每周少量时间浏览 RAG、AI 行业资讯即可，优先备考'
-    ],
+    exam:['整套限时模拟（上午 + 下午，尽量模拟考试时间）','反复复盘错题，高频考点集中背诵','整理案例答题模板，训练踩点答题习惯'],
+    skill:['实操降为最低维持：每周少量时间浏览 RAG、AI 行业资讯即可，优先备考'],
     rhythm:'冲刺阶段优先备考' },
   { m:8, period:'2027.04', phase:'最后冲刺', focus:'查漏补缺',
-    exam:[
-      '二刷近 5 年整套真题',
-      '高频考点反复记忆，计算题每天少量练习保持手感',
-      '整理考前速记笔记（适合考前翻看）',
-      '确认考试报名、准考证打印时间节点'
-    ],
+    exam:['二刷近 5 年整套真题','高频考点反复记忆，计算题每天少量练习保持手感','整理考前速记笔记（适合考前翻看）','确认考试报名、准考证打印时间节点'],
     skill:[],
     rhythm:'全重心备考，查漏补缺' },
   { m:9, period:'2027.05', phase:'考试月', focus:'参加中级考试',
-    exam:[
-      '参加软考中级考试',
-      '考后休息两周',
-      '启动软考高级（信息系统项目管理师）备考规划，同步完善作品集、打磨 AI 咨询方案模板'
-    ],
+    exam:['参加软考中级考试','考后休息两周','启动软考高级（信息系统项目管理师）备考规划，同步完善作品集、打磨 AI 咨询方案模板'],
     skill:[],
     rhythm:'考前以速记笔记与心态调整为主' }
 ];
@@ -737,231 +787,217 @@ var STRATEGY = [
   '<b>技能定位：</b>PowerBI-SQL-RAG 始终站在业务运营视角，不往算法开发深挖，服务于 GEO / AI 运营与后续顾问接单。'
 ];
 
-/* ================= 任务学习内容（点「学习」直接在 App 内学） ================= */
+/* ================= 任务学习内容 ================= */
 var STUDY = {
 'm1-e1':{ tag:'软考 · 第 1 月', color:'exam', title:'通读官方教程前 6 章，建立整体概念', secs:[
-{h:'这个任务怎么完成',html:'<p>第一遍读教材，<b>不求记住，只求"知道有什么、大概在哪"</b>。做法：</p><ul><li>每章开读前，先扫一遍小标题和章末练习题，知道这章"考什么"再读正文；</li><li>读到重要概念只划线，<b>不抄笔记</b>（笔记二轮再做）；</li><li>每章读完合上书，花 5 分钟画一张只写关键词的思维导图；</li><li>读不懂的技术细节直接跳过、做个标记，二轮再解决。</li></ul><p>官方教程用<b>《系统集成项目管理工程师教程》（第 3 版，清华大学出版社，2024 年 1 月）</b>，按 2023 年审定的新考纲编写。注意：新版前 6 章全部是信息化与技术类内容，项目管理知识集中在第 9-14 章（按启动、规划、执行、监控、收尾五大过程组组织），正好与第 2 月"十大管理"任务衔接。</p>'},
-{h:'第 1 章 信息化发展',html:'<p>主线：信息与信息化 → 现代化基础设施 → 产业现代化 → 数字中国 → 数字化转型与元宇宙。</p><ul><li><b>信息与信息化：</b>信息的定义与特征、信息系统的组成与生命周期、信息化的内涵；</li><li><b>现代化基础设施：</b>新基建的构成、<b>工业互联网（网络、平台、数据、安全四大体系）</b>、城市物联网；</li><li><b>数字中国：</b>整体框架、<b>数字经济（数字产业化 + 产业数字化，数据要素是核心引擎）</b>、数字政府、数字社会、数字生态；</li><li><b>数字化转型与元宇宙：</b>数字化转型的本质是数据驱动的业务变革；元宇宙的基本概念。</li></ul><div class="tipline">常考信号：新基建、工业互联网四大体系、数字经济两条路径。上午选择题高频，值得慢读。</div>'},
-{h:'第 2 章 信息技术发展（前 6 章里分值最重）',html:'<p>上半章是基础技术，下半章是新一代信息技术。</p><ul><li><b>计算机网络：</b>网络分类、协议、组网设备；</li><li><b>存储和数据库：</b>存储技术、关系型与非关系型数据库、数据仓库；</li><li><b>信息安全：</b>机密性 / 完整性 / 可用性（CIA）、加密与认证、等级保护；</li><li><b>物联网：</b>感知层、网络层、应用层三层架构；</li><li><b>云计算：</b><b>IaaS / PaaS / SaaS 三种服务模式（必考）</b>，公有云、私有云、混合云；</li><li><b>大数据：</b>5V 特征（大量、高速、多样、价值密度低、真实性）；</li><li><b>区块链：</b>去中心化、不可篡改、智能合约；</li><li><b>人工智能：</b>机器学习、深度学习、大模型的基本概念；</li><li><b>虚拟现实：</b>VR / AR / MR 的区别。</li></ul>'},
-{h:'第 3-6 章 快速导览',html:'<ul><li><b>第 3 章 信息技术服务：</b>IT 服务、运维服务、ITSS（信息技术服务标准）体系；</li><li><b>第 4 章 信息系统架构：</b>集中式与分布式、微服务、云原生等架构思想；</li><li><b>第 5 章 软件工程：</b>需求 → 设计 → 编码 → 测试 → 维护全流程，<b>敏捷开发（Scrum）</b>与瀑布模型的对比；</li><li><b>第 6 章 数据工程：</b>数据采集、存储、治理，数据仓库与数据湖，DCMM（数据管理能力成熟度模型）。</li></ul><p>这 4 章<b>快速通读、混个脸熟</b>即可，知道每个概念属于哪一章就算达标。</p>'},
-{h:'读完自测：能答对 6 题以上即过关',html:'<details><summary>云计算三种服务模式分别提供什么？</summary><div class="ans">IaaS 提供基础设施（虚拟机、存储、网络）；PaaS 提供开发运行平台；SaaS 直接提供可用软件。</div></details><details><summary>大数据的 5V 特征？</summary><div class="ans">Volume 大量、Velocity 高速、Variety 多样、Value 价值密度低、Veracity 真实性。</div></details><details><summary>物联网的三层架构？</summary><div class="ans">感知层（传感器、RFID、二维码）、网络层（数据传输）、应用层（业务应用）。</div></details><details><summary>数字经济包含哪两条路径？</summary><div class="ans">数字产业化（信息技术产业本身）与产业数字化（传统产业数字化转型）。</div></details><details><summary>工业互联网由哪四大体系构成？</summary><div class="ans">网络、平台、数据、安全。</div></details><details><summary>区块链的核心特性？</summary><div class="ans">去中心化、不可篡改、可追溯、支持智能合约。</div></details><details><summary>信息安全的三个基本属性（CIA）？</summary><div class="ans">机密性（Confidentiality）、完整性（Integrity）、可用性（Availability）。</div></details><details><summary>敏捷开发与瀑布模型的本质区别？</summary><div class="ans">瀑布按阶段串行、一次交付；敏捷迭代增量交付、拥抱变化，代表性框架是 Scrum。</div></details>'}
+{h:'这个任务怎么完成',html:'<p>第一遍读教材，<b>不求记住，只求"知道有什么、大概在哪"</b>。做法：</p><ul><li>每章开读前，先扫一遍小标题和章末练习题，知道这章"考什么"再读正文；</li><li>读到重要概念只划线，<b>不抄笔记</b>（笔记二轮再做）；</li><li>每章读完合上书，花 5 分钟画一张只写关键词的思维导图；</li><li>读不懂的技术细节直接跳过、做个标记，二轮再解决。</li></ul>'},
+{h:'第 1 章 信息化发展',html:'<p>主线：信息与信息化 → 现代化基础设施 → 产业现代化 → 数字中国 → 数字化转型与元宇宙。</p><div class="tipline">常考信号：新基建、工业互联网四大体系、数字经济两条路径。上午选择题高频，值得慢读。</div>'},
+{h:'第 2 章 信息技术发展（前 6 章里分值最重）',html:'<ul><li><b>云计算三种服务模式（必考）</b>：IaaS（基础设施）/ PaaS（开发平台）/ SaaS（直接软件）；</li><li><b>大数据 5V 特征</b>：大量、高速、多样、价值密度低、真实性；</li><li><b>物联网三层架构</b>：感知层 / 网络层 / 应用层；</li><li><b>区块链核心特性</b>：去中心化、不可篡改、可追溯、智能合约；</li><li><b>信息安全 CIA</b>：机密性 / 完整性 / 可用性。</li></ul>'},
+{h:'第 3-6 章 快速导览',html:'<ul><li><b>第 3 章 信息技术服务：</b>ITSS 标准体系；</li><li><b>第 4 章 信息系统架构：</b>集中式、分布式、微服务、云原生；</li><li><b>第 5 章 软件工程：</b><b>敏捷开发（Scrum）</b>与瀑布模型对比；</li><li><b>第 6 章 数据工程：</b>数据仓库与数据湖，DCMM。</li></ul>'},
+{h:'读完自测',html:'<details><summary>云计算三种服务模式？</summary><div class="ans">IaaS 提供基础设施；PaaS 提供开发平台；SaaS 直接提供可用软件。</div></details><details><summary>大数据 5V 特征？</summary><div class="ans">Volume 大量、Velocity 高速、Variety 多样、Value 价值密度低、Veracity 真实性。</div></details>'}
 ]},
 'm1-e2':{ tag:'软考 · 第 1 月', color:'exam', title:'了解考试题型与机考规则', secs:[
-{h:'考试基本盘（2025 年起机考规则，2027 年以官方通知为准）',html:'<table><tr><th>科目</th><th>题型</th><th>时长</th><th>满分 / 及格</th></tr><tr><td><b>基础知识</b></td><td>75 道单项选择题<br>（含约 5 分英语题）</td><td>最短 90 分钟、最长 120 分钟</td><td>75 / 45</td></tr><tr><td><b>应用技术</b></td><td>4 道案例分析大题<br>（常含 1 道计算题）</td><td>与基础知识连考</td><td>75 / 45</td></tr></table><p><b>机考、两科连考，总时长 240 分钟</b>：基础知识交卷后自动进入应用技术，没用完的时间留给应用技术。两科<b>必须同一次考试同时达到 45 分</b>，一科不过整体不通过（非滚动管理）。因报考人数多，考试<b>分批次</b>进行，具体时间以准考证为准。</p><div class="warnline">注意：基础知识交卷后<b>不能再返回修改</b>，建议用足检查时间再交卷。</div>'},
-{h:'基础知识（75 道选择）考点分布',html:'<ul><li><b>项目管理知识约 40%：</b>第 9-14 章五大过程组 + 十大知识领域，绝对大头；</li><li><b>信息技术约 30%：</b>第 1-8 章信息化、云计算、大数据、网络、安全等；</li><li><b>法律法规与标准约 15%：</b>招投标法、政府采购法、合同、标准规范；</li><li><b>英语题约 10%：</b>基本是项目管理词汇选择题，靠平时积累，不必专门花大块时间。</li></ul><div class="tipline">策略：项目管理 + 技术高频概念拿下，法规抓大放小，英语随缘，稳过 45 分线绰绰有余。</div>'},
-{h:'应用技术（4 道案例）题型拆解',html:'<ul><li><b>计算题（约 1 道，保命题）：</b>挣值计算（CV / SV / CPI / SPI / EAC）或关键路径、总时差计算，必须拿满——点开「挣值管理 + 网络图」学习内容专项练习；</li><li><b>分析题（约 3 道）：</b>给一个项目场景（范围蔓延、需求变更、质量事故、团队冲突、风险应对、招投标违规等），常问三件事：<b>场景中存在什么问题 → 原因是什么 → 应该怎么改进</b>；</li><li>答题范式：<b>分条作答、踩点给分</b>，每条按"问题 + 依据 + 建议"组织，宁多勿漏。</li></ul>'},
-{h:'机考注意事项',html:'<ul><li>考前约 2 周开放<b>官方模拟练习平台</b>，务必练一次，熟悉答题界面；</li><li>考场输入法只有三种：<b>微软拼音、极点五笔、搜狗拼音</b>，平时就用微软拼音提前适应；</li><li>参加全部两科考试：考试结束前 60 分钟起方可交卷离场；考前 30 分钟可登录系统等待；</li><li>成绩考后约 60 天公布，登录中国计算机技术职业资格网（ruankao.org.cn）查询。</li></ul>'},
-{h:'备考战略（本平台怎么配合你）',html:'<ul><li><b>第一轮（现在）：</b>过教材建框架，不刷题；</li><li><b>第二轮（12 月起）：</b>真题驱动，上午题刷近 8 套，错题随手录进本平台「错题本」；</li><li><b>第三轮（1-4 月）：</b>主攻下午案例，计算题每天保持手感，简答背十大管理考点；</li><li>「时长统计」里每周基线 10-13 小时，是按你的工作节奏定的，不攀比时长，看连续性。</li></ul>'}
+{h:'考试基本盘',html:'<p><b>机考、两科连考，总时长 240 分钟</b>：基础知识 75 道选择题（含 5 分英语题）+ 应用技术 4 道案例分析大题。<b>必须同一次同时达 45 分</b>，一科不过整体不通过（非滚动）。</p><div class="warnline">基础知识交卷后<b>不能再返回修改</b>，建议用足检查时间再交卷。</div>'},
+{h:'题型拆解',html:'<ul><li>上午：项目管理约 40% + 信息技术约 30% + 法规标准约 15% + 英语约 10%；</li><li>下午：<b>计算题（约 1 道必保）</b>通常是挣值或关键路径；分析题 3 道按"问题 + 依据 + 建议"分条作答，踩点得分。</li></ul>'}
 ]},
 'm1-e3':{ tag:'软考 · 核心考点', color:'exam', title:'挣值管理 + 网络图：两大核心考点', secs:[
-{h:'为什么只强调这两个',html:'<p>下午案例 4 道大题里，<b>几乎必有一道计算题</b>，而计算题绝大多数出在挣值或网络图；上午选择题里它们也各占 3-5 分。<b>这两块是全卷性价比最高的知识</b>：公式固定、题型固定，练 20 道题就能稳拿。</p>'},
-{h:'挣值管理：三个基础参数',html:'<p>一句话理解：用"钱"同时衡量<b>计划干了多少活、实际干了多少活、实际花了多少钱</b>。</p><table><tr><th>参数</th><th>名称</th><th>白话解释</th></tr><tr><td><b>PV</b></td><td>计划价值</td><td>到检查日，<b>计划</b>完成的工作按预算折算的钱</td></tr><tr><td><b>EV</b></td><td>挣值</td><td>到检查日，<b>实际完成</b>的工作按预算折算的钱</td></tr><tr><td><b>AC</b></td><td>实际成本</td><td>到检查日，实际花掉的钱</td></tr></table>'},
-{h:'四个评价指标（必背公式）',html:'<div class="formula">CV = EV − AC　（成本偏差：正数省钱，负数超支）<br>SV = EV − PV　（进度偏差：正数提前，负数落后）<br>CPI = EV ÷ AC　（成本绩效指数：大于 1 成本效率高）<br>SPI = EV ÷ PV　（进度绩效指数：大于 1 进度快）</div><table><tr><th>指标</th><th>结果</th><th>结论</th></tr><tr><td>CV、CPI</td><td>CV＞0 或 CPI＞1</td><td>成本节约</td></tr><tr><td>CV、CPI</td><td>CV＜0 或 CPI＜1</td><td>成本超支</td></tr><tr><td>SV、SPI</td><td>SV＞0 或 SPI＞1</td><td>进度超前</td></tr><tr><td>SV、SPI</td><td>SV＜0 或 SPI＜1</td><td>进度滞后</td></tr></table><div class="tipline">口诀：<b>偏差都是 EV 打头</b>——跟钱比减 AC，跟活比减 PV；<b>指数都是 EV 在分子</b>——除 AC 看钱，除 PV 看进度；差值看正负，指数跟 1 比。</div>'},
-{h:'预测公式（案例分析高频）',html:'<div class="formula">BAC = 完工预算（项目总计划）<br>ETC = BAC − EV　　　　　　　（非典型：剩余工作按原计划干）<br>ETC = (BAC − EV) ÷ CPI　　　（典型：当前偏差将持续）<br>EAC = AC + ETC　或　EAC = BAC ÷ CPI（典型时快速算法）<br>VAC = BAC − EAC　（完工偏差：正数预计不超支）<br>TCPI = (BAC − EV) ÷ (BAC − AC)　（完工尚需绩效指数）</div><p>做题先看题目说法："<b>按当前绩效继续</b>"用典型（除以 CPI）；"<b>剩余工作按原计划执行</b>"用非典型（直接 BAC − EV）。</p>'},
-{h:'完整例题：挣值计算',html:'<div class="exbox"><div class="ex-t">例题</div>某系统集成项目总预算 BAC = 200 万元，计划 6 个月完工。第 3 个月末检查：PV = 100 万元，EV = 80 万元，AC = 90 万元。<br>求：CV、SV、CPI、SPI 并判断项目状态；若偏差属典型，预测 EAC。</div><p><b>解：</b></p><ul><li>CV = EV − AC = 80 − 90 = <b>−10 万元</b> → 成本超支；</li><li>SV = EV − PV = 80 − 100 = <b>−20 万元</b> → 进度落后；</li><li>CPI = 80 ÷ 90 ≈ <b>0.89</b> → 每花 1 元只产出 0.89 元的价值；</li><li>SPI = 80 ÷ 100 = <b>0.80</b> → 实际进度只完成计划的 80%；</li><li>EAC = BAC ÷ CPI = 200 ÷ 0.89 ≈ <b>225 万元</b> → 按此效率完工将超支约 25 万元。</li></ul><p><b>案例题结论写法：</b>项目当前成本超支、进度滞后，应分析原因（估算偏差、效率不足、范围蔓延等），并采取纠偏措施（赶工、快速跟进、成本优化，必要时走整体变更控制流程）。</p>'},
-{h:'练习（先自己算，再点开对答案）',html:'<details><summary>练习 1：BAC = 120 万元，PV = 60，EV = 48，AC = 54。求四个指标与非典型 EAC。</summary><div class="ans">CV = 48 − 54 = −6（超支）；SV = 48 − 60 = −12（落后）；CPI = 48 ÷ 54 ≈ 0.89；SPI = 48 ÷ 60 = 0.8。非典型 EAC = AC + (BAC − EV) = 54 + 72 = 126 万元。</div></details><details><summary>练习 2：判断——某项目 SPI = 1.2、CPI = 0.9，说明进度超前且成本超支，对吗？</summary><div class="ans">对。SPI 大于 1 是进度超前，CPI 小于 1 是成本超支，两个维度互不冲突。</div></details>'},
-{h:'网络图：核心概念',html:'<ul><li><b>关键路径：</b>从起点到终点的所有路径中<b>历时最长</b>的那条，决定项目总工期；关键路径上的活动（关键活动）<b>总时差为 0</b>，一延误就拖累总工期；</li><li><b>正推（从左往右）</b>算最早时间：ES = 所有紧前活动 EF 的最大值，EF = ES + 工期；</li><li><b>逆推（从右往左）</b>算最晚时间：LF = 所有紧后活动 LS 的最小值，LS = LF − 工期；</li><li><b>总时差 TF = LS − ES</b>：在不影响总工期的前提下，本活动最多可拖延的时间；</li><li><b>自由时差 FF = 紧后活动的 ES − 本活动 EF</b>：不影响紧后活动最早开始的可拖延量。</li></ul>'},
-{h:'完整例题：关键路径计算',html:'<div class="exbox"><div class="ex-t">例题</div>某项目活动及依赖如下：<table><tr><th>活动</th><th>紧前活动</th><th>工期（天）</th></tr><tr><td>A</td><td>—</td><td>2</td></tr><tr><td>B</td><td>A</td><td>4</td></tr><tr><td>C</td><td>A</td><td>3</td></tr><tr><td>D</td><td>B、C</td><td>3</td></tr><tr><td>E</td><td>D</td><td>2</td></tr></table>求：关键路径、总工期、C 的总时差与自由时差；若 B 延误 1 天，总工期变为多少？</div><p><b>解：</b></p><ul><li>列路径：A→B→D→E = 2+4+3+2 = <b>11 天</b>；A→C→D→E = 2+3+3+2 = 10 天；</li><li>最长者为关键路径 <b>A-B-D-E，总工期 11 天</b>；</li><li>正推：A(ES0/EF2)、B(ES2/EF6)、C(ES2/EF5)、D(ES = max(6,5) = 6，EF9)、E(ES9/EF11)；</li><li>逆推：E(LS9/LF11)、D(LS6/LF9)，C 的 LF = D 的 LS = 6，LS = 6 − 3 = 3；</li><li><b>C 的 TF = LS − ES = 3 − 2 = 1 天</b>；FF = D 的 ES − C 的 EF = 6 − 5 = <b>1 天</b>；</li><li>B 是关键活动（TF = 0），<b>B 延误 1 天，总工期变为 12 天</b>。</li></ul>'},
-{h:'练习',html:'<details><summary>练习 3：路径 A→B→E = 3+7+4 天，A→C→E = 3+5+4 天，A→D→E = 3+6+4 天。求关键路径、总工期、D 的总时差。</summary><div class="ans">A-B-E = 14 天（最长，即关键路径），总工期 14 天；A-D-E = 13 天，D 的总时差 = 14 − 13 = 1 天。</div></details><details><summary>练习 4：只有压缩关键路径上的活动才能缩短总工期，对吗？</summary><div class="ans">对。压缩非关键活动只消耗其时差，不会缩短总工期。常见手段：赶工（加资源，增成本）、快速跟进（串行改并行，增风险）。</div></details>'},
-{h:'两个考点怎么结合出题（案例套路）',html:'<p>案例题常把网络图和挣值放进同一场景，标准三步答法：</p><ul><li><b>第一步：</b>算 SPI / SV，判断整体进度快慢；</li><li><b>第二步：</b>对照网络图定位——落后的活动是否在<b>关键路径</b>上（只有关键活动落后才直接威胁工期）；</li><li><b>第三步：</b>给措施——赶工、快速跟进、调配资源、加强监控，必要时与客户和干系人沟通并走整体变更控制流程。</li></ul><div class="tipline">第 2 月"挣值公式背熟"、第 3 月"网络图与挣值反复练习"都会回到这份内容，现在吃透一遍，后面全是复习。</div>'}
+{h:'三个基础参数',html:'<p>用"钱"衡量<b>计划干了多少活、实际干了多少活、实际花了多少钱</b>。</p><div class="formula">PV（计划价值）· EV（挣值）· AC（实际成本）</div>'},
+{h:'四个评价指标（必背）',html:'<div class="formula">CV = EV − AC　（成本偏差）<br>SV = EV − PV　（进度偏差）<br>CPI = EV ÷ AC　（成本绩效指数，>1 效率高）<br>SPI = EV ÷ PV　（进度绩效指数，>1 进度快）</div><div class="tipline">口诀：<b>偏差 EV 打头</b>（减 AC/PV）；<b>指数 EV 在分子</b>（除 AC/PV）。</div>'},
+{h:'预测公式',html:'<div class="formula">EAC = BAC ÷ CPI　（典型：偏差持续）<br>EAC = AC + (BAC − EV)　（非典型：剩余按原计划）</div>'},
+{h:'网络图核心',html:'<ul><li><b>关键路径</b>：最长路径决定工期，关键活动总时差为 0；</li><li><b>正推</b>算最早 ES/EF，<b>逆推</b>算最晚 LS/LF；</li><li><b>总时差 TF = LS − ES</b>，<b>自由时差 FF = 紧后 ES − 本活动 EF</b>。</li></ul>'},
+{h:'练习',html:'<details><summary>挣值：PV=100, EV=80, AC=90</summary><div class="ans">CV=−10（超支），SV=−20（落后），CPI≈0.89，SPI=0.80。典型时 EAC=200÷0.89≈225 万元。</div></details>'}
 ]},
-'m1-s1':{ tag:'实操技能 · 第 1 月', color:'skill', title:'PowerBI 入门：从安装到第一页看板', secs:[
-{h:'认识 Power BI',html:'<p><b>Power BI Desktop 是免费的桌面工具</b>，做看板、连数据、拖图表全靠它，本地练习不需要任何账号。手机上另有 Power BI App 用于查看已发布的报表，本月用不到。</p><ul><li>安装：Microsoft Store 搜索 <b>Power BI Desktop</b>，或到微软官网下载安装包；</li><li>电脑要求：Windows 10 及以上即可。</li></ul>'},
-{h:'界面五分钟认知',html:'<ul><li><b>左侧竖排三个图标：</b>报表视图（画图）、数据视图（看表）、模型视图（建表关系），本月只用报表视图；</li><li><b>右侧两个窗格：</b>可视化（选图表类型、配置格式）+ 字段（数据表的列，拖进去用）；</li><li><b>顶部功能区：</b>主页里的"获取数据""转换数据"（进 Power Query 洗数据）。</li></ul>'},
-{h:'60 分钟实操路线（今晚就能做完）',html:'<ol><li>准备一份 Excel 数据：50 行以上，列建议为 日期、渠道、内容标题、曝光量、点击量（用你工作中的真实数据最好，没有就手工编 50 行）；</li><li>主页 → 获取数据 → Excel 工作簿 → 勾选数据表 → 加载；</li><li>在字段窗格确认类型：日期列是日历图标、数字列是数字图标（若是文本，进"转换数据"改类型后点击"应用"）；</li><li>柱形图：可视化选柱形图 → X 轴拖"渠道"、Y 轴拖"曝光量"，看各渠道对比；</li><li>折线图：X 轴"日期"、Y 轴"曝光量"，看趋势；</li><li>卡片图：拖入"点击量"，得到一个大数字 KPI；</li><li>切片器：可视化选"切片器" → 字段选"渠道"，点按钮即可整页联动筛选；</li><li>插入文本框写标题（看板名 + 数据时间范围），保存 .pbix 文件。</li></ol>'},
-{h:'新手三大坑',html:'<ul><li><b>日期列变文本：</b>Power Query 里选中该列 → 变换 → 数据类型 → 日期；</li><li><b>图表空白：</b>先检查页面级筛选器是否残留条件，再检查字段是不是文本型数字；</li><li><b>想算点击率：</b>新建度量值：点击率 = DIVIDE(SUM(点击量), SUM(曝光量))，格式设为百分比。</li></ul>'},
-{h:'过关标准',html:'<p><b>不看教程，30 分钟内独立做出一页看板：</b>1 个 KPI 卡 + 1 个趋势折线图 + 1 个对比柱形图 + 1 个切片器，并能说出 2 条从数据里看出的结论。达标即勾选本任务，产出保存到作品集「03-数据看板」文件夹。</p>'}
+'m1-s1':{ tag:'实操 · 第 1 月', color:'skill', title:'PowerBI 入门', secs:[
+{h:'60 分钟实操路线',html:'<ol><li>准备一份 Excel 数据（50+ 行）：日期、渠道、曝光、点击；</li><li>主页 → 获取数据 → Excel → 加载；</li><li>柱形图：渠道 × 曝光量；折线图：日期 × 曝光量；卡片图：点击量；切片器：渠道；</li><li>新建度量值：点击率 = DIVIDE(SUM(点击量), SUM(曝光量))；</li><li>保存 .pbix，输出到作品集。</li></ol>'}
 ]},
 'm1-s2':{ tag:'作品集 · 第 1 月', color:'skill', title:'搭建 GEO-AI 运营作品集目录', secs:[
-{h:'定位：作品集是接单敲门砖',html:'<p>GEO-AI 运营作品集要一次证明三种能力：<b>懂数据</b>（看板）、<b>懂 AI 搜索</b>（可见度审计）、<b>能沉淀方法</b>（业务笔记）。四个目录一一对应，本月只需把骨架和规范立起来。</p>'},
-{h:'目录结构（照抄建好）',html:'<pre>GEO-AI-运营作品集/\n├─ 01-过往项目复盘/\n├─ 02-AI可见度审计样例/\n├─ 03-数据看板/\n└─ 04-知识库业务笔记/</pre><p>统一命名规范：<b>YYYYMMDD_主题_类型</b>，例：20260920_渠道周报_看板截图。从第一天就规范命名，将来不用返工整理。</p>'},
-{h:'四个目录分别放什么',html:'<ul><li><b>01 过往项目复盘：</b>用 STAR 结构写（背景 Situation / 任务 Task / 行动 Action / 结果 Result），<b>结果必须量化</b>（提升 X%、覆盖 Y 人）。先写 1 篇你最有把握的项目即可；</li><li><b>02 AI 可见度审计样例：</b>GEO 一句话：让品牌在 AI 生成答案里被看见、被正确引用。审计报告五段模板：① 审计范围（品牌词与行业词清单、测试哪些 AI 助手）② 可见度表现（是否出现、排位、被谁引用）③ 问题诊断（内容结构、权威性、平台布局）④ 优化建议（按优先级排序）⑤ 预期效果与验证方式。先给自己熟悉的品牌做一份样例；</li><li><b>03 数据看板：</b>放 PowerBI 产出，每张看板配一段说明：数据来源、指标口径、看出的 3 条结论；</li><li><b>04 知识库业务笔记：</b>沉淀 SOP 和方法论（下月的《大模型知识库素材筛选原则》就放这里），标准是将来能直接讲给客户听。</li></ul>'},
-{h:'本月最小产出清单',html:'<ul><li>目录骨架建好、命名规范定好；</li><li>1 篇过往项目复盘（STAR 结构、带数字）；</li><li>1 张 PowerBI 看板 + 看板说明（与 PowerBI 任务共用产出）。</li></ul><p>三项都达成即勾选完成。之后每个月的自然产出（看板、笔记、审计样例）持续归档进来，到明年就是一份能直接拿去谈客户的完整作品集。</p>'}
+{h:'四个目录',html:'<pre>GEO-AI-运营作品集/\n├─ 01-过往项目复盘/\n├─ 02-AI可见度审计样例/\n├─ 03-数据看板/\n└─ 04-知识库业务笔记/</pre><p>统一命名：<b>YYYYMMDD_主题_类型</b>。</p>'}
 ]}
 };
-/* 后续月份的同类任务复用核心考点内容 */
 STUDY['m2-e3']=STUDY['m1-e3'];
 STUDY['m3-e3']=STUDY['m1-e3'];
 
-/* ============ 第 2-9 月任务学习内容 ============ */
 Object.assign(STUDY, {
-
-'m2-e1':{ tag:'软考 · 第 2 月', color:'exam', title:'十大项目管理知识领域（上午题的大头）', secs:[
-{h:'怎么学：框架先行，细节跟上',html:'<p>十大领域约占基础知识 40% 分值，死背必乱。正确姿势：<b>先用一周搭出"领域 × 过程组"的矩阵框架，再逐领域填细节</b>。每个领域都问三个问题：这个领域<b>解决什么问题、有哪些核心过程、产出什么关键文件</b>。教程第 10-14 章按启动、规划、执行、监控、收尾五个过程组组织内容，正好对应这个矩阵的纵向。</p>'},
-{h:'计划类领域：整体 / 范围 / 进度 / 成本',html:'<ul><li><b>整体管理：</b>项目章程是启动标志；整体变更控制流程必考——<b>提出变更申请 → CCB 审批 → 实施 → 验证 → 记录归档</b>，走完流程才能改基准；</li><li><b>范围管理：</b>需求收集方法（访谈、问卷、原型、焦点小组）、<b>WBS 工作包</b>（最底层可交付单元，8/80 小时原则）、<b>核实范围（客户验收）与控制范围（防蔓延）</b>；</li><li><b>进度管理：</b>横道图（甘特图）、关键路径法、三点估算 PERT =（乐观 + 4 × 最可能 + 悲观）÷ 6、赶工与快速跟进；</li><li><b>成本管理：</b>类比估算 / 参数估算 / 自下而上估算、储备分析（应急储备应对已知风险，管理储备应对未知风险）、<b>挣值管理（见核心考点篇）</b>。</li></ul>'},
-{h:'执行监控类领域：质量 / 资源 / 沟通 / 风险 / 采购 / 干系人',html:'<ul><li><b>质量管理：</b>规划质量 → 管理质量（质量保证）→ 控制质量；老七种工具（因果图、排列图、控制图、直方图等）常考辨识；</li><li><b>资源管理：</b>团队发展阶段（形成 → 震荡 → 规范 → 成熟）、冲突解决（合作/解决是最优）、马期洛需求层次与激励理论；</li><li><b>沟通管理：</b>沟通渠道数 = n(n−1)÷2（必考计算）、沟通方式（交互式、推式、拉式）；</li><li><b>风险管理：</b>识别 → 定性分析（概率影响矩阵）→ 定量分析（EMV 决策树、蒙特卡洛）→ 应对规划 → 监督；<b>威胁应对：规避、转移、减轻、接受、上报</b>；机会应对：开拓、分享、提高、接受；</li><li><b>采购管理：</b><b>合同类型选择必考</b>——需求明确用总价合同（FFP），范围说不清用成本补偿（CPFF / CPIF），短平快小任务用工料合同（T&M）；</li><li><b>干系人管理：</b>权力/利益方格（高权高利重点管理、高权低利益令其满意、低权高利益随时告知、低权低利益监督）。</li></ul>'},
-{h:'易混淆概念对比（案例题也爱考）',html:'<table><tr><th>概念对</th><th>区分要点</th></tr><tr><td>质量保证 vs 质量控制</td><td>保证针对<b>过程和体系</b>（事前预防，审计流程）；控制针对<b>产品和结果</b>（事后检验，可交付成果检查）</td></tr><tr><td>核实范围 vs 质量控制</td><td>先内部质控（正确性），再外部核实（客户验收签字）</td></tr><tr><td>应急储备 vs 管理储备</td><td>应急储备应对<b>已识别</b>风险、在成本基准内；管理储备应对<b>未知</b>风险、基准外</td></tr><tr><td>资源平衡 vs 进度压缩</td><td>资源平衡解决资源冲突、<b>可能延长工期</b>；赶工/快速跟进是压缩工期</td></tr><tr><td>项目章程 vs 项目管理计划</td><td>章程授权项目启动（高层签发）；计划是执行蓝图（项目经理编制）</td></tr></table>'},
-{h:'自测（答不上来的回教材对应章）',html:'<details><summary>1. 变更控制的完整流程？</summary><div class="ans">提出变更申请 → 评估影响 → CCB 审批 →（批准后）更新计划与基准 → 实施变更 → 验证实施结果 → 记录归档。任何直接改基准、先改后报的做法都错。</div></details><details><summary>2. 威胁的五种应对策略？</summary><div class="ans">规避（消除原因）、转移（给第三方，如买保险）、减轻（降低概率或影响）、接受（不行动）、上报（超出项目权限时上报组织）。</div></details><details><summary>3. 需求明确的项目该选什么合同？</summary><div class="ans">总价合同（FFP）。需求模糊选成本补偿合同，小额急活用工料合同。</div></details><details><summary>4. WBS 的最底层叫什么？遵循什么原则？</summary><div class="ans">工作包。一般控制在 8-80 小时工作量，便于分配责任和估算。</div></details><details><summary>5. 5 人团队的沟通渠道数？</summary><div class="ans">n(n−1)÷2 = 5×4÷2 = 10 条。</div></details>'}
+'m2-e1':{ tag:'软考 · 第 2 月', color:'exam', title:'十大项目管理知识领域', secs:[
+{h:'框架先行',html:'<p>先用一周搭<b>"领域 × 过程组"</b>矩阵，再逐领域填细节。</p>'},
+{h:'核心过程速查',html:'<ul><li><b>整体变更控制</b>必考：申请 → CCB 审批 → 实施 → 验证 → 归档；</li><li><b>范围</b>：WBS 工作包（8/80 小时原则），核实范围（验收）vs 控制范围（防蔓延）；</li><li><b>成本</b>：<b>挣值管理</b>；应急储备（已知风险）vs 管理储备（未知风险）；</li><li><b>沟通</b>：渠道数 = n(n−1)÷2；</li><li><b>风险</b>：威胁五应对（规避/转移/减轻/接受/上报）；</li><li><b>采购</b>：需求明确用总价 FFP，模糊用成本补偿 CPFF/CPIF，急活用 T&M；</li><li><b>干系人</b>：权力/利益方格（高权高利重点管理）。</li></ul>'}
 ]},
-'m2-e2':{ tag:'软考 · 第 2 月', color:'exam', title:'整理十大管理电子笔记（不手抄）', secs:[
-{h:'为什么不手抄',html:'<p>输入输出（ITTO）的本质是<b>流程逻辑</b>，不是清单。抄一遍等于把电话簿抄一遍——抄完就忘。正确做法：只记<b>每个过程的"一句话职责 + 关键输出 + 为什么"</b>，输入通过流程图自然记住（上游输出就是下游输入）。</p>'},
-{h:'一领域一页的笔记模板',html:'<p>每个领域建一页，固定五栏：</p><ol><li><b>解决什么问题</b>（一句话）；</li><li><b>过程流</b>（按顺序列出核心过程，画箭头）；</li><li><b>关键输出物</b>（只列高频考点：范围说明书、WBS、进度基准、成本基准……）；</li><li><b>必考工具</b>（关键路径法、概率影响矩阵、因果图……）；</li><li><b>易错提醒</b>（自己刷题时踩过的坑，随时补）。</li></ol>'},
-{h:'工具建议',html:'<ul><li>Notion：建一个"十大管理"数据库，字段就是上面五栏，支持筛选和关联；</li><li>Obsidian：每领域一个笔记文件，用双链互相引用（如"变更控制"同时出现在整体管理和配置管理，链过去）；</li><li>手机端同步，通勤时翻看，替代刷手机。</li></ul>'},
-{h:'这笔投资的复利',html:'<p>这套笔记在三个地方直接复用：<b>中级案例简答</b>（第 5 月背诵底稿）、<b>考后工作</b>（真实项目管理照着用）、<b>高级备考</b>（信息系统项目管理师的项目管理部分几乎同一套体系，届时只补差异）。一次整理，三处收益。</p>'}
+'m2-e2':{ tag:'软考 · 第 2 月', color:'exam', title:'整理十大管理电子笔记', secs:[
+{h:'一领域一页模板',html:'<ol><li><b>一句话职责</b>；</li><li><b>核心过程流</b>（按顺序）；</li><li><b>高频输出物</b>（范围说明书、WBS、进度基准…）；</li><li><b>必考工具</b>；</li><li><b>易错提醒</b>（刷题踩过的坑）。</li></ol>'}
 ]},
-'m2-s1':{ tag:'实操技能 · 第 2 月', color:'skill', title:'PowerBI 进阶：从单图到仪表盘', secs:[
-{h:'本月目标：一页能讲清 GEO 曝光的仪表盘',html:'<p>上月做的是"图表的堆叠"，本月升级为"有信息层级的仪表盘"。布局三区法：</p><ul><li><b>顶部 KPI 区：</b>3-4 个卡片图（总曝光、总点击、整体点击率、环比变化）；</li><li><b>中部趋势区：</b>折线图看时间趋势，柱形图做渠道对比；</li><li><b>底部明细区：</b>表格 + 条件格式（差值标红），支持下钻看单条内容。</li></ul>'},
-{h:'GEO 曝光看板的指标体系',html:'<table><tr><th>维度</th><th>示例</th></tr><tr><td>时间</td><td>日 / 周 / 月</td></tr><tr><td>渠道</td><td>AI 助手（豆包、DeepSeek、Kimi、元宝……）</td></tr><tr><td>内容</td><td>标题、类型、发布时间</td></tr><tr><td>指标</td><td>曝光量、点击量、点击率、被引用次数</td></tr></table><p>数据来源就是你平时记录的 GEO 观察数据，没有现成数据就先手工建表记录两周——<b>这张看板本身就是作品集的 03 号素材</b>。</p>'},
-{h:'三个最常用的 DAX 度量值',html:'<div class="formula">点击率 = DIVIDE(SUM(表[点击量]), SUM(表[曝光量]))<br>上期曝光 = CALCULATE(SUM(表[曝光量]), DATEADD(日历[日期], -7, DAY))<br>渠道占比 = DIVIDE(SUM(表[曝光量]), CALCULATE(SUM(表[曝光量]), ALL(表[渠道])))</div><p>先建一张独立的日历表（模型视图里与日期列关联），时间智能类计算才好写。</p>'},
-{h:'过关标准',html:'<p>做出一页包含 4 个 KPI 卡 + 趋势折线 + 渠道对比 + 明细表的仪表盘，切片器可按渠道和时间联动，并截一张规范截图（含标题与数据区间说明）存入作品集。</p>'}
-]},
-'m2-s2':{ tag:'实操技能 · 第 2 月', color:'skill', title:'RAG 业务层：企业知识库搭建逻辑', secs:[
-{h:'RAG 是什么（一段话讲清）',html:'<p>RAG = 检索增强生成。大模型本身不知道你公司的内部知识，RAG 的做法是：<b>用户提问 → 先从企业知识库里检索相关内容 → 把检索结果拼进提示词 → 大模型基于这些内容作答</b>。它解决三个问题：知识不更新、内部数据不可见、答案不可控（瞎编）。你站在<b>业务运营视角</b>，不需要懂算法，只需要懂"喂什么、怎么组织、怎么验收"。</p>'},
-{h:'企业知识库搭建的业务流程',html:'<ol><li><b>信源盘点：</b>列出企业全部可用内容（FAQ、产品文档、制度流程、工单记录、公众号文章……）；</li><li><b>信源筛选：</b>按下一节的标准筛选入库范围；</li><li><b>清洗与切分：</b>去重、纠错、按主题切分成合适大小的知识片段；</li><li><b>标注与结构化：</b>打上分类、时效、权限等标签；</li><li><b>召回测试：</b>用真实业务问题测试"能不能检索到对的片段"；</li><li><b>上线运营：</b>监控答案质量，持续补充和淘汰知识。</li></ol>'},
-{h:'信源筛选四标准（复用你的 GEO 经验）',html:'<ul><li><b>权威性：</b>是否官方口径、是否唯一来源（多处冲突的信源先治理再入库）；</li><li><b>时效性：</b>多久更新一次，过期知识要不要自动下线；</li><li><b>结构化程度：</b>有清晰标题和条目的内容优于大段散文；</li><li><b>业务价值：</b>高频问题优先覆盖——参考工单和客服记录的高频提问。</li></ul><div class="tipline">这四条和你做 GEO 内容优化的判断标准本质相同，把现成经验迁移过来就是你的差异化优势。</div>'},
-{h:'运营视角要盯的指标',html:'<p>知识覆盖率（高频问题中知识库能答的比例）、检索命中率（Top 结果包含正确片段的比例）、答案采纳率（用户点赞/未重问的比例）。这三个指标决定你向业务方汇报时讲的是"运营结果"而不是"技术参数"。</p>'}
-]},
-
-'m3-e1':{ tag:'软考 · 第 3 月', color:'exam', title:'完整过完一遍教材（第 7-18 章导览）', secs:[
-{h:'剩余章节地图',html:'<ul><li><b>第 7 章 软硬件系统集成：</b>设备选型、集成实施、安装调试、测试与验收；</li><li><b>第 8 章 信息安全工程：</b>安全体系、等级保护、密码应用、安全审计；</li><li><b>第 9 章 项目管理概论：</b>项目与运作的区别、组织结构（职能型 / 矩阵型 / 项目型）、项目生命周期；</li><li><b>第 10-14 章 五大过程组：</b>启动、规划、执行、监控、收尾——<b>全书核心，逐字精读</b>；</li><li><b>第 15 章 组织保障：</b>项目管理制度、PMO 类型与职责；</li><li><b>第 16 章 监理基础知识：</b>常考"三控两管一协调"——质量、进度、投资控制；合同管理、信息管理；组织协调；</li><li><b>第 17 章 法律法规和标准规范：</b>招投标法、政府采购法、民法典合同编、著作权；</li><li><b>第 18 章 职业道德规范：</b>快速过一遍，考题直白。</li></ul>'},
-{h:'与前 6 章不同的读法',html:'<p>第 10-14 章按过程组组织，<b>用"做项目的顺序"串起来读</b>：拿到项目（启动：立项、章程、干系人识别）→ 定计划（规划：范围、进度、成本等 20 多个规划过程）→ 干活（执行：带团队、管质量、发信息）→ 盯着（监控：控范围控进度控成本、整体变更）→ 收尾（验收、总结、归档）。每读一个过程就问：它属于哪个领域、输出什么文件。</p>'},
-{h:'法规章必记的三个数字',html:'<ul><li>评标委员会：<b>5 人以上单数</b>，技术经济专家不少于成员总数的 2/3；</li><li>中标通知书发出后 <b>30 日内</b>订立合同；</li><li>政府采购主要方式是<b>公开招标</b>，另有邀请招标、竞争性谈判、单一来源、询价等。</li></ul>'},
-{h:'过关自测',html:'<details><summary>监理的"三控两管一协调"指什么？</summary><div class="ans">质量控制、进度控制、投资控制；合同管理、信息管理；组织协调。</div></details><details><summary>评标委员会的构成要求？</summary><div class="ans">5 人以上单数，技术经济专家不少于总数的三分之二。</div></details><details><summary>矩阵型组织最大的特点？</summary><div class="ans">成员既听职能经理又听项目经理，分强矩阵（项目经理权力大）、弱矩阵、平衡矩阵。</div></details>'}
-]},
-'m3-e2':{ tag:'软考 · 第 3 月', color:'exam', title:'章节练习 + 错题录入错题本', secs:[
-{h:'刷题节奏',html:'<p>读完一章，当天做该章 20-30 道选择题（任何刷题 App 或纸质章节题集都行）。目标不是正确率，是<b>暴露理解偏差</b>——第一遍正确率 60% 很正常。节奏：工作日每晚一章的题，周末补进度。</p>'},
-{h:'错题复盘三问（比录题本身重要）',html:'<ol><li><b>考什么：</b>这题背后的考点是哪个领域的哪个知识点？</li><li><b>为什么错：</b>是概念混淆（最危险）、记忆偏差，还是审题失误？</li><li><b>怎么防：</b>一句话写进"错误原因"栏，如"CPI 和 SPI 记混——指数分母 AC 管钱 PV 管进度"。</li></ol>'},
-{h:'本平台错题本用法',html:'<ul><li>录入：错题本页 → 题目/考点描述（不用抄全题，写考点即可）→ 选分类 → 写错误原因；</li><li>状态流转：未掌握 → 复习中 → 已掌握，重做对了才升级，别手软；</li><li>复习节奏：总览页"待复习错题"每周至少清一遍，考试前错题本就是你唯一的私教。</li></ul><div class="tipline">二轮复习的全部价值都藏在错题质量里——现在多花 1 分钟写清楚原因，12 月复盘时省 10 分钟。</div>'}
-]},
-'m3-s1':{ tag:'实操技能 · 第 3 月', color:'skill', title:'SQL 基础入门（业务够用最小集）', secs:[
-{h:'最小 SQL 集：五分钟看懂结构',html:'<div class="formula">SELECT 列名, SUM(曝光量) AS 总曝光<br>FROM 数据表<br>WHERE 日期 &gt;= "2026-09-01" AND 渠道 = "AI 助手"<br>GROUP BY 列名<br>HAVING SUM(曝光量) &gt; 1000<br>ORDER BY 总曝光 DESC<br>LIMIT 10</div><p>执行顺序：FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY。记住一句口诀：<b>WHERE 筛原始行，HAVING 筛分组后的结果</b>。</p>'},
-{h:'覆盖 90% 业务问题的四个套路',html:'<ol><li><b>分类汇总：</b>GROUP BY 渠道 + SUM/COUNT，"各渠道曝光多少"；</li><li><b>Top N：</b>ORDER BY … DESC + LIMIT，"点击最高的 10 篇内容"；</li><li><b>条件筛选：</b>WHERE + AND/OR/IN/BETWEEN，"9 月以来豆包渠道的数据"；</li><li><b>去重计数：</b>COUNT(DISTINCT 内容标题)，"出现过多少篇不同内容"。</li></ol>'},
-{h:'在哪练',html:'<ul><li>把上月的 PowerBI 数据导出成 CSV，找个在线 SQL 练习环境（如 SQLite 在线编辑器）导入练习，全流程免费；</li><li>每天 15 分钟，写 3-5 条查询，坚持两周；</li><li>不学子查询、窗口函数——那是数据分析师的事，你的定位是"会用数据说话的运营"。</li></ul>'},
-{h:'过关标准',html:'<p>不看资料独立写出："统计 2026 年 9 月以来各渠道的总曝光与点击率，按总曝光降序取前 5"——能写出，本任务完成。</p>'}
-]},
-'m3-s2':{ tag:'作品集 · 第 3 月', color:'skill', title:'输出第一篇业务笔记《大模型知识库素材筛选原则》', secs:[
-{h:'这篇笔记为什么值钱',html:'<p>它站在 <b>RAG（第 2 月学）与 GEO（你的主业）的交叉点</b>：讲清"什么内容配进知识库、什么内容不配"。企业方听得懂、用得上，是你 AI 咨询能力的第一块展示砖。</p>'},
-{h:'建议写作框架（七段）',html:'<ol><li><b>为什么筛选比堆量重要：</b>脏数据让大模型答错，宁缺毋滥；</li><li><b>筛选四标准：</b>权威性、时效性、结构化程度、业务价值（复用第 2 月内容，展开案例）；</li><li><b>一票否决项：</b>过期的价格政策、互相冲突的口径、无来源的转录内容；</li><li><b>分级入库：</b>高频核心 / 常规 / 归档只读，配不同更新频率；</li><li><b>真实例子：</b>从你工作里挑 1-2 个"筛掉/捞回"的案例；</li><li><b>落地清单：</b>给企业一份可勾选的入库 Checklist；</li><li><b>局限与适用边界：</b>说明这套原则适用的场景，显专业。</li></ol>'},
-{h:'写作要求',html:'<ul><li>控制在 1500-2500 字，一页能读完；</li><li>每个观点带一个例子或数字，不写空话；</li><li>完成稿命名 20261130_大模型知识库素材筛选原则_业务笔记，存入作品集「04-知识库业务笔记」。</li></ul>'}
-]},
-
-'m4-e1':{ tag:'软考 · 第 4 月', color:'exam', title:'真题驱动复习：近 8 套上午题的正确打开方式', secs:[
-{h:'一套真题拆两天用',html:'<ol><li><b>第一天（75 分钟）：</b>严格计时做完一套上午选择题，不查资料；</li><li><b>第二天（60-90 分钟）：</b>逐题复盘——做对的题快速过（确认不是蒙的），做错的题按"考点 + 原因"录入错题本，蒙对的题按错题处理（这是最大的坑）；</li><li>每周 2 套节奏，8 套真题吃透约需一个月，正好覆盖本月。</li></ol>'},
-{h:'分数记录法',html:'<p>每套做完记三个数：<b>总分、蒙对题数、超时分钟数</b>。只看趋势不看绝对值——从 52 涨到 60 的价值远大于某次偶然的 65。目标线：8 套做完后稳定在 <b>55 分以上</b>（及格线 45 留足安全垫）。</p>'},
-{h:'个人薄弱地图',html:'<p>复盘时把错题按领域归类（错题本自带分类），四周后你会得到一张个人薄弱地图：某 2-3 个领域贡献了 70% 的错题——12 月的回书复习只回这些章节，别的章节不碰。</p>'}
-]},
-'m4-e2':{ tag:'软考 · 第 4 月', color:'exam', title:'下午案例分析：看懂答题范式', secs:[
-{h:'先懂评分逻辑',html:'<p>案例一道大题 20-25 分，阅卷按<b>得分点</b>给分——一道"找问题"的题通常埋了 6-8 个点，写对一条得 2-3 分。所以：<b>分条作答、宁多勿漏、每条短句</b>。写成一团散文 = 主动放弃得分点。</p>'},
-{h:'万能三段式模板',html:'<div class="formula">【问题】场景中存在：1. …… 2. …… 3. ……<br>【原因】导致上述问题的原因包括：1. …… 2. ……<br>【措施】建议采取：1. …… 2. …… 3. ……</div><p>每条格式："问题词 + 依据（引用场景细节或教材概念）+ 改进方向"。例如："变更管理不规范——场景中开发人员直接修改了需求未走变更流程——建议建立 CCB 审批机制，所有变更先申请后实施"。</p>'},
-{h:'四大高频场景的答题要点',html:'<ul><li><b>变更失控：</b>没走流程、没评估影响、没通知干系人、没更新基准；</li><li><b>质量问题：</b>缺少质量规划、没做质量保证（过程）、测试不充分、没质检标准；</li><li><b>进度延误：</b>关键路径没识别、估算乐观、资源冲突、缺乏监控（没定期比较计划与实际）；</li><li><b>沟通/干系人问题：</b>没识别全干系人、沟通方式不当、期望没管理、信息不及时。</li></ul>'},
-{h:'本月只做一件事',html:'<p>拿 3-5 道近年案例真题，<b>只看不写</b>：先自己列要点，再对照参考答案，标记"我漏了哪个点、为什么没想到"。动笔留到第 5 月——现在把范式看懂，到时候才写得出来。</p>'}
-]},
-'m4-s1':{ tag:'实操技能 · 第 4 月', color:'skill', title:'PowerBI 看板打磨（本月减量维持）', secs:[
-{h:'减量节奏',html:'<p>软考进入真题期，实操降级：<b>每周 2-3 次、每次 30 分钟</b>，够了。目标是保持手感，不做新项目。</p>'},
-{h:'三个打磨方向',html:'<ul><li><b>视觉规范：</b>统一配色（一主色 + 一强调色）、统一数字格式、对齐与留白；</li><li><b>交互：</b>切片器默认值、工具提示（悬停看明细）、书签做"钻取页"；</li><li><b>性能：</b>删掉不用的列（Power Query 里只保留用到的字段）、减少卡片图数量。</li></ul>'},
-{h:'顺手攒作品集素材',html:'<p>每次打磨完截一张规范截图，命名归档到作品集「03-数据看板」。12 月底凑齐 3 张不同主题的看板（曝光趋势、渠道对比、内容明细），作品集数据板块就成型了。</p>'}
-]},
-'m4-s2':{ tag:'作品集 · 第 4 月', color:'skill', title:'输出简易 AI 搜索效果复盘报告', secs:[
-{h:'报告定位',html:'<p>用你自己的工作数据练手，产出一份"如果我是乙方案例"的复盘报告——它是第 6 月《AI 可见度审计方案模板》的前身，也是作品集 02 目录的第一件正式展品。</p>'},
-{h:'五段结构',html:'<ol><li><b>背景与目标：</b>观察对象、时间段、想验证什么；</li><li><b>测试设计：</b>关键词清单（品牌词 + 行业词）、测试的 AI 助手、提问方式；</li><li><b>效果表现：</b>出现率、排位、引用来源（配表格，可截图脱敏）；</li><li><b>归因分析：</b>为什么 AI 引用/不引用你（内容结构、权威信号、平台布局）；</li><li><b>优化建议：</b>按投入产出排优先级，标注预期效果。</li></ol>'},
-{h:'撰写要点',html:'<ul><li>控制在 2000 字 + 2 张表，胜在结构与真实数据，不必包装；</li><li>归因部分是含金量所在——多花时间，写透 2-3 条比罗列 10 条强；</li><li>完成稿存入作品集「02-AI可见度审计样例」。</li></ul>'}
-]},
-
-'m5-e1':{ tag:'软考 · 第 5 月', color:'exam', title:'真题整套计时训练（上午题）', secs:[
-{h:'计时规则',html:'<ol><li>严格 120 分钟上限（机考基础知识最长时限），中间不查任何资料；</li><li>做完先别对答案，记录"实际用时 + 涂卡/检查时间"；</li><li>复盘仍然按第 4 月方法：错题 + 蒙对题全部入库。</li></ol>'},
-{h:'机考时间分配策略',html:'<p>75 题 120 分钟，平均每题 1.6 分钟。实操节奏：<b>过一遍 60 分钟（难题标记跳过）→ 第二遍攻标记题 40 分钟 → 检查 20 分钟</b>。英语题控制在 30 秒/题，靠项目管理词汇量直接选。机考连考规则下，基础知识交卷后<b>不能回去改</b>——剩 10 分钟时宁可提前检查完再交，把富余时间留给应用技术。</p>'},
-{h:'复盘重点',html:'<p>除了错题，额外记两件事：<b>哪些题是时间黑洞</b>（计算题超 3 分钟要果断先跳）、<b>哪类题总是改错</b>（第一直觉往往更准，没把握别乱改）。</p>'}
-]},
-'m5-e2':{ tag:'软考 · 第 5 月', color:'exam', title:'案例计算题必拿分：完整大题演练', secs:[
-{h:'完整案例大题（先自己做，再看解答）',html:'<div class="exbox"><div class="ex-t">案例题</div>某系统集成项目活动如下：A（3 天）开始后 B（5 天）、C（4 天）可并行；B 完成后 D（6 天）开始；C、D 都完成后 E（4 天）开始；E 完成后 F（2 天）收尾。<br>项目进行到第 10 天末检查：PV = 50 万元，EV = 40 万元，AC = 48 万元，总预算 BAC = 100 万元。<br>问题：(1) 求关键路径与总工期；(2) 求 C 的总时差；(3) 判断项目当前进度与成本状态；(4) 若偏差属典型，预测 EAC；(5) 给出纠偏措施建议。</div>'},
-{h:'解答与得分点',html:'<ul><li><b>(1)</b> 路径两条：A-B-D-E-F = 3+5+6+4+2 = <b>20 天</b>；A-C-E-F = 3+4+4+2 = 13 天。关键路径 A-B-D-E-F，总工期 <b>20 天</b>；</li><li><b>(2)</b> C 所在路径 13 天，C 的总时差 = 20 − 13 = <b>7 天</b>（写明"不影响总工期可拖延 7 天"更稳）；</li><li><b>(3)</b> SV = EV − PV = 40 − 50 = <b>−10 万元，进度落后</b>；CV = EV − AC = 40 − 48 = <b>−8 万元，成本超支</b>；SPI = 0.80，CPI ≈ 0.83（两个都算，判读更完整）；</li><li><b>(4)</b> 典型偏差：EAC = BAC ÷ CPI = 100 ÷ 0.83 ≈ <b>120 万元</b>，预计超支 20 万元；</li><li><b>(5)</b> 措施按套路给：分析落后活动是否在关键路径上（是）；对关键活动<b>赶工</b>（加资源）或<b>快速跟进</b>（并行）；加强成本监控纠偏；若仍无法挽回，评估并走整体变更控制流程与干系人沟通。</li></ul><div class="tipline">得分技巧：每步<b>先写公式再代数字</b>（公式本身有步骤分）、带单位、最后写结论句（"项目当前进度落后、成本超支"这种一句顶 2 分）。</div>'},
-{h:'常见失分点',html:'<ul><li>SV 和 CV 傻傻分不清（回到口诀：EV 打头，减 AC 是钱，减 PV 是活）；</li><li>典型 / 非典型 ETC 用错（"按当前绩效继续"才除 CPI）；</li><li>算对数字但没写判断结论；</li><li>措施只写"加强管理"这类空话——要写具体动作（赶工、快速跟进、变更流程）。</li></ul><p>每天 1 道这样的综合题，连续三周，计算题就从"怕"变"送分"。</p>'}
-]},
-'m5-e3':{ tag:'软考 · 第 5 月', color:'exam', title:'十大管理简答考点背诵', secs:[
-{h:'背什么：三个层次',html:'<ol><li><b>领域职责句：</b>每个领域一句话核心目标（如：风险管理是通过识别、分析、应对，提高项目成功率）；</li><li><b>过程与输出：</b>高频过程的关键输出（范围基准 = 范围说明书 + WBS + WBS 词典；进度基准 = 批准的进度计划……）；</li><li><b>工具方法名：</b>至少能列出每领域的 3-4 个工具（质量：因果图、排列图、控制图；风险：概率影响矩阵、决策树、蒙特卡洛……）。</li></ol><p>直接背第 2 月整理的电子笔记——它就是为今天准备的。</p>'},
-{h:'怎么背',html:'<ul><li><b>早晚各 20 分钟：</b>早上背新内容，晚上睡前过当天 + 前一天（睡眠巩固记忆）；</li><li><b>卡片法：</b>Notion 数据库或 Anki，正面"核实范围"，背面"客户对可交付成果的正式验收"；</li><li><b>一周一自测：</b>合上笔记白纸默写十个领域的职责句，写不出的进重点循环。</li></ul>'},
-{h:'背诵 → 答题的转化',html:'<p>案例简答不是默写，是把知识点<b>对着场景说人话</b>。模板："针对场景中的 XX 问题，依据 XX 管理，应当 XX（具体动作），从而 XX（效果）"。每天挑 2 个知识点做这种造句练习，考场上手不生。</p>'}
-]},
-'m5-s1':{ tag:'实操技能 · 第 5 月', color:'skill', title:'传统 SEO 基础概念（AI 运营的底层功）', secs:[
-{h:'为什么现在补 SEO',html:'<p>GEO（让品牌被 AI 看见）的整套方法论是从 SEO（让品牌被搜索引擎看见）长出来的。懂 SEO，你的 GEO 判断就有了理论底座，跟客户讲方案也更有说服力——这是从"运营执行"升级到"咨询顾问"的必修课。</p>'},
-{h:'核心概念最小集',html:'<ul><li><b>关键词：</b>用户搜什么；核心词、长尾词、搜索意图（导航型/信息型/交易型）；</li><li><b>收录：</b>页面被搜索引擎抓取进库，是一切排名的前提；</li><li><b>排名：</b>搜索结果里的位置；标题、内容相关性、外链是三大杠杆；</li><li><b>站内优化：</b>标题标签、结构化内容、内链、页面速度；</li><li><b>站外优化：</b>外链 = 别的网站给你的投票，权威性信号；</li><li><b>衡量：</b>展现量、点击率、排名位次。</li></ul><div class="tipline">寒假时间宽裕，每天 30 分钟，两周过完这些概念即可，不需要会动手做网站。</div>'},
-{h:'与 GEO 的连接点',html:'<p>你会发现：AI 引擎引用内容的逻辑（内容质量、权威信号、结构化）与搜索引擎排名逻辑同源。把这个"同源"讲清楚，就是下一篇差异笔记的主题（下个任务）。</p>'}
-]},
-'m5-s2':{ tag:'作品集 · 第 5 月', color:'skill', title:'SEO 与 GEO 差异笔记（咨询储备）', secs:[
-{h:'核心对比表（笔记主件）',html:'<table><tr><th>维度</th><th>SEO 搜索引擎优化</th><th>GEO 生成引擎优化</th></tr><tr><td>优化对象</td><td>网页在搜索结果的排名</td><td>品牌在 AI 生成答案中的出现与引用</td></tr><tr><td>排序逻辑</td><td>关键词匹配 + 链接权威</td><td>内容质量 + 权威引用 + 事实一致</td></tr><tr><td>内容策略</td><td>围绕关键词布局页面</td><td>围绕问题组织结构化、可引用的答案</td></tr><tr><td>衡量指标</td><td>排名、展现、点击</td><td>出现率、引用率、答案中的位次</td></tr><tr><td>见效周期</td><td>周-月</td><td>随模型与检索策略波动，需持续监测</td></tr></table>'},
-{h:'共同内核（论述部分）',html:'<p>写三段论述：<b>① 权威信号同源</b>（外链、品牌提及、专业深度对两者都有效）；<b>② 内容结构升级</b>（SEO 时代"关键词密度"，GEO 时代"问题-答案结构、清晰的数据与出处"）；<b>③ 对企业的含义</b>（做好 GEO 的企业同时吃掉搜索与 AI 两个入口，投入是复用的）。</p>'},
-{h:'输出要求',html:'<p>一页表格 + 三段论述，2000 字以内。命名 20270131_SEO与GEO差异_业务笔记，存入作品集「04-知识库业务笔记」。这份笔记加上第 4 月的复盘报告，你的"AI 可见度咨询"知识包就有一半了。</p>'}
-]},
-
-'m6-e1':{ tag:'软考 · 第 6 月', color:'exam', title:'春节期间最低限度维持', secs:[
-{h:'最低限度方案',html:'<p>每天 <b>20-30 分钟</b>，二选一：做 10 道选择题（错题优先），或限时写 1 道案例简答。走亲戚的间隙用手机刷题即可，App 端错题本就是为此准备的。</p>'},
-{h:'碎片时间用法',html:'<ul><li>通勤/等人：刷错题本"未掌握"区；</li><li>饭后：看一页十大管理背诵卡片；</li><li>睡前：默背挣值公式和网络图口诀（10 分钟）。</li></ul>'},
-{h:'心理预期',html:'<p>春节完全断两周的恢复成本约 10 天（手感 + 心态双重复位）。每天 30 分钟的维持成本远低于此——<b>这个月的目标不是进步，是不退步</b>。正月十五后恢复正常节奏。</p>'}
-]},
-'m6-e2':{ tag:'软考 · 第 6 月', color:'exam', title:'错题本复盘 + 薄弱章节回书', secs:[
-{h:'复盘方法',html:'<ol><li>把错题本按状态筛出全部"未掌握"和"复习中"；</li><li>每道错题重做一遍：能独立讲清考点的，升级"已掌握"；仍含糊的，标记章节号；</li><li>统计高频出错章节——通常就 2-3 章，贡献了六成错题。</li></ol>'},
-{h:'回书策略',html:'<p><b>只回看出错章节的相关小节，不重读全章</b>（重读全书是二轮最典型的浪费时间行为）。看的时候对照错题问自己：教材哪句话能防止我再错？把那句话抄进错题的"原因"栏。</p><div class="tipline">本月结束时，错题本应达到：未掌握 ≤ 5 题，复习中 ≤ 15 题，其余全部已掌握。</div>'}
-]},
-'m6-e3':{ tag:'软考 · 第 6 月', color:'exam', title:'动手写案例简答（不能只看）', secs:[
-{h:'为什么必须动笔',html:'<p>"看懂答案"和"写得出"之间隔着一条鸿沟——看答案时大脑在<b>识别</b>，动笔时大脑在<b>检索和组织</b>，后者才是考场的动作。第 4 月看会了范式，本月必须开始产出。</p>'},
-{h:'练习法',html:'<ol><li>挑一道案例真题（分析类），<b>限时 15 分钟</b>手写或打字作答；</li><li>对照参考答案，用红字补上漏掉的得分点；</li><li>给漏掉的点归因：是知识没背到（回背诵清单），还是看到了没想到（把场景特征记进错题本）；</li><li>每周 3 道，月度 12 道，第 7 月模拟时自然成型。</li></ol>'},
-{h:'自检标准',html:'<p>一道 20 分的找问题类简答，你能稳定写出 6 条以上且一半命中参考答案要点，即达标。</p>'}
-]},
-'m6-s1':{ tag:'作品集 · 第 6 月', color:'skill', title:'作品集归档与完善', secs:[
-{h:'归档清单',html:'<ul><li>数据看板：12 月攒的 3 张截图 + 各配 100 字说明（数据来源、口径、结论）；</li><li>业务笔记：《素材筛选原则》《SEO 与 GEO 差异》终稿排版；</li><li>审计样例：第 4 月复盘报告更新数据后定稿；</li><li>项目复盘：如有新的工作成果，补 1 篇 STAR 复盘。</li></ul>'},
-{h:'自查三条线',html:'<ol><li>每个文件都有说明（看什么、怎么来的、结论是什么）；</li><li>命名全部符合 YYYYMMDD_主题_类型 规范；</li><li>四个目录各有至少 1 件"拿得出手"的成品，而非半成品。</li></ol><p>达标后，作品集骨架完成，之后只做增量补充。</p>'}
-]},
-'m6-s2':{ tag:'作品集 · 第 6 月', color:'skill', title:'起草《品牌 AI 可见度审计方案模板》', secs:[
-{h:'这份模板是什么',html:'<p>第 4 月的复盘报告是"做过一次"，这份模板是"可以反复卖的服务"——把复盘经验抽象成标准化交付物，是你 AI 咨询接单的报价依据。</p>'},
-{h:'模板结构（六段）',html:'<ol><li><b>服务概述：</b>帮企业搞清楚"AI 时代客户搜你时看到什么"；</li><li><b>审计范围：</b>品牌词 / 行业词清单、覆盖的 AI 助手、测试轮次；</li><li><b>交付物：</b>可见度评分表、问题诊断报告、优化路线图（明确页数与格式）；</li><li><b>方法与周期：</b>三轮测试 + 归因分析，标准周期 X 周；</li><li><b>报价框架：</b>基础版（单品牌单轮）/ 标准版（含优化建议）/ 年度版（季度复测）；</li><li><b>案例背书：</b>引用你自己的复盘报告做脱敏样例。</li></ol>'},
-{h:'撰写要点',html:'<p>模板的价值在于"可复用"：每一段都留出可替换变量（品牌名、行业、周期）。控制在 3000 字以内，配 1 张交付物示意。存入作品集「02-AI可见度审计样例」。</p>'}
-]},
-
-'m7-e1':{ tag:'软考 · 第 7 月', color:'exam', title:'整套限时模拟（上午 + 下午）', secs:[
-{h:'模拟安排',html:'<p><b>每周 2 套，尽量卡真实时段</b>（模拟连考：120 分钟基础知识 + 剩余时间应用技术，共约 4 小时）。用近三年真题里留到现在没动过的"干净卷"，让模拟分数真实可信。</p>'},
-{h:'模拟中的纪律',html:'<ul><li>全程不查资料、不看错题本；</li><li>基础知识交卷前留 10 分钟检查（模拟机考不可回退的习惯）；</li><li>应用技术先做计算题（稳拿分），再做熟悉场景的分析题；</li><li>记录每科用时与分数。</li></ul>'},
-{h:'目标线与复盘',html:'<p>四套模拟后应达到：<b>基础知识稳定 55+，应用技术稳定 50+</b>（两科及格线都是 45）。没达到的科目，用错题本定位最后薄弱点，考前两个月还有的是时间。每套复盘半小时：错题入库 + 时间分配检讨，不恋战。</p>'}
-]},
-'m7-e2':{ tag:'软考 · 第 7 月', color:'exam', title:'高频考点集中背诵', secs:[
-{h:'最后必背清单（按出题频率排）',html:'<ul><li><b>挣值全套公式</b>（CV/SV/CPI/SPI/ETC/EAC）+ 关键路径口诀；</li><li><b>整体变更控制流程</b>（五步，案例必考）；</li><li><b>风险应对策略</b>（威胁五 + 机会四）；</li><li><b>合同类型与适用场景</b>（三选一判断题）；</li><li><b>质量保证 vs 质量控制</b>、<b>核实范围 vs 质量控制</b>；</li><li><b>沟通渠道公式</b>、团队发展阶段、激励理论人名与观点对应；</li><li><b>招投标数字</b>（评标委 5 人以上单数、专家 2/3、中标后 30 日订合同）；</li><li><b>云计算三层、大数据 5V、物联网三层</b>（技术送分题）。</li></ul>'},
-{h:'背诵节奏',html:'<p>早晚各 20 分钟不变，但内容切换为上述清单滚动过。用"闪卡 + 自测"代替通读——看不等于会，合上能默写才算。</p>'}
-]},
-'m7-e3':{ tag:'软考 · 第 7 月', color:'exam', title:'整理案例答题模板（踩点习惯成型）', secs:[
-{h:'通用五段模板',html:'<div class="formula">① 背景判断（一句话点明场景性质）<br>② 问题识别（分条列，每条带场景证据）<br>③ 原因分析（对应问题，点到教材原理）<br>④ 措施建议（具体动作 + 责任主体）<br>⑤ 小结句（收口，一两句即可）</div>'},
-{h:'分场景模板要点',html:'<ul><li><b>变更场景：</b>问题（没走流程/没评估/没通知）→ 措施（建 CCB、补流程、更新基准、通知干系人）；</li><li><b>质量场景：</b>问题（无质量计划/缺测试/无标准）→ 措施（补规划、加强过程审计、完善测试用例与验收标准）；</li><li><b>进度场景：</b>问题（估算乐观/关键路径失控/资源冲突）→ 措施（重估、赶工或快速跟进、资源平衡、加强监控）；</li><li><b>风险场景：</b>问题（没识别/没定性分析/无应对）→ 措施（风险登记册、概率影响矩阵、按类别定应对策略、设风险储备）。</li></ul>'},
-{h:'成型标准',html:'<p>任意拿一道新案例题，5 分钟内列出答题骨架（问题 5 条 + 措施 5 条的关键词），即模板内化完成。剩下的是往骨架里填准确的语言——第 6 月的动笔练习此时兑现。</p>'}
-]},
-'m7-s1':{ tag:'实操技能 · 第 7 月', color:'skill', title:'实操最低维持模式', secs:[
-{h:'维持清单',html:'<p><b>每周 1 次、每次 20 分钟</b>：浏览 RAG 与 AI 行业资讯（公众号、周刊类即可），遇到值得留的收藏进作品集素材库，不深读、不实操。</p>'},
-{h:'何时全停',html:'<p><b>考前 2 周彻底停止</b>一切非考试活动。简历与接单的缺口，考后有大把时间补——现在每分注意力都是分数。</p>'}
-]},
-
-'m8-e1':{ tag:'软考 · 第 8 月', color:'exam', title:'二刷近 5 年整套真题', secs:[
-{h:'二刷与一刷的区别',html:'<p>一刷的目的是<b>发现漏洞</b>，二刷的目的是<b>验证修复</b>。重点不是再做一遍新题，而是确认：一刷错的、蒙对的题，这次是否真会。</p>'},
-{h:'二刷范围',html:'<ol><li>只刷一刷时的<b>错题 + 蒙对题</b>（错题本可直接筛）；</li><li>然后挑 2 套完整限时做，验证整体水平（对照第 7 月目标线）；</li><li>二刷仍错的题标红——这是考前最后要消灭的名单，通常只剩 10-20 题。</li></ol><div class="tipline">二刷正确率应达到 85% 以上；仍错的题回到教材原文精读对应段落，别只看解析。</div>'}
-]},
-'m8-e2':{ tag:'软考 · 第 8 月', color:'exam', title:'高频考点记忆 + 计算题每日操', secs:[
-{h:'每日计算操（15 分钟）',html:'<p>固定组合：<b>2 道挣值 + 1 道关键路径</b>（从错题本和例题里轮换）。计算手感就像肌肉，停三天就钝——每天 15 分钟保到考试当天。</p>'},
-{h:'闪卡法过高频考点',html:'<p>把第 7 月的必背清单做成闪卡（正面问题、背面要点），每天过一遍"不会"堆，"会"堆隔天再验。地铁、排队、睡前都能刷。数字类考点（招投标数字、绩效域数字）单独一组——它们最容易在最后关头记混。</p>'}
-]},
-'m8-e3':{ tag:'软考 · 第 8 月', color:'exam', title:'整理考前速记笔记', secs:[
-{h:'四页结构',html:'<ol><li><b>公式页：</b>挣值全套 + 三点估算 + 沟通渠道（一行一个，代数字例子）；</li><li><b>口诀页：</b>网络图正推逆推口诀、风险应对策略归类；</li><li><b>易混对照页：</b>质保 vs 质控、核实范围 vs 质控、应急 vs 管理储备、资源平衡 vs 进度压缩；</li><li><b>数字页：</b>评标委 5 人单数 2/3、中标 30 日订合同、机考时长规则。</li></ol>'},
-{h:'格式要求',html:'<p><b>总共不超过 4 页 A4 / 8 张手机截图</b>——速记笔记的价值与厚度成反比。考场外最后 30 分钟翻的就是它。做一份电子版存手机 + 一份打印版，双保险。</p>'}
-]},
-'m8-e4':{ tag:'软考 · 第 8 月', color:'exam', title:'确认报名与准考证时间节点', secs:[
-{h:'时间线（以官方通知为准）',html:'<ul><li><b>3 月中旬起：</b>各省陆续开放 2027 上半年报名，关注里程碑页"关注报名通知"节点；</li><li><b>报名窗口通常 5-7 天，错过不补</b>；</li><li><b>考前一周左右：</b>开放准考证打印，确认批次、时间、考点；</li><li>考试在 5 月下旬（本平台默认按 5 月 22 日估算）。</li></ul>'},
-{h:'操作清单',html:'<ol><li>登录中国计算机技术职业资格网（ruankao.org.cn）报名入口；</li><li>按要求完成实名认证、上传白底证件照；</li><li>选择"系统集成项目管理工程师"+ 报考省份（<b>属地报名</b>：工作地或居住地）；</li><li>缴费成功才算报上（费用各省 50-80 元/科不等）；</li><li>准考证开放后第一时间打印，核对批次时间——机考分批次，<b>你的考试可能在周六或周日的上午场或下午场</b>。</li></ol>'},
-{h:'注意事项',html:'<ul><li>照片用于准考证和证书，按规范提交别将就；</li><li>两科必须同一次通过，报名时确认两科都报；</li><li>保存报名截图和缴费凭证；</li><li>确认考点后提前规划路线，外地考点考虑考前一晚住附近。</li></ul>'}
-]},
-
-'m9-e1':{ tag:'软考 · 考试月 · 考试周', color:'exam', title:'参加软考中级考试（考场全攻略）', secs:[
-{h:'考前一周清单',html:'<ul><li>作息调到考试时段（上午场 8:30 / 下午场 14:30 开考，按准考证）；</li><li>每天过一遍速记笔记 4 页 + 每日计算操不停；</li><li>打印准考证 2 份 + 身份证放一起；</li><li>考前一天踩点或确认路线；</li><li>不刷新题、不做难题，只看错题本红标题。</li></ul>'},
-{h:'考场策略（机考连考）',html:'<ol><li><b>基础知识（75 选择）：</b>先易后难，难题标记跳过；60 分钟过一遍 → 40 分钟攻坚 → 15 分钟检查；英语题 30 秒一道不纠缠；<b>交卷前想清楚——交了就回不去</b>，富余时间自动留给应用技术；</li><li><b>应用技术（4 案例大题）：</b>先扫一遍四道题，<b>计算题优先拿下</b>（写公式有步骤分）；分析题套五段模板分条作答，每条"问题 + 依据 + 建议"；</li><li>时间不够时的取舍：把会的点全部写成条目 > 把一道题写成完美作文；</li><li>打字慢别慌：答案采点不采辞，短句更快更清晰。</li></ol>'},
-{h:'考后',html:'<p>出考场不对答案、不复盘——考完即结束。成绩约 60 天后出，两科各 45 分即通过。回家吃顿好的，你已经完成了 8 个月的计划。</p>'}
-]},
-'m9-e2':{ tag:'软考 · 考试月 · 考后', color:'exam', title:'考后休息两周（正式任务）', secs:[
-{h:'为什么是"正式任务"',html:'<p>8 个月连续作战后，恢复不是奖励，是<b>下一段征程的必要投资</b>。倦怠状态下启动高级备考，三分钟热度散得也快。这两周的任务就一条：不学习。</p>'},
-{h:'可以做的轻事项（可选，无压力）',html:'<ul><li>把考试感受随手记两笔（对 9 月启动高级规划有用）；</li><li>陪家人、补觉、运动、旅行，把备考期间欠的生活补回来；</li><li>顺手清一清收藏夹里攒的行业资讯（当娱乐看）。</li></ul>'},
-{h:'回归信号',html:'<p>当某天你开始"手痒想学点东西"了，休息就到位了——按里程碑"6 月 5 日启动高级备考规划"进入下一程。</p>'}
-]},
-'m9-e3':{ tag:'软考 · 考试月 · 考后', color:'exam', title:'启动软考高级备考规划', secs:[
-{h:'高级（信息系统项目管理师）与中级的差异',html:'<table><tr><th>维度</th><th>中级（已考）</th><th>高级</th></tr><tr><td>科目</td><td>基础知识 + 应用技术</td><td>综合知识 + 案例分析 + <b>论文</b></td></tr><tr><td>连考规则</td><td>两科连考 240 分钟</td><td>综合 + 案例连考 240 分钟；<b>论文 120 分钟，不得提前交卷</b></td></tr><tr><td>最大新增</td><td>—</td><td>论文：2500 字上下项目实践论述</td></tr><tr><td>内容重心</td><td>十大管理 + 技术</td><td>组织级项目管理、项目集/项目组合、战略与管理科学</td></tr></table>'},
-{h:'你的复用资产（比首考的人领先半年）',html:'<ul><li>十大管理电子笔记：直接复用，只需补组织级内容；</li><li>错题本与案例五段模板：案例科目无缝衔接；</li><li>挣值/网络图功底：高级案例照考；</li><li>备考节奏感：你已验证过自己的 8 个月节奏。</li></ul>'},
-{h:'启动动作',html:'<ol><li>确认 2027 下半年或 2028 上半年考期，倒排 6-8 个月计划；</li><li>论文是胜负手：<b>提前准备 2-3 个真实项目素材</b>（可用工作项目 + 作品集项目），每周写 1 篇练笔；</li><li>把本平台的计划数据导出备份，再按新考期重建月度计划；</li><li>同步继续作品集与 AI 咨询模板打磨——两条线在中级考后合流成你的职业主赛道。</li></ol>'}
+'m2-e3':{ tag:'软考 · 核心考点', color:'exam', title:'十大管理易混淆对比', secs:[
+{h:'高频混淆',html:'<table><tr><th>概念对</th><th>区分要点</th></tr><tr><td>质量保证 vs 质量控制</td><td>保证针对<b>过程和体系</b>（事前）；控制针对<b>产品和结果</b>（事后）</td></tr><tr><td>核实范围 vs 质量控制</td><td>先内部质控（正确），再外部验收</td></tr><tr><td>应急储备 vs 管理储备</td><td>应急应对<b>已识别</b>风险、在基准内；管理应对<b>未知</b>风险、基准外</td></tr><tr><td>资源平衡 vs 进度压缩</td><td>平衡解决冲突、可能延长工期；压缩是赶工/快速跟进</td></tr><tr><td>项目章程 vs 项目管理计划</td><td>章程授权启动（高层）；计划是执行蓝图（项目经理）</td></tr></table>'}
 ]}
-
 });
 
+/* ================= 工具函数 ================= */
+var WD=['日','一','二','三','四','五','六'];
+function esc(s){ if(s==null) return ''; return String(s).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c]}); }
+function todayKey(){ var d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1).toString().padStart(2,'0')+'-'+d.getDate().toString().padStart(2,'0'); }
+function fmtKey(d){ return d.getFullYear()+'-'+(d.getMonth()+1).toString().padStart(2,'0')+'-'+d.getDate().toString().padStart(2,'0'); }
+function fmtH(h){ return h<1?Math.round(h*60)+'m':(h|0)+'h'+(h%1?Math.round((h%1)*60)+'m':''); }
+function daysToExam(){
+  var ed=new Date(state.settings.examDate+'T00:00:00'), t=new Date(); t.setHours(0,0,0,0);
+  return Math.round((ed-t)/864e5);
+}
+function weekStart(d){ var x=new Date(d); var day=(x.getDay()+6)%7; x.setDate(x.getDate()-day); return x; }
+function weekDates(d){ var ws=weekStart(d); var arr=[]; for(var i=0;i<7;i++){ var x=new Date(ws); x.setDate(ws.getDate()+i); arr.push(x); } return arr; }
+function weekTotal(d){ return state.hours.filter(function(e){ var k=fmtKey(new Date(e.date+'T00:00:00')); return weekDates(d).some(function(dd){ return fmtKey(dd)===k; }); }).reduce(function(s,e){ return s+e.h; },0); }
+function streak(){
+  var days={}; state.hours.forEach(function(e){ days[e.date]=1; });
+  var c=0, d=new Date();
+  while(days[fmtKey(d)]){ c++; d.setDate(d.getDate()-1); }
+  return c;
+}
+function studyWeekNum(){ var d=new Date('2026-09-01'); var n=new Date(); return Math.max(1,Math.round((n-d)/864e5/7)+1); }
+function currentMonthIndex(){
+  var n=new Date(); if(n<new Date('2026-09-01')) return -1;
+  var diff=(n.getFullYear()-2026)*12+n.getMonth()-8;
+  if(diff<0) return -1;
+  if(diff>=PLAN.length) return 99;
+  return diff;
+}
+function milestonesList(){ return MILESTONES.slice(); }
+
+/* ================= Hub / Tab 切换 ================= */
+function switchHub(hub){
+  if(hub==='settings'){
+    openSettings(); return;
+  }
+  curHub=hub;
+  // 切换底部栏
+  document.querySelectorAll('#bottom-bar .bb-item').forEach(function(b){ b.classList.toggle('active',b.dataset.hub===hub); });
+  // 切换桌面侧边栏的 hub 高亮
+  document.querySelectorAll('.hub-nav').forEach(function(nav){
+    var nh=nav.dataset.hub;
+    if(nh===hub) nav.classList.add('active'); else nav.classList.remove('active');
+  });
+  // 如果 curTab 不属于这个 hub，切到默认
+  var tabs=HUBS[hub];
+  if(!tabs.includes(curTab)){
+    switchTab(HUB_DEFAULT[hub]);
+  } else {
+    switchTab(curTab);
+  }
+  updateSubNav();
+}
+
+function switchTab(name){
+  document.querySelectorAll('.hub-btn').forEach(function(b){ b.classList.toggle('active',b.dataset.tab===name); });
+  document.querySelectorAll('.tab-pane').forEach(function(p){ p.classList.toggle('active',p.id==='tab-'+name); });
+  // 根据 HUBS 反查 curHub
+  for(var h in HUBS){ if(HUBS[h].indexOf(name)>=0){ curHub=h; break; } }
+  window.scrollTo(0,0);
+  curTab=name;
+  var f=document.getElementById('fab');
+  if(f){ if(FAB_MAP[name]){ f.classList.add('show-fab'); } else { f.classList.remove('show-fab'); } }
+  updateSubNav();
+  updateTopHeader();
+}
+
+function updateSubNav(){
+  var cont=document.getElementById('hub-pills'); if(!cont) return;
+  var tabs=HUBS[curHub]||[];
+  if(curHub==='settings'){ cont.innerHTML=''; return; }
+  var html=tabs.map(function(t){
+    return '<button class="hub-pill'+(curTab===t?' on':'')+'" onclick="switchTab(\''+t+'\')">'+esc(HUB_TITLE[t]||t)+'</button>';
+  }).join('');
+  cont.innerHTML=html;
+}
+
+function updateTopHeader(){
+  var t=document.getElementById('th-title'); if(t) t.textContent=HUB_TITLE[curTab]||curTab;
+  var s=document.getElementById('th-sub'); if(s){
+    var d=new Date();
+    s.textContent=(d.getMonth()+1)+'月'+d.getDate()+'日 · 周'+WD[d.getDay()];
+  }
+  var d2=document.getElementById('th-days'); if(d2){
+    var dt=daysToExam();
+    d2.innerHTML=dt>0?dt+' <small>天</small>':(dt===0?'今天':'已结束');
+  }
+}
+
+/* ================= 设置面板 ================= */
+function openSettings(){
+  var m=document.getElementById('settings-mask'); var s=document.getElementById('settings-sheet');
+  if(!m) return;
+  document.getElementById('se-date').value=state.settings.examDate;
+  try{ document.getElementById('ai-base').value=aiCfg.base; document.getElementById('ai-model').value=aiCfg.model; document.getElementById('ai-key').value=aiCfg.key; }catch(e){}
+  m.classList.add('show'); s.classList.add('show');
+}
+function closeSettings(){
+  var m=document.getElementById('settings-mask'); var s=document.getElementById('settings-sheet');
+  if(m) m.classList.remove('show'); if(s) s.classList.remove('show');
+}
+function saveSettingsDate(){
+  var el=document.getElementById('se-date'); if(!el) return;
+  state.settings.examDate=el.value||'2027-05-22';
+  save(LS.settings,state.settings);
+  renderAll(); toast('考试日期已更新');
+}
+
+/* ================= 表单抽屉（innerHTML 复制版，不用搬 DOM） ================= */
+var FAB_MAP={
+  notes:['#tab-notes .card.form-grid','写随记'],
+  reading:['#tab-reading .card.form-grid','加一本书'],
+  sport:['#tab-sport .card.form-grid','记一笔运动'],
+  mistakes:['#tab-mistakes .card.form-grid','记错题'],
+  english:['#tab-english .card.form-grid','添加内容'],
+  podcast:['#tab-podcast .card[style*="margin-top:14px"]','记一笔收听']
+};
+function toast(m){
+  var t=document.getElementById('toast');
+  if(!t){ alert(m); return; }
+  t.textContent=m;
+  t.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t=setTimeout(function(){ t.classList.remove('show'); },2200);
+}
+function fabClick(){
+  var cfg=FAB_MAP[curTab];
+  if(cfg) openFormSheet(cfg[0],cfg[1]);
+}
+function openFormSheet(sel,title){
+  var el=document.querySelector(sel);
+  if(!el){ toast('刷新中，请重试'); renderAll(); return; }
+  var body=document.getElementById('fs-body');
+  body.innerHTML=el.outerHTML;
+  document.getElementById('fs-title').textContent=title||'添加';
+  document.getElementById('form-sheet-mask').classList.add('show');
+  document.getElementById('form-sheet').classList.add('show');
+}
+function closeFormSheet(){
+  var m=document.getElementById('form-sheet-mask'); if(m) m.classList.remove('show');
+  var sh=document.getElementById('form-sheet'); if(sh) sh.classList.remove('show');
+  var b=document.getElementById('fs-body'); if(b) b.innerHTML='';
+}
+
+/* ================= 以下保持原有业务逻辑不变 ================= */
+function openGuide(){ alert('欢迎！这是你备考软考中级的第 '+studyWeekNum()+' 周。\n\n建议：先打开「计划打卡」看本月任务，勾选自动保存；点带「学习」按钮的任务可直接在 App 内学习内容；做错的题随手录进错题本；每周保持 10-13h 学习节奏即可，不攀比时长，看连续性。'); }
+function taskHtml(id,text){
+  var c=state.tasks[id]?' checked':'';
+  var sb=STUDY[id]?'<button type="button" class="study-btn" onclick="event.preventDefault();event.stopPropagation();openStudy(\''+id+'\')">学习</button>':'';
+  return '<label class="task"><input type="checkbox"'+c+' onchange="toggleTask(\''+id+'\')"><span class="box"></span><span class="txt">'+esc(text)+'</span>'+sb+'</label>';
+}
+function toggleTask(id){
+  if(state.tasks[id]) delete state.tasks[id]; else state.tasks[id]=true;
+  save(LS.tasks,state.tasks); renderAll();
+}
+function taskStats(){
+  var t={total:0,done:0,exam:{t:0,d:0},skill:{t:0,d:0}};
+  PLAN.forEach(function(p){
+    p.exam.forEach(function(tx,i){ t.total++; t.exam.t++; if(state.tasks['m'+p.m+'-e'+(i+1)]){ t.done++; t.exam.d++; } });
+    p.skill.forEach(function(tx,i){ t.total++; t.skill.t++; if(state.tasks['m'+p.m+'-s'+(i+1)]){ t.done++; t.skill.d++; } });
+  });
+  return t;
+}
+function monthTaskStats(p){
+  var ms={total:0,done:0};
+  p.exam.forEach(function(){ ms.total++; }); p.skill.forEach(function(){ ms.total++; });
+  p.exam.forEach(function(tx,i){ if(state.tasks['m'+p.m+'-e'+(i+1)]) ms.done++; });
+  p.skill.forEach(function(tx,i){ if(state.tasks['m'+p.m+'-s'+(i+1)]) ms.done++; });
+  return ms;
+}
 
 /* 学习内容弹窗逻辑 */
 var curStudy=null;
@@ -1624,49 +1660,6 @@ function renderMilestones(){
 }
 
 /* ================= 更多面板 ================= */
-function toggleMore(show){
-  document.getElementById('more-mask').classList.toggle('show',show);
-  document.getElementById('more-sheet').classList.toggle('show',show);
-}
-
-/* ---------- App 化：FAB / 表单抽屉 / Toast ---------- */
-var curTab='dashboard';
-var FAB_MAP={
-  notes:['#tab-notes > .card.form-grid','写随记'],
-  reading:['#tab-reading > .card.form-grid','加一本书'],
-  sport:['#tab-sport .card.form-grid','记一笔运动'],
-  mistakes:['#tab-mistakes .card.form-grid','记错题'],
-  english:['#tab-english .card.form-grid','添加内容'],
-  podcast:['#tab-podcast .card[style*="margin-top:14px"]','记一笔收听']
-};
-function toast(m){
-  var t=document.getElementById('toast');
-  if(!t){ alert(m); return; }
-  t.textContent=m;
-  t.classList.add('show');
-  clearTimeout(toast._t);
-  toast._t=setTimeout(function(){ t.classList.remove('show'); },2200);
-}
-function fabClick(){
-  var cfg=FAB_MAP[curTab];
-  if(cfg) openFormSheet(cfg[0],cfg[1]);
-}
-function openFormSheet(sel,title){
-  var el=document.querySelector(sel);
-  if(!el){ toast('内容已刷新，请重试'); return; }
-  var body=document.getElementById('fs-body');
-  body.innerHTML='';
-  body.appendChild(el);
-  document.getElementById('fs-title').textContent=title||'添加';
-  document.getElementById('form-sheet-mask').classList.add('show');
-  document.getElementById('form-sheet').classList.add('show');
-}
-function closeFormSheet(){
-  var m=document.getElementById('form-sheet-mask'); if(m) m.classList.remove('show');
-  var sh=document.getElementById('form-sheet'); if(sh) sh.classList.remove('show');
-  var b=document.getElementById('fs-body');
-  if(b&&b.firstChild){ var pk=document.getElementById('form-parking'); if(pk) pk.appendChild(b.firstChild); }
-}
 
 
 /* ================= 生活板块 ================= */
@@ -2597,7 +2590,6 @@ try{
     if(_tip) _tip.style.display='block';
   }
 }catch(e){}
-
 if('serviceWorker' in navigator){
   window.addEventListener('load', function(){
     navigator.serviceWorker.register('sw.js').catch(function(){});
@@ -2605,24 +2597,17 @@ if('serviceWorker' in navigator){
 }
 setTimeout(updateInstallBar, 800);
 
-/* ================= 渲染入口 ================= */
+
+/* ===== 渲染入口 ===== */
 function renderAll(){
-  closeFormSheet();
-  renderDashboard();
-  renderPlan();
-  renderTime();
-  renderMistakes();
-  renderMilestones();
-  renderSport();
-  renderNotes();
-  renderPodcast();
-  renderReading();
-  renderEnglish();
-  renderProjects();
+  closeFormSheet(); closeSettings();
+  renderDashboard(); renderPlan(); renderTime(); renderMistakes();
+  renderMilestones(); renderSport(); renderNotes(); renderPodcast();
+  renderReading(); renderEnglish(); renderProjects();
   var sc=document.getElementById('side-count-n');
   if(sc){ var d=daysToExam(); sc.textContent=d>0?d:'--'; }
-  var pk=document.getElementById('form-parking');
-  if(pk) pk.innerHTML='';
+  updateSubNav(); updateTopHeader();
+  document.querySelectorAll('#bottom-bar .bb-item').forEach(function(b){ b.classList.toggle('active',b.dataset.hub===curHub); });
 }
 renderAll();
 </script>
