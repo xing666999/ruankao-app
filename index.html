@@ -2592,7 +2592,7 @@ try{
 }catch(e){}
 if('serviceWorker' in navigator){
   window.addEventListener('load', function(){
-    navigator.serviceWorker.register('sw.js').catch(function(){});
+    navigator.serviceWorker.register('sw.js?v=17').catch(function(){});
   });
 }
 setTimeout(updateInstallBar, 800);

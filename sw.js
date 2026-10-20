@@ -18,18 +18,34 @@ self.addEventListener('activate', function (e) {
 
 self.addEventListener('fetch', function (e) {
   if (e.request.method !== 'GET') return;
-  e.respondWith(
-    caches.match(e.request).then(function (r) {
-      if (r) return r;
-      return fetch(e.request).then(function (res) {
-        if (res && res.ok && new URL(e.request.url).origin === location.origin) {
+  var url = new URL(e.request.url);
+  var isNav = e.request.mode === 'navigate' || (e.request.headers.get('accept') || '').indexOf('text/html') !== -1;
+  if (isNav) {
+    // Navigation → network-first so updates always reach user
+    e.respondWith(
+      fetch(e.request).then(function (res) {
+        if (res && res.ok && url.origin === location.origin) {
           var copy = res.clone();
           caches.open(CACHE).then(function (c) { c.put(e.request, copy); });
         }
         return res;
       }).catch(function () {
         return caches.match('./index.html');
-      });
-    })
-  );
+      })
+    );
+  } else {
+    // Static assets → cache-first
+    e.respondWith(
+      caches.match(e.request).then(function (r) {
+        if (r) return r;
+        return fetch(e.request).then(function (res) {
+          if (res && res.ok && url.origin === location.origin) {
+            var copy = res.clone();
+            caches.open(CACHE).then(function (c) { c.put(e.request, copy); });
+          }
+          return res;
+        }).catch(function () { return r; });
+      })
+    );
+  }
 });
