@@ -2073,6 +2073,26 @@ function renderPodcast(){
     +'<div class="stat-chips"><span>累计 <b>'+state.podcast.length+'</b> 期</span><span>听完 <b style="color:var(--skill)">'+doneN+'</b> 期</span><span>收听时长 <b>'+fmtMin(total)+'</b></span>'
     +'<button class="mini-btn" style="color:var(--book)" onclick="analyzeListening()">✨ AI 总结分析收听</button></div>'
     +'<div class="stack" style="gap:12px">'+rows+'</div>';
+
+  // 绑定事件：textarea 手动粘贴 → 自动解析（不需要点按钮）
+  setTimeout(function(){
+    var ta = document.getElementById('pc-share');
+    if(!ta) return;
+    if(!ta._xyzBound){
+      ta._xyzBound = true;
+      ta.addEventListener('paste', function(){
+        var self = this;
+        setTimeout(function(){
+          if(self.value && self.value.trim()) parseXyzShare();
+        }, 80);
+      });
+      ta.addEventListener('input', function(){
+        if(this.value && this.value.trim().length > 8 && (this.value.indexOf('xiaoyuzhou') >= 0 || this.value.indexOf('http') >= 0)) {
+          parseXyzShare();
+        }
+      });
+    }
+  }, 0);
 }
 
 /* ---------- 读书 ---------- */
