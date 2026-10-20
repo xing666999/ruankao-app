@@ -1902,6 +1902,18 @@ function parseXyzShare(){
   if(tip) tip.innerHTML=link?'✓ 已识别'+(link.indexOf('xiaoyuzhoufm')>=0?'小宇宙':'')+'链接，请确认信息后保存':'未识别到链接，请手动补全';
 }
 function podPlatform(x){ return (x.link||'').indexOf('xiaoyuzhoufm')>=0?'小宇宙':((x.link||'')?'网页':''); }
+async function autoPastePodcast(){
+  try{
+    var txt=await navigator.clipboard.readText();
+    if(!txt||!txt.trim()){ toast('剪贴板是空的，请先在小宇宙 App 点「分享→复制链接」'); return; }
+    var ta=document.getElementById('pc-share'); if(!ta) return;
+    ta.value=txt.trim();
+    parseXyzShare();
+    toast('已从剪贴板读取并自动解析 ✓');
+  }catch(e){
+    toast('读取剪贴板失败：'+e.message+'（可能需要允许权限，或手动粘贴 textarea）');
+  }
+}
 function addPodcast(){
   var s=(document.getElementById('pc-show').value||'').trim();
   var t=(document.getElementById('pc-title').value||'').trim();
@@ -2046,9 +2058,9 @@ function renderPodcast(){
     +lifeNav('podcast')
     +aiCard
     +'<div class="card" style="margin-top:14px"><h3>记一笔收听</h3>'
-    +'<details><summary style="cursor:pointer;font-size:13px;color:var(--primary);font-weight:600;margin-bottom:6px">🔗 从小宇宙分享导入（点开粘贴）</summary>'
-    +'<textarea id="pc-share" rows="2" placeholder="在小宇宙打开想记的单集 → 点右上「分享」→「复制链接」→ 粘贴到这里"></textarea>'
-    +'<div style="display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap"><button class="btn btn-sm btn-light" onclick="parseXyzShare()">解析填入</button><span id="pc-share-tip" style="font-size:12px;color:var(--muted)">自动识别标题和链接，确认后保存</span></div></details>'
+    +'<details open><summary style="cursor:pointer;font-size:13px;color:var(--primary);font-weight:600;margin-bottom:6px">🔗 从小宇宙分享导入（点开粘贴）</summary>'
+    +'<textarea id="pc-share" rows="2" placeholder="在小宇宙 App 打开想记的单集 → 点右上「分享」→「复制链接」→ 切回这里点下面按钮"></textarea>'
+    +'<div style="display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap"><button class="btn btn-sm" onclick="autoPastePodcast()" style="background:var(--skill);color:#fff">📋 自动粘贴</button><button class="btn btn-sm btn-light" onclick="parseXyzShare()">解析填入</button><span id="pc-share-tip" style="font-size:12px;color:var(--muted)">推荐用「📋 自动粘贴」一键搞定</span></div></details>'
     +'<div class="form-grid" style="margin-top:10px">'
     +'<div class="form-row"><input id="pc-show" placeholder="节目名（如 疯投圈）" style="flex:1;min-width:140px">'
     +'<input id="pc-title" placeholder="单集标题" style="flex:1;min-width:140px"></div>'
