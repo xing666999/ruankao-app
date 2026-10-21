@@ -1891,18 +1891,52 @@ function parseXyzShare(){
   var ta=document.getElementById('pc-share');
   if(!ta) return;
   var raw=(ta.value||'').trim();
-  if(!raw){ alert('先把小宇宙的分享文案粘贴进来'); return; }
+  var tip=document.getElementById('pc-share-tip');
+  if(!raw){ if(tip) tip.innerHTML='<span style="color:var(--danger)">⚠️ 请先粘贴小宇宙分享文案</span>'; return; }
   var link='';
   var m=raw.match(/https?:\/\/[^\s，。,、]+/);
   if(m) link=m[0];
-  var title=raw.replace(/https?:\/\/[^\s，。,、]+/g,'').replace(/[|｜@→]/g,' ').replace(/小宇宙|收听|链接|节目|播客APP/g,'').replace(/\s+/g,' ').trim();
-  var el=document.getElementById('pc-link'); if(el) el.value=link;
-  var et=document.getElementById('pc-title'); if(et&&title) et.value=title;
-  var tip=document.getElementById('pc-share-tip');
-  if(tip) tip.innerHTML=link?'✓ 已识别'+(link.indexOf('xiaoyuzhoufm')>=0?'小宇宙':'')+'链接，请确认信息后保存':'未识别到链接，请手动补全';
+  // 提取节目名和标题（小宇宙格式常是 "节目名 | 单集标题  https://..."）
+  var rest=raw.replace(/https?:\/\/[^\s，。,、]+/g,'').trim();
+  // 去掉尾部 "来自小宇宙" 等尾巴
+  rest=rest.replace(/[|｜@→—–-]+/g,'|').replace(/小宇宙|收听|链接|节目|播客APP|来自|复制/g,'').trim();
+  rest=rest.replace(/\s+/g,' ').trim();
+  var show='', title='';
+  if(rest){
+    // 尝试按 | / | | 拆分："疯投圈 | SpaceX 星舰进展"
+    var parts=rest.split(/[|｜]/).map(function(s){ return s.trim(); }).filter(Boolean);
+    if(parts.length>=2){ show=parts[0]; title=parts.slice(1).join(' '); }
+    else if(parts.length===1){ title=parts[0]; }
+  }
+  // 填入表单
+  var el=document.getElementById('pc-link'); if(el){ el.value=link; el.style.background='#E8F6F3'; setTimeout(function(){ el.style.background=''; },600); }
+  var es=document.getElementById('pc-show'); if(es&&show){ es.value=show; es.style.background='#E8F6F3'; setTimeout(function(){ es.style.background=''; },600); }
+  var et=document.getElementById('pc-title'); if(et&&title){ et.value=title; et.style.background='#E8F6F3'; setTimeout(function(){ et.style.background=''; },600); }
+  // 清空 textarea + 视觉引导
+  ta.value='';
+  if(tip){
+    if(link){
+      var platform=link.indexOf('xiaoyuzhoufm')>=0?'小宇宙':'外部';
+      tip.innerHTML='<span style="color:var(--skill);font-weight:600;font-size:13px">✓ 已识别 '+platform+' 链接</span>'
+        +(show?' · 节目：<b>'+esc(show)+'</b>':'')
+        +(title?' · 标题：<b>'+esc(title)+'</b>':'')
+        +' —— 请确认后保存';
+      tip.style.background='var(--skill-soft)';
+      tip.style.padding='6px 10px';
+      tip.style.borderRadius='8px';
+      tip.style.marginTop='6px';
+    } else {
+      tip.innerHTML='<span style="color:var(--warn)">⚠️ 未识别到链接，请手动补全</span>';
+      tip.style.background='';
+    }
+  }
+  // scrollIntoView 把用户视线拉到表单
+  var pcLink=document.getElementById('pc-link');
+  if(pcLink) setTimeout(function(){ pcLink.scrollIntoView({ behavior:'smooth', block:'center' }); }, 100);
 }
 function podPlatform(x){ return (x.link||'').indexOf('xiaoyuzhoufm')>=0?'小宇宙':((x.link||'')?'网页':''); }
 async function autoPastePodcast(){
+  var tip=document.getElementById('pc-share-tip');
   try{
     var txt=await navigator.clipboard.readText();
     if(!txt||!txt.trim()){ toast('剪贴板是空的，请先在小宇宙 App 点「分享→复制链接」'); return; }
@@ -1911,7 +1945,15 @@ async function autoPastePodcast(){
     parseXyzShare();
     toast('已从剪贴板读取并自动解析 ✓');
   }catch(e){
-    toast('读取剪贴板失败：'+e.message+'（可能需要允许权限，或手动粘贴 textarea）');
+    // iPhone Safari / HTTP 页面不支持 clipboard.readText —— 提示手动操作
+    var ta2=document.getElementById('pc-share'); if(ta2) ta2.focus();
+    if(tip){
+      tip.innerHTML='<span style="color:var(--warn)">📱 iPhone 不支持自动读剪贴板 —— 请<b>长按上面文本框</b> → 选「粘贴」，会自动解析 ✓</span>';
+      tip.style.background='var(--port-soft)';
+      tip.style.padding='8px 10px';
+      tip.style.borderRadius='8px';
+      tip.style.marginTop='6px';
+    }
   }
 }
 function addPodcast(){
